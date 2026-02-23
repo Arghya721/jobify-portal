@@ -111,9 +111,9 @@ function LocationFilter() {
     }
     setLoadingCountries(true);
     fetchCountries().then((data) => {
-      _countriesCache = data as OptionItem[];
+      _countriesCache = (data || []) as OptionItem[];
       _countriesFetched = true;
-      setCountriesList(data);
+      setCountriesList(_countriesCache);
       setLoadingCountries(false);
     });
   }, []);
