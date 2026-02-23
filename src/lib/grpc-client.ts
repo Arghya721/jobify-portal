@@ -26,14 +26,23 @@ const countriesProto = loadProto('countries.proto') as any;
 const jobsProto = loadProto('jobs.proto') as any;
 const regionsProto = loadProto('regions.proto') as any;
 
-const credentials = grpc.credentials.createInsecure();
+let cleanHost = GRPC_HOST.replace(/^https?:\/\//, '');
+const isSecure = cleanHost.includes('.run.app') || GRPC_HOST.startsWith('https://');
+
+if (isSecure && !cleanHost.includes(':')) {
+  cleanHost += ':443';
+}
+
+const credentials = isSecure 
+  ? grpc.credentials.createSsl() 
+  : grpc.credentials.createInsecure();
 
 // Create clients for exported services
-export const cityClient = new citiesProto.CityService(GRPC_HOST, credentials);
-export const companyClient = new companyProto.CompanyService(GRPC_HOST, credentials);
-export const countryClient = new countriesProto.CountryService(GRPC_HOST, credentials);
-export const jobClient = new jobsProto.JobService(GRPC_HOST, credentials);
-export const regionClient = new regionsProto.RegionService(GRPC_HOST, credentials);
+export const cityClient = new citiesProto.CityService(cleanHost, credentials);
+export const companyClient = new companyProto.CompanyService(cleanHost, credentials);
+export const countryClient = new countriesProto.CountryService(cleanHost, credentials);
+export const jobClient = new jobsProto.JobService(cleanHost, credentials);
+export const regionClient = new regionsProto.RegionService(cleanHost, credentials);
 
 // Helper for sending API Key Metadata
 const getAuthMetadata = () => {
