@@ -1,0 +1,135 @@
+"use client";
+
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { FileText, ArrowRight, Clock, MapPin } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+
+const CATEGORIES = [
+  "All Jobs",
+  "Frontend",
+  "Backend",
+  "Fullstack",
+  "DevOps",
+  "AI/ML",
+  "Mobile",
+];
+
+// Map the gRPC response type to a cleaner format for the UI
+function LandingJobCard({ job, index }: { job: any; index: number }) {
+  // Use mock data fallback for fields the backend might not have yet
+  const salary = "$100k - $200k"; // Fallback salary for now
+  const remote = job.locations?.some((l: any) => l.is_remote) || false;
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: index * 0.08 }}
+      viewport={{ once: true }}
+      className={`group relative rounded-xl border bg-zinc-900/40 p-5 transition-all duration-200 hover:bg-zinc-900/70 border-zinc-800/60`}
+    >
+      <div className="flex items-center gap-4">
+        {/* Company Icon */}
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-800/60 text-zinc-400">
+          <FileText className="h-5 w-5" />
+        </div>
+
+        {/* Info */}
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="text-sm font-semibold text-zinc-100 sm:text-base">
+              {job.title}
+            </h3>
+          </div>
+          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-zinc-500 sm:text-sm">
+            <span className="font-medium text-zinc-400">{job.company?.name || "Company"}</span>
+            <span className="flex items-center gap-1">
+              <MapPin className="h-3 w-3" />
+              {job.location_name || (remote ? "Remote" : "Unknown Location")}
+            </span>
+          </div>
+        </div>
+
+        {/* Salary + Apply */}
+        <div className="hidden shrink-0 flex-col items-end gap-1.5 sm:flex">
+          <div className="text-right">
+            <p className="text-sm font-semibold text-zinc-200">{salary}</p>
+            <p className="text-[10px] uppercase tracking-wide text-zinc-500">
+              FULL-TIME
+            </p>
+          </div>
+        </div>
+
+        <button className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-zinc-700/60 bg-zinc-800/40 px-4 py-2 text-xs font-medium text-zinc-300 transition-all hover:border-zinc-600 hover:bg-zinc-800 hover:text-white">
+          Apply
+          <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
+export function LandingJobFeedClient({ initialJobs }: { initialJobs: any[] }) {
+  const [activeCategory, setActiveCategory] = useState("All Jobs");
+
+  // In a real app, this would trigger a new fetch using the query param
+  // For now, we'll just filter what we have locally or show all if "All Jobs"
+  const filteredJobs = activeCategory === "All Jobs" 
+    ? initialJobs 
+    : initialJobs.filter((j: any) => j.title?.toLowerCase().includes(activeCategory.toLowerCase()));
+
+  return (
+    <>
+      {/* Filter Row */}
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-wrap gap-2">
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`rounded-full border px-4 py-1.5 text-sm font-medium transition-all ${
+                activeCategory === cat
+                  ? "border-zinc-500 bg-zinc-800 text-zinc-100"
+                  : "border-zinc-800 text-zinc-500 hover:border-zinc-700 hover:bg-zinc-800/40 hover:text-zinc-300"
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-2 text-sm text-zinc-500">
+          <span>Sort by:</span>
+          <select className="cursor-pointer rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-300 focus:outline-none focus:ring-1 focus:ring-zinc-700">
+            <option>Newest First</option>
+            <option>Highest Salary</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Job Cards */}
+      <div className="mt-8 space-y-3">
+        {filteredJobs && filteredJobs.length > 0 ? (
+          filteredJobs.map((job: any, i: number) => (
+            <LandingJobCard key={job.id} job={job} index={i} />
+          ))
+        ) : (
+          <div className="text-center py-10 text-zinc-500">
+            No jobs found matching your criteria.
+          </div>
+        )}
+      </div>
+
+      {/* Load More */}
+      <div className="mt-8 flex justify-center">
+        <a
+          href="/jobs"
+          className="rounded-xl border border-zinc-800 px-8 py-3 text-sm font-medium text-zinc-400 transition-all hover:border-zinc-700 hover:bg-zinc-900/60 hover:text-zinc-200"
+        >
+          Explore All Opportunities
+        </a>
+      </div>
+    </>
+  );
+}

@@ -1,0 +1,95 @@
+name: Build and Deploy to Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      build_image:
+        description: 'Build and Push Docker Image'
+        required: true
+        default: true
+        type: boolean
+      deploy_image:
+        description: 'Deploy to Cloud Run'
+        required: true
+        default: true
+        type: boolean
+
+env:
+  PROJECT_ID: job-notifier-478915
+  REGION: asia-south1
+  REGISTRY_HOSTNAME: asia-south1-docker.pkg.dev
+  SERVICE_NAME: jobify-portal
+  IMAGE_NAME: jobify-portal
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check for changes
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            frontend:
+              - 'src/**'
+              - 'public/**'
+              - 'package.json'
+              - 'package-lock.json'
+              - 'next.config.mjs'
+              - 'postcss.config.mjs'
+              - 'tailwind.config.ts'
+              - 'Dockerfile'
+
+      - name: Google Auth
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.SERVICE_ACCOUNT_JSON }}'
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          install_components: 'beta'
+
+      - name: Configure Docker
+        if: (github.event_name == 'push' && steps.filter.outputs.frontend == 'true') || (github.event_name == 'workflow_dispatch' && inputs.build_image == true)
+        run: |
+          gcloud auth configure-docker ${{ env.REGISTRY_HOSTNAME }}
+
+      - name: Build and Push Docker Image
+        if: (github.event_name == 'push' && steps.filter.outputs.frontend == 'true') || (github.event_name == 'workflow_dispatch' && inputs.build_image == true)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ env.REGISTRY_HOSTNAME }}/${{ env.PROJECT_ID }}/jobify-portal/${{ env.IMAGE_NAME }}:latest
+
+      - name: Prepare Secrets
+        if: (github.event_name == 'push' && steps.filter.outputs.frontend == 'true') || (github.event_name == 'workflow_dispatch' && inputs.deploy_image == true)
+        run: |
+          # Inject secrets into .env file
+          echo "${{ secrets.JOBIFY_PORTAL_ENV }}" > .env
+          
+          # Convert to YAML for Cloud Run Runtime Env Vars
+          # We use regex to quote the values to prevent boolean parsing errors (e.g. true -> "true")
+          sed 's/=\(.*\)/: "\1"/' .env > env.yaml
+
+      - name: Deploy Next.js App (jobify-portal)
+        if: (github.event_name == 'push' && steps.filter.outputs.frontend == 'true') || (github.event_name == 'workflow_dispatch' && inputs.deploy_image == true)
+        run: |
+          gcloud run deploy ${{ env.SERVICE_NAME }} \
+            --image ${{ env.REGISTRY_HOSTNAME }}/${{ env.PROJECT_ID }}/jobify-portal/${{ env.IMAGE_NAME }}:latest \
+            --region ${{ env.REGION }} \
+            --port 3000 \
+            --allow-unauthenticated \
+            --env-vars-file=env.yaml
