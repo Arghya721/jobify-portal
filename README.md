@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Jobify Portal
+
+Jobify Portal is the modern, high-performance Next.js 16 frontend interface for the Jobify ecosystem. It features a sleek dark-themed UI for searching, filtering, and discovering jobs, powered by a strictly typed architecture.
+
+## Architecture
+
+The application is built using a **Next.js Server Components** architecture. Unlike traditional REST APIs, the Jobify Portal securely communicates with the Java backend services entirely over **gRPC**.
+
+By leveraging `@grpc/grpc-js` and `@grpc/proto-loader`, the frontend dynamically parses the protobuf (`.proto`) schema files at runtime. Server Actions handle all data fetching seamlessly, ensuring that the gRPC connections remain hidden from the browser client and providing lightning-fast, highly optimized data streaming directly to the React components.
+
+## Tech Stack
+
+*   **Framework**: Next.js 16.1 (App Router, Server Components, Server Actions)
+*   **Styling**: Tailwind CSS & Framer Motion
+*   **UI Components**: Shadcn UI & Magic UI
+*   **State Management**: Nuqs (URL-based state for deep linking)
+*   **Backend Communication**: gRPC, Protocol Buffers (`.proto`)
+*   **Deployment**: Cloud Run Configured (Standalone Docker Output)
 
 ## Getting Started
 
-First, run the development server:
+First, ensure you have Node.js 20+ installed.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1.  **Clone the repository and install dependencies:**
+    ```bash
+    npm install
+    # or npm ci for strict locking
+    ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2.  **Environment Variables**:
+    Create a `.env.local` file in the root directory. You must configure the gRPC host and API key. *Do not commit your real endpoints to version control.*
+    ```env
+    # The URI of your Jobify Java Backend
+    GRPC_HOST="your-backend-host:port"
+    
+    # The secure API Key to authorize gRPC calls
+    GRPC_API_KEY="your-secret-api-key"
+    ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3.  **Run the development server**:
+    ```bash
+    npm run dev
+    ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4.  Navigate to `http://localhost:3000` to interact with the application.
 
-## Learn More
+## Deployment
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This repository is optimized for serverless container environments like **Google Cloud Run**. The `next.config.ts` is configured with `output: 'standalone'`, allowing the multi-stage Dockerfile to compile an incredibly minimal container image that only includes the necessary production traces and `.proto` schema files.
