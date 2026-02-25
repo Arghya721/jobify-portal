@@ -23,20 +23,21 @@ const TICKER_ITEMS: TickerItem[] = [
 
 function TickerPill({ item }: { item: TickerItem }) {
   return (
-    <div className="inline-flex shrink-0 items-center gap-3 rounded-full border border-zinc-800 bg-zinc-900/80 px-4 py-2.5 text-sm">
+    <div className="inline-flex shrink-0 items-center gap-3 rounded-full border border-border/80 bg-secondary/80 px-4 py-2.5 text-sm">
       <span
         className="h-2 w-2 rounded-full"
         style={{ backgroundColor: item.color }}
       />
-      <span className="font-medium text-zinc-200">{item.company}</span>
-      <span className="text-zinc-500">{item.role}</span>
+      <span className="font-medium text-foreground">{item.company}</span>
+      <span className="text-muted-foreground">{item.role}</span>
     </div>
   );
 }
 
 export function JobTicker() {
-  const [paused, setPaused] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const positionRef = useRef(0);
+  const isPausedRef = useRef(false);
 
   // Duplicate items for seamless infinite scroll
   const items = [...TICKER_ITEMS, ...TICKER_ITEMS];
@@ -46,34 +47,33 @@ export function JobTicker() {
     if (!el) return;
 
     let animationId: number;
-    let position = 0;
 
     const animate = () => {
-      if (!paused) {
-        position -= 0.5;
+      if (!isPausedRef.current) {
+        positionRef.current -= 0.5;
         const halfWidth = el.scrollWidth / 2;
-        if (Math.abs(position) >= halfWidth) {
-          position = 0;
+        if (Math.abs(positionRef.current) >= halfWidth) {
+          positionRef.current = 0;
         }
-        el.style.transform = `translateX(${position}px)`;
+        el.style.transform = `translateX(${positionRef.current}px)`;
       }
       animationId = requestAnimationFrame(animate);
     };
 
     animationId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationId);
-  }, [paused]);
+  }, []);
 
   return (
-    <section className="relative border-y border-zinc-800/60 bg-zinc-950/50 py-5">
+    <section className="relative border-y border-border/60 bg-background py-5">
       {/* Edge fades */}
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-zinc-950 to-transparent" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-zinc-950 to-transparent" />
+      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-background to-transparent" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-background to-transparent" />
 
       <div
         className="overflow-hidden"
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
+        onMouseEnter={() => (isPausedRef.current = true)}
+        onMouseLeave={() => (isPausedRef.current = false)}
       >
         <div
           ref={scrollRef}

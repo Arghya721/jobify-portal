@@ -44,7 +44,7 @@ export function JobCard({ job, index }: JobCardProps) {
         <div className="min-w-0 flex-1">
           {/* Title Row */}
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-[15px] font-semibold text-foreground group-hover:text-white transition-colors">
+            <h3 className="text-[15px] font-semibold text-foreground group-hover:text-foreground transition-colors">
               {job.title}
             </h3>
             {isRemote && (

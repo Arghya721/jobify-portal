@@ -383,7 +383,7 @@ function CompanyFilter() {
 /* ────────────────── Tech Stack Filter ────────────────── */
 const MAX_TAGS = 5;
 
-const SUGGESTED_TAGS = ["React", "Python", "AWS", "Go", "TypeScript"];
+const SUGGESTED_TAGS = ["React", "Python", "AWS", "Golang", "Java"];
 
 function TechStackFilter() {
   const [tags, setTags] = useQueryState(

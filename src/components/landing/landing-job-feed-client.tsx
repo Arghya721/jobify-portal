@@ -27,23 +27,23 @@ function LandingJobCard({ job, index }: { job: any; index: number }) {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.08 }}
       viewport={{ once: true }}
-      className={`group relative rounded-xl border bg-zinc-900/40 p-5 transition-all duration-200 hover:bg-zinc-900/70 border-zinc-800/60`}
+      className={`group relative rounded-xl border bg-card/40 p-5 transition-all duration-200 hover:bg-card/70 border-border/60`}
     >
       <div className="flex items-center gap-4">
         {/* Company Icon */}
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-800/60 text-zinc-400">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border bg-secondary/60 text-muted-foreground">
           <FileText className="h-5 w-5" />
         </div>
 
         {/* Info */}
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-sm font-semibold text-zinc-100 sm:text-base">
+            <h3 className="text-sm font-semibold text-foreground sm:text-base">
               {job.title}
             </h3>
           </div>
-          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-zinc-500 sm:text-sm">
-            <span className="font-medium text-zinc-400">{job.company?.name || "Company"}</span>
+          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground sm:text-sm">
+            <span className="font-medium text-foreground/70">{job.company?.name || "Company"}</span>
             <span className="flex items-center gap-1">
               <MapPin className="h-3 w-3" />
               {job.location_name || (remote ? "Remote" : "Unknown Location")}
@@ -54,14 +54,14 @@ function LandingJobCard({ job, index }: { job: any; index: number }) {
         {/* Salary + Apply */}
         <div className="hidden shrink-0 flex-col items-end gap-1.5 sm:flex">
           <div className="text-right">
-            <p className="text-sm font-semibold text-zinc-200">{salary}</p>
-            <p className="text-[10px] uppercase tracking-wide text-zinc-500">
+            <p className="text-sm font-semibold text-foreground/90">{salary}</p>
+            <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
               FULL-TIME
             </p>
           </div>
         </div>
 
-        <button className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-zinc-700/60 bg-zinc-800/40 px-4 py-2 text-xs font-medium text-zinc-300 transition-all hover:border-zinc-600 hover:bg-zinc-800 hover:text-white">
+        <button className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-border/60 bg-secondary/40 px-4 py-2 text-xs font-medium text-muted-foreground transition-all hover:border-border hover:bg-secondary hover:text-foreground">
           Apply
           <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
         </button>
@@ -90,8 +90,8 @@ export function LandingJobFeedClient({ initialJobs }: { initialJobs: any[] }) {
               onClick={() => setActiveCategory(cat)}
               className={`rounded-full border px-4 py-1.5 text-sm font-medium transition-all ${
                 activeCategory === cat
-                  ? "border-zinc-500 bg-zinc-800 text-zinc-100"
-                  : "border-zinc-800 text-zinc-500 hover:border-zinc-700 hover:bg-zinc-800/40 hover:text-zinc-300"
+                  ? "border-muted-foreground bg-secondary text-foreground"
+                  : "border-border text-muted-foreground hover:border-border/80 hover:bg-secondary/40 hover:text-foreground/80"
               }`}
             >
               {cat}
@@ -99,9 +99,9 @@ export function LandingJobFeedClient({ initialJobs }: { initialJobs: any[] }) {
           ))}
         </div>
 
-        <div className="flex items-center gap-2 text-sm text-zinc-500">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <span>Sort by:</span>
-          <select className="cursor-pointer rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-300 focus:outline-none focus:ring-1 focus:ring-zinc-700">
+          <select className="cursor-pointer rounded-lg border border-border bg-card px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-border/50">
             <option>Newest First</option>
             <option>Highest Salary</option>
           </select>
@@ -115,7 +115,7 @@ export function LandingJobFeedClient({ initialJobs }: { initialJobs: any[] }) {
             <LandingJobCard key={job.id} job={job} index={i} />
           ))
         ) : (
-          <div className="text-center py-10 text-zinc-500">
+          <div className="text-center py-10 text-muted-foreground">
             No jobs found matching your criteria.
           </div>
         )}
@@ -125,7 +125,7 @@ export function LandingJobFeedClient({ initialJobs }: { initialJobs: any[] }) {
       <div className="mt-8 flex justify-center">
         <a
           href="/jobs"
-          className="rounded-xl border border-zinc-800 px-8 py-3 text-sm font-medium text-zinc-400 transition-all hover:border-zinc-700 hover:bg-zinc-900/60 hover:text-zinc-200"
+          className="rounded-xl border border-border px-8 py-3 text-sm font-medium text-muted-foreground transition-all hover:border-border/80 hover:bg-secondary/60 hover:text-foreground"
         >
           Explore All Opportunities
         </a>

@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { DotPattern } from "@/components/ui/dot-pattern";
+import { cn } from "@/lib/utils";
 
 const ROTATING_WORDS = [
   "Dream Opportunity.",
@@ -56,24 +58,11 @@ export function Hero() {
   return (
     <section className="relative overflow-hidden">
       {/* Dot Grid Background */}
-      <div className="absolute inset-0 -z-10">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle, oklch(0.4 0 0) 1px, transparent 1px)",
-            backgroundSize: "24px 24px",
-          }}
-        />
-        {/* Radial fade mask */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(ellipse 60% 50% at 50% 40%, transparent 20%, oklch(0.145 0 0) 70%)",
-          }}
-        />
-      </div>
+      <DotPattern
+        className={cn(
+          "[mask-image:radial-gradient(60%_50%_at_50%_40%,white,transparent)]"
+        )}
+      />
 
       <div className="mx-auto max-w-screen-2xl px-4 pb-16 pt-24 text-center md:pb-24 md:pt-32">
         {/* Headline */}
@@ -81,7 +70,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="text-4xl font-bold tracking-tight text-zinc-50 sm:text-5xl md:text-6xl lg:text-7xl"
+          className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-7xl"
         >
           Find your next
           <br />
@@ -108,10 +97,10 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
           className="mx-auto mt-6 max-w-lg"
         >
-          <p className="text-base text-zinc-400 sm:text-lg">
+          <p className="text-base text-muted-foreground sm:text-lg">
             Direct from source ATS. No recruiters. No spam.
           </p>
-          <p className="mt-1 text-sm text-zinc-500 sm:text-base">
+          <p className="mt-1 text-sm text-muted-foreground/80 sm:text-base">
             Join 50,000+ engineers finding their next home.
           </p>
         </motion.div>
@@ -123,8 +112,8 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
           className="mx-auto mt-10 max-w-xl"
         >
-          <div className="relative flex items-center rounded-xl border border-zinc-700/60 bg-zinc-900/80 shadow-2xl shadow-black/40 transition-all focus-within:border-zinc-600 focus-within:shadow-emerald-500/5">
-            <Search className="ml-4 h-5 w-5 shrink-0 text-zinc-500" />
+          <div className="relative flex items-center rounded-xl border border-border/60 bg-secondary/80 shadow-2xl shadow-black/5 dark:shadow-black/40 transition-all focus-within:border-border focus-within:shadow-emerald-500/5">
+            <Search className="ml-4 h-5 w-5 shrink-0 text-muted-foreground" />
             <input
               ref={inputRef}
               type="text"
@@ -134,11 +123,11 @@ export function Hero() {
               onBlur={() => setIsFocused(false)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               placeholder={PLACEHOLDERS[placeholderIndex]}
-              className="h-14 flex-1 bg-transparent px-3 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none sm:text-base"
+              className="h-14 flex-1 bg-transparent px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none sm:text-base"
             />
             <button
               onClick={handleSearch}
-              className="mr-2 rounded-lg bg-zinc-50 px-5 py-2 text-sm font-semibold text-zinc-900 transition-all hover:bg-white active:scale-95"
+              className="mr-2 rounded-lg bg-foreground px-5 py-2 text-sm font-semibold text-background transition-all hover:opacity-90 active:scale-95"
             >
               Search
             </button>

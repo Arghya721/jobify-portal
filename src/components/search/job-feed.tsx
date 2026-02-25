@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchJobsAction } from "@/app/actions/jobs";
+import { cn } from "@/lib/utils";
 
 const PAGE_SIZE = 10;
 
@@ -126,20 +127,29 @@ export function JobFeed() {
       {/* Loading Skeletons */}
       {isLoading && jobNodes.length === 0 && (
         <div className="space-y-3">
-          {Array.from({ length: 3 }).map((_, i) => (
+          {Array.from({ length: 5 }).map((_, i) => (
             <div
               key={i}
-              className="rounded-xl border border-border/50 bg-card/30 p-5"
+              className="rounded-xl border border-border/50 bg-card/50 p-5"
             >
               <div className="flex items-start gap-4">
-                <Skeleton className="h-11 w-11 rounded-lg" />
-                <div className="flex-1 space-y-3">
-                  <Skeleton className="h-5 w-[60%]" />
-                  <Skeleton className="h-3 w-[40%]" />
-                  <div className="flex gap-2">
-                    <Skeleton className="h-5 w-16 rounded-md" />
-                    <Skeleton className="h-5 w-16 rounded-md" />
+                <Skeleton className="h-11 w-11 rounded-lg bg-secondary/80" />
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                     <Skeleton className="h-5 w-[40%] bg-secondary/80" />
                   </div>
+                  <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+                     <Skeleton className="h-4 w-[20%] bg-secondary/80" />
+                     <Skeleton className="h-4 w-[25%] bg-secondary/80" />
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    <Skeleton className="h-5 w-16 rounded-md bg-secondary/80" />
+                    <Skeleton className="h-5 w-16 rounded-md bg-secondary/80" />
+                  </div>
+                </div>
+                <div className="hidden shrink-0 flex-col items-end gap-2 sm:flex">
+                  <Skeleton className="h-5 w-20 bg-secondary/80" />
+                  <Skeleton className="h-3 w-16 bg-secondary/80" />
                 </div>
               </div>
             </div>
@@ -148,7 +158,12 @@ export function JobFeed() {
       )}
 
       {/* Job List */}
-      <div className="space-y-3">
+      <div 
+        className={cn(
+          "space-y-3 transition-opacity duration-300", 
+          isLoading && jobNodes.length > 0 && "opacity-40 blur-[2px] pointer-events-none"
+        )}
+      >
         {jobNodes}
 
         {!isLoading && jobNodes.length === 0 && (

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Grid3X3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export function Navbar() {
   return (
@@ -10,10 +11,10 @@ export function Navbar() {
       <div className="mx-auto flex h-14 max-w-screen-2xl items-center justify-between px-4 md:px-6">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 backdrop-blur">
-            <Grid3X3 className="h-4 w-4 text-white" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-foreground/10 backdrop-blur">
+            <Grid3X3 className="h-4 w-4 text-foreground" />
           </div>
-          <span className="text-lg font-semibold tracking-tight text-white">
+          <span className="text-lg font-semibold tracking-tight text-foreground">
             Jobify
           </span>
         </Link>
@@ -22,19 +23,19 @@ export function Navbar() {
         <nav className="hidden items-center gap-6 md:flex">
           <Link
             href="/jobs"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-white"
+            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
             Jobs
           </Link>
           <Link
             href="#"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-white"
+            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
             Companies
           </Link>
           <Link
             href="#"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-white"
+            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
             Salary Insights
           </Link>
@@ -42,15 +43,16 @@ export function Navbar() {
 
         {/* Actions */}
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-white">
+          <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
             Log in
           </Button>
           <Button
             size="sm"
-            className="rounded-full bg-white text-black font-medium hover:bg-white/90"
+            className="rounded-full font-medium"
           >
             Post a Job
           </Button>
+          <ModeToggle />
         </div>
       </div>
     </header>

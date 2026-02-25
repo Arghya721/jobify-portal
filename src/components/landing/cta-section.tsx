@@ -18,6 +18,12 @@ export function CTASection() {
 
     let animationId: number;
     let time = 0;
+    
+    // Get colors from CSS variables depending on theme
+    const getStrokeColor = () => {
+      const isDark = document.documentElement.classList.contains("dark");
+      return isDark ? "rgba(255, 255, 255, 0.15)" : "rgba(0, 0, 0, 0.15)";
+    };
 
     const resize = () => {
       canvas.width = canvas.offsetWidth * window.devicePixelRatio;
@@ -48,7 +54,7 @@ export function CTASection() {
       }
 
       // Thin lines
-      ctx.strokeStyle = "rgba(63, 63, 70, 0.15)";
+      ctx.strokeStyle = getStrokeColor();
       ctx.lineWidth = 0.5;
       for (let i = 0; i < 3; i++) {
         const startX = 0;
@@ -85,7 +91,7 @@ export function CTASection() {
   };
 
   return (
-    <section className="relative overflow-hidden border-t border-zinc-800/60 bg-zinc-950">
+    <section className="relative overflow-hidden border-t border-border/60 bg-background">
       {/* Animated canvas background */}
       <canvas
         ref={canvasRef}
@@ -99,7 +105,7 @@ export function CTASection() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="text-3xl font-bold tracking-tight text-zinc-50 sm:text-4xl md:text-5xl"
+          className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl"
         >
           Get the best jobs in your inbox.
         </motion.h2>
@@ -109,7 +115,7 @@ export function CTASection() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.15 }}
           viewport={{ once: true }}
-          className="mx-auto mt-4 max-w-md text-sm text-zinc-400 sm:text-base"
+          className="mx-auto mt-4 max-w-md text-sm text-muted-foreground sm:text-base"
         >
           We&apos;ll send you a weekly digest of high-paying engineering roles
           that match your profile. No noise, just signal.
@@ -128,12 +134,12 @@ export function CTASection() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@awesomecompany.com"
-            className="h-12 flex-1 rounded-lg border border-zinc-700/60 bg-zinc-900/80 px-4 text-sm text-zinc-200 placeholder:text-zinc-500 focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-600"
+            className="h-12 flex-1 rounded-lg border border-border/60 bg-secondary/80 px-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-border focus:outline-none focus:ring-1 focus:ring-border"
             required
           />
           <button
             type="submit"
-            className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-zinc-50 px-5 py-3 text-sm font-semibold text-zinc-900 transition-all hover:bg-white active:scale-95"
+            className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-foreground px-5 py-3 text-sm font-semibold text-background transition-all hover:opacity-90 active:scale-95"
           >
             {submitted ? "Subscribed! ✓" : "Subscribe"}
             {!submitted && <Zap className="h-3.5 w-3.5" />}

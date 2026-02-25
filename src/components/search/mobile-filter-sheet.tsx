@@ -27,6 +27,7 @@ export function MobileFilterSheet() {
       </SheetTrigger>
       <SheetContent
         side="left"
+        showCloseButton={false}
         className="w-[320px] border-border bg-background p-0"
       >
         <SheetHeader className="flex flex-row items-center justify-between border-b border-border px-5 py-4">
