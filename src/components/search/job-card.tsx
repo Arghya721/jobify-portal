@@ -16,7 +16,7 @@ export function JobCard({ job, index }: JobCardProps) {
   const postedAtStr = job.details?.job_posted_at || job.created_at || "";
   
   // Safe array fallback
-  const tags: string[] = [];
+  const tags: string[] = job.matched_tags || [];
 
   const companyName = job.company?.name;
   const logoUrl = companyName ? (companyLogos as Record<string, string>)[companyName] : undefined;

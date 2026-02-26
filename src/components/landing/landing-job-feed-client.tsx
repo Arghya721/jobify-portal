@@ -49,6 +49,20 @@ function LandingJobCard({ job, index }: { job: any; index: number }) {
               {job.location_name || (remote ? "Remote" : "Unknown Location")}
             </span>
           </div>
+          
+          {/* Tags */}
+          {job.matched_tags && job.matched_tags.length > 0 && (
+            <div className="mt-2.5 flex flex-wrap gap-1.5">
+              {job.matched_tags.map((tag: string) => (
+                <span
+                  key={tag}
+                  className="inline-flex items-center rounded-md border border-border/60 bg-secondary/40 px-2 py-0.5 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground hover:border-border"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Salary + Apply */}
