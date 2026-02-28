@@ -32,7 +32,7 @@ export function JobFeed() {
   const [totalCount, setTotalCount] = useState(0);
   const [lastFetchCount, setLastFetchCount] = useState(0);
   const [page, setPage] = useState(1);
-  const [isPending, startTransition] = useTransition();
+  const [isLoadMorePending, setIsLoadMorePending] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   // Fetch jobs from server action
@@ -70,18 +70,18 @@ export function JobFeed() {
 
     const response = await fetchJobsAction(params);
     
-    startTransition(() => {
-      if (isLoadMore) {
-        setJobNodes(prev => [...prev, ...response.ui]);
-        setTotalCount(prev => prev + response.count);
-        setPage(p => p + 1);
-      } else {
-        setJobNodes(response.ui);
-        setTotalCount(response.count);
-      }
-      setLastFetchCount(response.count);
+    if (isLoadMore) {
+      setJobNodes(prev => [...prev, ...response.ui]);
+      setTotalCount(prev => prev + response.count);
+      setPage(p => p + 1);
+      setIsLoadMorePending(false);
+    } else {
+      setJobNodes(response.ui);
+      setTotalCount(response.count);
       setIsLoading(false);
-    });
+    }
+    setLastFetchCount(response.count);
+
   }, [q, companyId, remote, country, region, city, tags, sources, showClosed, sort, page, since]);
 
   // Initial fetch and on filter change
@@ -103,7 +103,7 @@ export function JobFeed() {
       <div className="flex items-center justify-between">
         <p className="text-sm">
           <span className="font-semibold text-emerald-400">
-            {isLoading && !isPending ? "..." : totalCount}
+            {isLoading ? "..." : totalCount}
           </span>{" "}
           <span className="text-muted-foreground">
             result{totalCount !== 1 ? "s" : ""} {searchLabel} (Loaded viewing)
@@ -182,10 +182,13 @@ export function JobFeed() {
       {hasMore && !isLoading && (
         <div className="flex justify-center pt-4">
           <button
-            onClick={() => fetchJobs(true)}
+            onClick={() => {
+              setIsLoadMorePending(true);
+              fetchJobs(true);
+            }}
             className="rounded-xl border border-border/60 bg-secondary/30 px-8 py-3 text-sm font-medium text-muted-foreground transition-all hover:border-border hover:bg-secondary/50 hover:text-foreground"
           >
-            {isPending ? "Loading..." : "Load More Results"}
+            {isLoadMorePending ? "Loading..." : "Load More Results"}
           </button>
         </div>
       )}
