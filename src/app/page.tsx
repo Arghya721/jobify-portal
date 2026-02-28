@@ -4,6 +4,8 @@ import { LandingJobFeed } from "@/components/landing/landing-job-feed";
 import { CTASection } from "@/components/landing/cta-section";
 import { Footer } from "@/components/landing/footer";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Jobify — Find Your Next Engineering Role",
   description:
