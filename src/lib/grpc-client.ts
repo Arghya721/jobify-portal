@@ -37,12 +37,18 @@ const credentials = isSecure
   ? grpc.credentials.createSsl() 
   : grpc.credentials.createInsecure();
 
+const grpcOptions = {
+  'grpc.keepalive_time_ms': 30000,
+  'grpc.keepalive_timeout_ms': 10000,
+  'grpc.keepalive_permit_without_calls': 1,
+};
+
 // Create clients for exported services
-export const cityClient = new citiesProto.CityService(cleanHost, credentials);
-export const companyClient = new companyProto.CompanyService(cleanHost, credentials);
-export const countryClient = new countriesProto.CountryService(cleanHost, credentials);
-export const jobClient = new jobsProto.JobService(cleanHost, credentials);
-export const regionClient = new regionsProto.RegionService(cleanHost, credentials);
+export const cityClient = new citiesProto.CityService(cleanHost, credentials, grpcOptions);
+export const companyClient = new companyProto.CompanyService(cleanHost, credentials, grpcOptions);
+export const countryClient = new countriesProto.CountryService(cleanHost, credentials, grpcOptions);
+export const jobClient = new jobsProto.JobService(cleanHost, credentials, grpcOptions);
+export const regionClient = new regionsProto.RegionService(cleanHost, credentials, grpcOptions);
 
 // Helper for sending API Key Metadata
 const getAuthMetadata = () => {
