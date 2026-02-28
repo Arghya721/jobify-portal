@@ -43,14 +43,12 @@ export function Navbar() {
 
         {/* Actions */}
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-            Log in
-          </Button>
+         
           <Button
             size="sm"
             className="rounded-full font-medium"
           >
-            Post a Job
+            Log in
           </Button>
           <ModeToggle />
         </div>

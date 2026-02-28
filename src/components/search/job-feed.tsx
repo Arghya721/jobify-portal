@@ -15,8 +15,18 @@ import { cn } from "@/lib/utils";
 
 const PAGE_SIZE = 10;
 
+const CATEGORIES = [
+  "All Jobs",
+  "Frontend",
+  "Backend",
+  "Fullstack",
+  "DevOps",
+  "AI/ML",
+  "Mobile",
+];
+
 export function JobFeed() {
-  const [q] = useQueryState("q", parseAsString.withDefault(""));
+  const [q, setQ] = useQueryState("q", parseAsString.withDefault(""));
   const [companyId] = useQueryState("company_id", parseAsString.withDefault(""));
   const [remote] = useQueryState("remote", parseAsBoolean.withDefault(false));
   const [country] = useQueryState("country", parseAsString.withDefault(""));
@@ -99,29 +109,54 @@ export function JobFeed() {
 
   return (
     <div className="flex-1 space-y-4">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <p className="text-sm">
-          <span className="font-semibold text-emerald-400">
-            {isLoading ? "..." : totalCount}
-          </span>{" "}
-          <span className="text-muted-foreground">
-            result{totalCount !== 1 ? "s" : ""} {searchLabel} (Loaded viewing)
-          </span>
-        </p>
+      {/* Header with Categories and Sort */}
+      <div className="flex flex-col gap-5 pb-2">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-wrap gap-2">
+            {CATEGORIES.map((cat) => {
+              // We consider "All Jobs" active when there's no q, or when q equals "All Jobs".
+              const isActive = cat === "All Jobs" ? !q || q === "All Jobs" : q.toLowerCase() === cat.toLowerCase();
+              return (
+                <button
+                  key={cat}
+                  onClick={() => setQ(cat === "All Jobs" ? null : cat)}
+                  className={`rounded-full border px-4 py-1.5 text-sm font-medium transition-all ${
+                    isActive
+                      ? "border-muted-foreground bg-secondary text-foreground"
+                      : "border-border text-muted-foreground hover:border-border/80 hover:bg-secondary/40 hover:text-foreground/80"
+                  }`}
+                >
+                  {cat}
+                </button>
+              );
+            })}
+          </div>
 
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <span className="hidden sm:inline">Sort by:</span>
-          <Select value={sort} onValueChange={(v) => { setSort(v); }}>
-            <SelectTrigger className="h-8 w-[110px] border-border bg-secondary/50 text-xs">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent className="bg-popover border-border">
-              <SelectItem value="desc">Newest</SelectItem>
-              <SelectItem value="asc">Oldest</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <span className="hidden sm:inline">Sort by:</span>
+            <Select value={sort} onValueChange={(v) => { setSort(v); }}>
+              <SelectTrigger className="h-8 w-[125px] border-border bg-secondary/50 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-popover border-border">
+                <SelectItem value="desc">Newest First</SelectItem>
+                <SelectItem value="asc">Oldest First</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
+
+        {/* Results count label */}
+        {(q || companyId || remote || tags.length > 0 || sources.length > 0) && (
+          <p className="text-sm">
+            <span className="font-semibold text-emerald-400">
+              {isLoading ? "..." : totalCount}
+            </span>{" "}
+            <span className="text-muted-foreground">
+              result{totalCount !== 1 ? "s" : ""} {searchLabel}
+            </span>
+          </p>
+        )}
       </div>
 
       {/* Loading Skeletons */}

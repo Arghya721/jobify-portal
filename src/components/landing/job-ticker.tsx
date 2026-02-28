@@ -1,36 +1,38 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { fetchCompanies } from "@/app/actions/companies";
 
 interface TickerItem {
+  id: number;
   company: string;
-  role: string;
   color: string;
 }
 
-const TICKER_ITEMS: TickerItem[] = [
-  { company: "Scale AI", role: "ML Engineer", color: "#f59e0b" },
-  { company: "OpenAI", role: "Research Sci.", color: "#22c55e" },
-  { company: "Airbnb", role: "Senior Backend", color: "#22c55e" },
-  { company: "Netflix", role: "SRE", color: "#ef4444" },
-  { company: "Vercel", role: "DX Engineer", color: "#22c55e" },
-  { company: "Linear", role: "Product Designer", color: "#a855f7" },
-  { company: "Stripe", role: "Fullstack Dev", color: "#ef4444" },
-  { company: "Figma", role: "Staff Engineer", color: "#22c55e" },
-  { company: "Notion", role: "iOS Engineer", color: "#f59e0b" },
-  { company: "Supabase", role: "DevRel", color: "#22c55e" },
+const COLORS = [
+  "#f59e0b",
+  "#22c55e",
+  "#ef4444",
+  "#a855f7",
+  "#3b82f6",
+  "#ec4899",
+  "#14b8a6",
+  "#f97316",
 ];
 
 function TickerPill({ item }: { item: TickerItem }) {
   return (
-    <div className="inline-flex shrink-0 items-center gap-3 rounded-full border border-border/80 bg-secondary/80 px-4 py-2.5 text-sm">
+    <Link
+      href={`/jobs?company_id=${item.id}`}
+      className="inline-flex shrink-0 items-center gap-3 rounded-full border border-border/80 bg-secondary/80 px-4 py-2.5 text-sm transition-colors hover:border-border hover:bg-secondary"
+    >
       <span
         className="h-2 w-2 rounded-full"
         style={{ backgroundColor: item.color }}
       />
       <span className="font-medium text-foreground">{item.company}</span>
-      <span className="text-muted-foreground">{item.role}</span>
-    </div>
+    </Link>
   );
 }
 
@@ -39,10 +41,32 @@ export function JobTicker() {
   const positionRef = useRef(0);
   const isPausedRef = useRef(false);
 
-  // Duplicate items for seamless infinite scroll
-  const items = [...TICKER_ITEMS, ...TICKER_ITEMS];
+  const [tickerItems, setTickerItems] = useState<TickerItem[]>([]);
 
   useEffect(() => {
+    async function loadCompanies() {
+      try {
+        const companies = await fetchCompanies();
+        // Get top 15 companies
+        const topCompanies = companies.slice(0, 15).map((c: any, i: number) => ({
+          id: c.id,
+          company: c.name,
+          color: COLORS[i % COLORS.length],
+        }));
+        setTickerItems(topCompanies);
+      } catch (err) {
+        console.error("Failed to load ticker companies", err);
+      }
+    }
+    loadCompanies();
+  }, []);
+
+  // Duplicate items for seamless infinite scroll
+  const items = tickerItems.length > 0 ? [...tickerItems, ...tickerItems] : [];
+
+  useEffect(() => {
+    if (items.length === 0) return;
+
     const el = scrollRef.current;
     if (!el) return;
 
@@ -62,7 +86,13 @@ export function JobTicker() {
 
     animationId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationId);
-  }, []);
+  }, [items.length]);
+
+  if (tickerItems.length === 0) {
+    return (
+      <section className="relative border-y border-border/60 bg-background py-5 h-[62px]" />
+    );
+  }
 
   return (
     <section className="relative border-y border-border/60 bg-background py-5">
