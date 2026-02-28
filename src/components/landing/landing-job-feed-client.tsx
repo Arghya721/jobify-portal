@@ -19,7 +19,7 @@ export function LandingJobFeedClient({ initialJobs }: { initialJobs: any[] }) {
   const [activeCategory, setActiveCategory] = useState("All Jobs");
   // fetchedNodes holds pre-rendered JSX from fetchJobsAction
   const [fetchedNodes, setFetchedNodes] = useState<any[] | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(initialJobs.length === 0);
 
   const fetchByCategory = useCallback(async (category: string) => {
     setIsLoading(true);
@@ -47,16 +47,20 @@ export function LandingJobFeedClient({ initialJobs }: { initialJobs: any[] }) {
   }, []);
 
   useEffect(() => {
-    if (activeCategory === "All Jobs") {
-      setFetchedNodes(null); // use initialJobs instead
+    // If we have initial jobs (e.g., from server), just use them
+    if (activeCategory === "All Jobs" && initialJobs.length > 0) {
+      setFetchedNodes(null);
       return;
     }
+    
+    // Otherwise, fetch jobs from the client (for both mounting and category changes)
     fetchByCategory(activeCategory);
-  }, [activeCategory, fetchByCategory]);
+  }, [activeCategory, initialJobs.length, fetchByCategory]);
 
   // Determine what to render
-  const useInitial = fetchedNodes === null;
-  const hasJobs = useInitial ? initialJobs.length > 0 : fetchedNodes.length > 0;
+  const useInitial = fetchedNodes === null && initialJobs.length > 0;
+  // If we are still loading on mount, treat it as not having jobs yet so skeletons show
+  const hasJobs = useInitial ? initialJobs.length > 0 : (fetchedNodes && fetchedNodes.length > 0);
 
   return (
     <>
