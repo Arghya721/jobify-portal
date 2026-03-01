@@ -67,7 +67,11 @@ export function JobFeed() {
     if (city) params.city = city;
     if (tags.length > 0) params.description_tags = tags;
     if (sources.length > 0) params.source = sources[0];
-    if (!showClosed) params.is_active = true;
+    if (!showClosed) {
+      params.is_active = true;
+    } else {
+      params.is_active = false;
+    }
     if (since && since !== "any") {
       const keyToDays: Record<string, number> = { "1d": 1, "7d": 7, "30d": 30 };
       const days = keyToDays[since];
