@@ -58,6 +58,7 @@ const SOURCES = [
   { label: "Greenhouse" },
   { label: "Lever"},
   { label: "Workday"},
+  { label: "Eightfold"},
 ];
 
 export function FilterSidebar() {
