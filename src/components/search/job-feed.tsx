@@ -84,6 +84,10 @@ export function JobFeed() {
       }
     }
 
+    // Save scroll position before the server action (Next.js production builds
+    // can reset scroll during server-action router re-renders).
+    const savedScrollY = isLoadMore ? window.scrollY : 0;
+
     const response = await fetchJobsAction(params);
     
     if (isLoadMore) {
@@ -91,6 +95,14 @@ export function JobFeed() {
       setTotalCount(prev => prev + response.count);
       pageRef.current = currentPage;
       setIsLoadMorePending(false);
+
+      // Restore scroll position after React commits the DOM update.
+      // Use double-rAF to fire after both the React commit and browser paint.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          window.scrollTo(0, savedScrollY);
+        });
+      });
     } else {
       setJobNodes(response.ui);
       setTotalCount(response.count);
