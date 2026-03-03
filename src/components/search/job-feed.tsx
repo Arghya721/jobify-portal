@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useTransition } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useQueryState, parseAsString, parseAsBoolean, parseAsArrayOf } from "nuqs";
 import {
   Select,
@@ -41,7 +41,7 @@ export function JobFeed() {
   const [jobNodes, setJobNodes] = useState<any[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [lastFetchCount, setLastFetchCount] = useState(0);
-  const [page, setPage] = useState(1);
+  const pageRef = useRef(1);
   const [isLoadMorePending, setIsLoadMorePending] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -49,14 +49,16 @@ export function JobFeed() {
   const fetchJobs = useCallback(async (isLoadMore = false) => {
     if (!isLoadMore) {
       setIsLoading(true);
-      setPage(1);
+      pageRef.current = 1;
     }
     
+    const currentPage = isLoadMore ? pageRef.current + 1 : 1;
+
     // Conditionally build params so we don't send Next.js "$undefined" string payloads
     const params: Record<string, any> = {
       sort,
       limit: PAGE_SIZE,
-      page: isLoadMore ? page + 1 : 1,
+      page: currentPage,
     };
 
     if (q) params.q = q;
@@ -87,7 +89,7 @@ export function JobFeed() {
     if (isLoadMore) {
       setJobNodes(prev => [...prev, ...response.ui]);
       setTotalCount(prev => prev + response.count);
-      setPage(p => p + 1);
+      pageRef.current = currentPage;
       setIsLoadMorePending(false);
     } else {
       setJobNodes(response.ui);
@@ -96,7 +98,7 @@ export function JobFeed() {
     }
     setLastFetchCount(response.count);
 
-  }, [q, companyId, remote, country, region, city, tags, sources, showClosed, sort, page, since]);
+  }, [q, companyId, remote, country, region, city, tags, sources, showClosed, sort, since]);
 
   // Initial fetch and on filter change
   useEffect(() => {
