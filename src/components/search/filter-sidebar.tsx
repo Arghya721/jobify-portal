@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
-import { useQueryState, parseAsArrayOf, parseAsString, parseAsBoolean } from "nuqs";
+import { useState, useCallback, useEffect, useRef } from "react";
+import { useQueryState, parseAsArrayOf, parseAsString, parseAsBoolean, parseAsInteger } from "nuqs";
 import { ChevronDown, Search, X, Check, ChevronsUpDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
@@ -71,6 +71,8 @@ export function FilterSidebar() {
       <TechStackFilter />
       <Separator className="my-3 bg-border/50" />
       <SourceFilter />
+      <Separator className="my-3 bg-border/50" />
+      <ExperienceFilter />
       <Separator className="my-3 bg-border/50" />
       <ActiveToggle />
     </aside>
@@ -569,6 +571,102 @@ function SourceFilter() {
             </span>
           </label>
         ))}
+      </CollapsibleContent>
+    </Collapsible>
+  );
+}
+
+/* ────────────────── Experience Filter ────────────────── */
+function ExperienceFilter() {
+  const [expMin, setExpMin] = useQueryState("exp_min", parseAsInteger);
+  const [expMax, setExpMax] = useQueryState("exp_max", parseAsInteger);
+  const [isOpen, setIsOpen] = useState(true);
+  const [localMin, setLocalMin] = useState<string>(expMin != null ? String(expMin) : "");
+  const [localMax, setLocalMax] = useState<string>(expMax != null ? String(expMax) : "");
+  const debounceMinRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const debounceMaxRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Sync external state changes back to local inputs
+  useEffect(() => {
+    setLocalMin(expMin != null ? String(expMin) : "");
+  }, [expMin]);
+  useEffect(() => {
+    setLocalMax(expMax != null ? String(expMax) : "");
+  }, [expMax]);
+
+  const handleMinChange = (value: string) => {
+    setLocalMin(value);
+    if (debounceMinRef.current) clearTimeout(debounceMinRef.current);
+    debounceMinRef.current = setTimeout(() => {
+      const num = parseInt(value, 10);
+      setExpMin(isNaN(num) || value === "" ? null : num);
+    }, 500);
+  };
+
+  const handleMaxChange = (value: string) => {
+    setLocalMax(value);
+    if (debounceMaxRef.current) clearTimeout(debounceMaxRef.current);
+    debounceMaxRef.current = setTimeout(() => {
+      const num = parseInt(value, 10);
+      setExpMax(isNaN(num) || value === "" ? null : num);
+    }, 500);
+  };
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <CollapsibleTrigger className="flex w-full items-center justify-between py-2 text-sm font-semibold text-foreground hover:text-white transition-colors">
+        <span className="flex items-center gap-2">
+          <span className="text-base">🎯</span> Experience
+        </span>
+        <ChevronDown
+          className={`h-4 w-4 text-muted-foreground transition-transform duration-200 ${
+            isOpen ? "rotate-0" : "-rotate-90"
+          }`}
+        />
+      </CollapsibleTrigger>
+      <CollapsibleContent className="pt-2 space-y-3">
+        <div className="flex items-center gap-2">
+          <div className="flex-1">
+            <label className="mb-1 block text-[11px] font-medium uppercase tracking-wider text-muted-foreground/70">
+              Min (yrs)
+            </label>
+            <input
+              type="number"
+              min="0"
+              max="50"
+              value={localMin}
+              onChange={(e) => handleMinChange(e.target.value)}
+              placeholder="0"
+              className="h-8 w-full rounded-md border border-border/50 bg-secondary/30 px-3 text-xs text-foreground placeholder:text-muted-foreground focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/20 transition-all"
+            />
+          </div>
+          <span className="mt-4 text-xs text-muted-foreground/50">–</span>
+          <div className="flex-1">
+            <label className="mb-1 block text-[11px] font-medium uppercase tracking-wider text-muted-foreground/70">
+              Max (yrs)
+            </label>
+            <input
+              type="number"
+              min="0"
+              max="50"
+              value={localMax}
+              onChange={(e) => handleMaxChange(e.target.value)}
+              placeholder="Any"
+              className="h-8 w-full rounded-md border border-border/50 bg-secondary/30 px-3 text-xs text-foreground placeholder:text-muted-foreground focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/20 transition-all"
+            />
+          </div>
+        </div>
+        {(expMin != null || expMax != null) && (
+          <button
+            onClick={() => {
+              setExpMin(null);
+              setExpMax(null);
+            }}
+            className="text-[11px] text-muted-foreground/60 hover:text-muted-foreground transition-colors"
+          >
+            Clear experience filter
+          </button>
+        )}
       </CollapsibleContent>
     </Collapsible>
   );

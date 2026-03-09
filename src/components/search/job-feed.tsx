@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
-import { useQueryState, parseAsString, parseAsBoolean, parseAsArrayOf } from "nuqs";
+import { useQueryState, parseAsString, parseAsBoolean, parseAsArrayOf, parseAsInteger } from "nuqs";
 import {
   Select,
   SelectContent,
@@ -37,6 +37,8 @@ export function JobFeed() {
   const [showClosed] = useQueryState("show_closed", parseAsBoolean.withDefault(false));
   const [sort, setSort] = useQueryState("sort", parseAsString.withDefault("desc"));
   const [since] = useQueryState("since", parseAsString.withDefault(""));
+  const [expMin] = useQueryState("exp_min", parseAsInteger);
+  const [expMax] = useQueryState("exp_max", parseAsInteger);
 
   const [jobNodes, setJobNodes] = useState<any[]>([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -84,6 +86,9 @@ export function JobFeed() {
       }
     }
 
+    if (expMin != null) params.experience_min = expMin;
+    if (expMax != null) params.experience_max = expMax;
+
     // Save scroll position before the server action (Next.js production builds
     // can reset scroll during server-action router re-renders).
     const savedScrollY = isLoadMore ? window.scrollY : 0;
@@ -110,12 +115,12 @@ export function JobFeed() {
     }
     setLastFetchCount(response.count);
 
-  }, [q, companyId, remote, country, region, city, tags, sources, showClosed, sort, since]);
+  }, [q, companyId, remote, country, region, city, tags, sources, showClosed, sort, since, expMin, expMax]);
 
   // Initial fetch and on filter change
   useEffect(() => {
     fetchJobs(false);
-  }, [q, companyId, remote, country, region, city, tags, sources, showClosed, sort, since]);
+  }, [q, companyId, remote, country, region, city, tags, sources, showClosed, sort, since, expMin, expMax]);
 
   const hasMore = lastFetchCount === PAGE_SIZE;
 

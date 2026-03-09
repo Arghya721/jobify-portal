@@ -41,7 +41,7 @@ export default function JobsPage() {
       <div className="flex gap-8">
         {/* Desktop Sidebar */}
         <div className="hidden w-[240px] shrink-0 lg:block">
-          <div className="sticky top-20">
+          <div className="sticky top-20 max-h-[calc(100dvh-5rem)] overflow-y-auto overscroll-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <Suspense fallback={null}>
               <FilterSidebar />
             </Suspense>
