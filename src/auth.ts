@@ -20,18 +20,33 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   callbacks: {
     async jwt({ token, account, user }) {
-      // 1. Initial Sign-In Event
+// 1. Initial Sign-In Event
       if (account && user) {
         console.log("NextAuth received Google Tokens. Exchanging with backend...");
         
         try {
+          const { headers: getHeaders } = await import("next/headers");
+          const reqHeaders = await getHeaders();
+          
+          // Forward Real Headers or use Mocks for Local Dev Testing
+          const userAgent = reqHeaders.get("user-agent") || "Mozilla/5.0 (Windows NT 10.0; Local Dev) Chrome/120";
+          const ipAddr = reqHeaders.get("x-forwarded-for") || "127.0.0.1";
+          const country = reqHeaders.get("x-appengine-country") || "US";
+          const city = reqHeaders.get("x-appengine-city") || "San Francisco";
+
           // ==========================================
           // INTEGRATING WITH REAL BACKEND
           // ==========================================
           const apiUrl = process.env.BACKEND_API_URL || "http://localhost:8080";
           const res = await fetch(`${apiUrl}/api/auth/google/login`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+              "Content-Type": "application/json",
+              "User-Agent": userAgent,
+              "X-Forwarded-For": ipAddr,
+              "X-Appengine-Country": country,
+              "X-Appengine-City": city
+            },
             body: JSON.stringify({ 
               idToken: account.id_token,
               email: user.email,
