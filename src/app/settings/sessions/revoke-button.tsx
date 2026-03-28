@@ -7,29 +7,23 @@ import { useRouter } from "next/navigation";
 
 interface RevokeButtonProps {
   tokenId: number;
-  accessToken: string;
-  apiUrl: string;
 }
 
-export function RevokeButton({ tokenId, accessToken, apiUrl }: RevokeButtonProps) {
+export function RevokeButton({ tokenId }: RevokeButtonProps) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleRevoke = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${apiUrl}/api/auth/sessions/${tokenId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const { revokeSessionAction } = await import("./actions");
+      const res = await revokeSessionAction(tokenId);
 
-      if (res.ok) {
-        // Refresh the page to update the server component's session list
+      if (res.success) {
+        // Revalidate handles server updates, this refreshes client layout gracefully
         router.refresh();
       } else {
-        alert("Failed to revoke session");
+        alert(res.message || "Failed to revoke session");
       }
     } catch (e) {
       console.error(e);

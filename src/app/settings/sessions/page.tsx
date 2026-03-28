@@ -4,6 +4,40 @@ import { MapPin, Monitor, Smartphone, Clock, ShieldX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RevokeButton } from "./revoke-button";
 
+function formatDeviceInfo(ua: string | undefined | null) {
+  if (!ua) return "Unknown Device";
+  
+  let browser = "Web Browser";
+  if (ua.includes("Firefox")) browser = "Firefox";
+  else if (ua.includes("Edg")) browser = "Edge";
+  else if (ua.includes("Chrome")) browser = "Chrome";
+  else if (ua.includes("Safari") && !ua.includes("Chrome")) browser = "Safari";
+  
+  let os = "Unknown OS";
+  let deviceModel = "";
+
+  // Attempt to extract specific hardware models (especially for Android)
+  // For example: Mozilla/5.0 (Linux; Android 13; SM-S918B Build/...) Extract -> SM-S918B
+  const androidModelMatch = ua.match(/\(Linux;.*?Android.*?; ([a-zA-Z0-9\- ]+)(?: Build.*?)?\)/);
+  if (androidModelMatch && androidModelMatch[1]) {
+    const extracted = androidModelMatch[1].trim();
+    // Chrome restricts User-Agents for privacy. 'K', 'wv' (WebView) means the model is intentionally hidden by the browser.
+    if (extracted !== "K" && extracted.toLowerCase() !== "wv" && extracted.length > 2) {
+      deviceModel = extracted;
+    }
+  }
+
+  if (ua.includes("Windows NT 10.0")) os = "Windows 10/11";
+  else if (ua.includes("Windows NT")) os = "Windows";
+  else if (ua.includes("Mac OS X")) os = "macOS";
+  else if (ua.includes("Android")) os = deviceModel ? `Android (${deviceModel})` : "Android";
+  else if (ua.includes("iPhone")) os = "iPhone";
+  else if (ua.includes("iPad")) os = "iPad";
+  else if (ua.includes("Linux")) os = "Linux";
+  
+  return deviceModel ? `${deviceModel} • ${browser}` : `${browser} on ${os}`;
+}
+
 export default async function SessionsPage() {
   const session = await auth();
   if (!session?.user) {
@@ -40,6 +74,8 @@ export default async function SessionsPage() {
           const createdAt = new Date(s.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
           const lastUsed = new Date(s.lastUsedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
+          const readableDevice = formatDeviceInfo(s.deviceInfo);
+
           return (
             <div key={s.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 rounded-xl border border-border/50 bg-card shadow-sm hover:shadow-md transition-all">
               <div className="flex items-center gap-4">
@@ -47,8 +83,8 @@ export default async function SessionsPage() {
                   <DeviceIcon className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg flex items-center gap-2">
-                    {s.deviceInfo || "Unknown Device"}
+                  <h3 className="font-semibold text-lg flex items-center gap-2" title={s.deviceInfo}>
+                    {readableDevice}
                   </h3>
                   
                   <div className="flex flex-col mt-1 text-sm text-muted-foreground gap-1">
@@ -68,7 +104,7 @@ export default async function SessionsPage() {
                 <span className="text-xs text-muted-foreground">
                   Last active: {lastUsed}
                 </span>
-                <RevokeButton tokenId={s.id} accessToken={(session as any).accessToken} apiUrl={apiUrl} />
+                <RevokeButton tokenId={s.id} />
               </div>
             </div>
           );

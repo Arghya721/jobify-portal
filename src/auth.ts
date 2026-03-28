@@ -44,8 +44,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               "Content-Type": "application/json",
               "User-Agent": userAgent,
               "X-Forwarded-For": ipAddr,
-              "X-Appengine-Country": country,
-              "X-Appengine-City": city
+              "X-Custom-Country": country,
+              "X-Custom-City": city
             },
             body: JSON.stringify({ 
               idToken: account.id_token,
