@@ -31,8 +31,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           // Forward Real Headers or use Mocks for Local Dev Testing
           const userAgent = reqHeaders.get("user-agent") || "Mozilla/5.0 (Windows NT 10.0; Local Dev) Chrome/120";
           const ipAddr = reqHeaders.get("x-forwarded-for") || "127.0.0.1";
-          const country = reqHeaders.get("x-appengine-country") || "US";
-          const city = reqHeaders.get("x-appengine-city") || "San Francisco";
+          const country = reqHeaders.get("x-appengine-country") || "";
+          const city = reqHeaders.get("x-appengine-city") || "";
 
           // ==========================================
           // INTEGRATING WITH REAL BACKEND
