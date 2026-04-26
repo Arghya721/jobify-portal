@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Bookmark, Edit2, Loader2, Plus, Trash2, X, Check } from "lucide-react";
+import { Bookmark, Edit2, Loader2, Plus, Trash2, X, Check, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -11,19 +11,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
 import {
   deleteSavedFilterAction,
@@ -48,7 +36,8 @@ function FilterTags({ filters }: { filters: Record<string, any> }) {
   const entries = Object.entries(filters).filter(
     ([, v]) => v !== null && v !== undefined && v !== "" && !(Array.isArray(v) && v.length === 0)
   );
-  if (entries.length === 0) return <span className="text-xs text-muted-foreground/50">No filters set</span>;
+  if (entries.length === 0)
+    return <span className="text-xs text-muted-foreground/50">No filters set</span>;
 
   return (
     <div className="flex flex-wrap gap-1.5 mt-2">
@@ -95,13 +84,18 @@ export function FilterManager({ initialFilters, maxFilters }: FilterManagerProps
     });
   };
 
-  // ── Delete ─────────────────────────────────────────────
-  const handleDelete = (id: number) => {
+  // ── Delete with confirm dialog ─────────────────────────
+  const [deleteTarget, setDeleteTarget] = useState<SavedFilter | null>(null);
+
+  const confirmDelete = () => {
+    if (!deleteTarget) return;
+    const id = deleteTarget.id;
     startTransition(async () => {
       const { error } = await deleteSavedFilterAction(id);
       if (!error) {
         setFilters((prev) => prev.filter((f) => f.id !== id));
       }
+      setDeleteTarget(null);
     });
   };
 
@@ -173,7 +167,10 @@ export function FilterManager({ initialFilters, maxFilters }: FilterManagerProps
                 <Input
                   value={editName}
                   onChange={(e) => { setEditName(e.target.value); setEditError(null); }}
-                  onKeyDown={(e) => { if (e.key === "Enter") handleUpdate(); if (e.key === "Escape") setEditId(null); }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") handleUpdate();
+                    if (e.key === "Escape") setEditId(null);
+                  }}
                   className="h-8 flex-1 border-border/60 bg-secondary/30 text-sm"
                   autoFocus
                 />
@@ -216,43 +213,50 @@ export function FilterManager({ initialFilters, maxFilters }: FilterManagerProps
                   >
                     <Edit2 className="h-3.5 w-3.5" />
                   </Button>
-
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="h-7 w-7 text-muted-foreground hover:text-destructive"
-                        title="Delete"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent className="border-border bg-background">
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Delete &ldquo;{f.name}&rdquo;?</AlertDialogTitle>
-                        <AlertDialogDescription className="text-muted-foreground">
-                          This will permanently remove the saved filter. This action cannot be undone.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel className="border-border">Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={() => handleDelete(f.id)}
-                          disabled={isPending}
-                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                        >
-                          {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Delete"}
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={() => setDeleteTarget(f)}
+                    className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                    title="Delete"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
                 </div>
               </div>
             )}
           </div>
         ))}
       </div>
+
+      {/* Delete confirmation dialog (uses existing Dialog component) */}
+      <Dialog open={!!deleteTarget} onOpenChange={(open) => { if (!open) setDeleteTarget(null); }}>
+        <DialogContent className="sm:max-w-sm border-border bg-background">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-base">
+              <AlertTriangle className="h-4 w-4 text-destructive" />
+              Delete filter?
+            </DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            &ldquo;<span className="font-medium text-foreground">{deleteTarget?.name}</span>&rdquo; will be
+            permanently removed. This cannot be undone.
+          </p>
+          <div className="flex justify-end gap-2 pt-1">
+            <Button variant="ghost" size="sm" onClick={() => setDeleteTarget(null)}>
+              Cancel
+            </Button>
+            <Button
+              size="sm"
+              onClick={confirmDelete}
+              disabled={isPending}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Delete"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
