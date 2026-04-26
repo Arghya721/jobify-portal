@@ -1,5 +1,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
+import { authFetch } from "@/lib/auth-fetch";
 import { MapPin, Monitor, Smartphone, Clock, ShieldX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RevokeButton } from "./revoke-button";
@@ -44,17 +46,18 @@ export default async function SessionsPage() {
     redirect("/login");
   }
 
-  // Fetch Active Sessions from Backend
-  const apiUrl = process.env.BACKEND_API_URL || "http://localhost:8080";
-  const res = await fetch(`${apiUrl}/api/auth/sessions`, {
-    headers: {
-      Authorization: `Bearer ${(session as any).accessToken}`,
-    },
-    // Prevent Next.js from aggressively caching this for real-time updates
-    cache: "no-store", 
-  });
-
-  const activeSessions = res.ok ? await res.json() : [];
+  // Fetch Active Sessions from Backend using authFetch so 401s are intercepted
+  let activeSessions = [];
+  try {
+    const res = await authFetch(`/api/auth/sessions`, {
+      cache: "no-store",
+    });
+    if (res.ok) {
+      activeSessions = await res.json();
+    }
+  } catch (e: any) {
+    if (isRedirectError(e)) throw e;
+  }
 
   return (
     <div className="mx-auto max-w-4xl py-12 px-6">

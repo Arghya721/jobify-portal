@@ -1,6 +1,7 @@
 "use server";
 
 import { authFetch } from "@/lib/auth-fetch";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 // ─────────────────── List ───────────────────
 export async function getSavedFiltersAction(redirectToLogoutOn401: boolean = true) {
@@ -13,7 +14,7 @@ export async function getSavedFiltersAction(redirectToLogoutOn401: boolean = tru
     const filters = await res.json();
     return { filters, error: null };
   } catch (e: any) {
-    if (e.message === "NEXT_REDIRECT") throw e;
+    if (isRedirectError(e)) throw e;
     // Returns empty on error or "Not authenticated"
     return { filters: [], error: e.message };
   }
@@ -36,7 +37,7 @@ export async function createSavedFilterAction(
     const filter = await res.json();
     return { filter, error: null };
   } catch (e: any) {
-    if (e.message === "NEXT_REDIRECT") throw e;
+    if (isRedirectError(e)) throw e;
     return { filter: null, error: e.message };
   }
 }
@@ -59,7 +60,7 @@ export async function updateSavedFilterAction(
     const filter = await res.json();
     return { filter, error: null };
   } catch (e: any) {
-    if (e.message === "NEXT_REDIRECT") throw e;
+    if (isRedirectError(e)) throw e;
     return { filter: null, error: e.message };
   }
 }
@@ -76,7 +77,7 @@ export async function deleteSavedFilterAction(id: number) {
     }
     return { error: null };
   } catch (e: any) {
-    if (e.message === "NEXT_REDIRECT") throw e;
+    if (isRedirectError(e)) throw e;
     return { error: e.message };
   }
 }
