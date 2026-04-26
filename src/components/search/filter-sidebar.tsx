@@ -70,6 +70,8 @@ interface FilterSidebarProps {
 export function FilterSidebar({ savedFilters = [], maxFilters = 3 }: FilterSidebarProps) {
   return (
     <aside className="space-y-1">
+      <SaveFilterButton savedFilters={savedFilters} maxFilters={maxFilters} />
+      <Separator className="my-3 bg-border/50" />
       <LocationFilter />
       <Separator className="my-3 bg-border/50" />
       <CompanyFilter />
@@ -81,8 +83,6 @@ export function FilterSidebar({ savedFilters = [], maxFilters = 3 }: FilterSideb
       <ExperienceFilter />
       <Separator className="my-3 bg-border/50" />
       <ActiveToggle />
-      <Separator className="my-3 bg-border/50" />
-      <SaveFilterButton savedFilters={savedFilters} maxFilters={maxFilters} />
     </aside>
   );
 }
