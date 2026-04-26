@@ -16,7 +16,8 @@ const MAX_FILTERS = 3;
 export default async function JobsPage() {
   // Fetch saved filters server-side so the access token never leaves the server.
   // Gracefully falls back to empty array for unauthenticated users.
-  const { filters: savedFilters } = await getSavedFiltersAction();
+  // We pass `false` so a revoked session (401) fails silently rather than redirecting to logout.
+  const { filters: savedFilters } = await getSavedFiltersAction(false);
 
   return (
     <div className="mx-auto max-w-screen-2xl px-4 py-8 md:px-6">

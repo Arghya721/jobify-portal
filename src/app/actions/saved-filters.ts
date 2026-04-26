@@ -1,35 +1,20 @@
 "use server";
 
-import { auth } from "@/auth";
-
-const API_BASE = process.env.BACKEND_API_URL || "http://localhost:8080";
-
-async function getAccessToken(): Promise<string | null> {
-  const session = await auth();
-  return (session as any)?.accessToken ?? null;
-}
-
-function authHeaders(token: string) {
-  return {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  };
-}
+import { authFetch } from "@/lib/auth-fetch";
 
 // ─────────────────── List ───────────────────
-export async function getSavedFiltersAction() {
-  const token = await getAccessToken();
-  if (!token) return { filters: [], error: "Not authenticated" };
-
+export async function getSavedFiltersAction(redirectToLogoutOn401: boolean = true) {
   try {
-    const res = await fetch(`${API_BASE}/api/v1/filters`, {
-      headers: authHeaders(token),
+    const res = await authFetch(`/api/v1/filters`, {
       cache: "no-store",
+      redirectToLogoutOn401,
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const filters = await res.json();
     return { filters, error: null };
   } catch (e: any) {
+    if (e.message === "NEXT_REDIRECT") throw e;
+    // Returns empty on error or "Not authenticated"
     return { filters: [], error: e.message };
   }
 }
@@ -39,13 +24,9 @@ export async function createSavedFilterAction(
   name: string,
   filters: Record<string, any>
 ) {
-  const token = await getAccessToken();
-  if (!token) return { filter: null, error: "Not authenticated" };
-
   try {
-    const res = await fetch(`${API_BASE}/api/v1/filters`, {
+    const res = await authFetch(`/api/v1/filters`, {
       method: "POST",
-      headers: authHeaders(token),
       body: JSON.stringify({ name, filters }),
     });
     if (!res.ok) {
@@ -55,6 +36,7 @@ export async function createSavedFilterAction(
     const filter = await res.json();
     return { filter, error: null };
   } catch (e: any) {
+    if (e.message === "NEXT_REDIRECT") throw e;
     return { filter: null, error: e.message };
   }
 }
@@ -65,13 +47,9 @@ export async function updateSavedFilterAction(
   name: string,
   filters: Record<string, any>
 ) {
-  const token = await getAccessToken();
-  if (!token) return { filter: null, error: "Not authenticated" };
-
   try {
-    const res = await fetch(`${API_BASE}/api/v1/filters/${id}`, {
+    const res = await authFetch(`/api/v1/filters/${id}`, {
       method: "PUT",
-      headers: authHeaders(token),
       body: JSON.stringify({ name, filters }),
     });
     if (!res.ok) {
@@ -81,19 +59,16 @@ export async function updateSavedFilterAction(
     const filter = await res.json();
     return { filter, error: null };
   } catch (e: any) {
+    if (e.message === "NEXT_REDIRECT") throw e;
     return { filter: null, error: e.message };
   }
 }
 
 // ─────────────────── Delete ───────────────────
 export async function deleteSavedFilterAction(id: number) {
-  const token = await getAccessToken();
-  if (!token) return { error: "Not authenticated" };
-
   try {
-    const res = await fetch(`${API_BASE}/api/v1/filters/${id}`, {
+    const res = await authFetch(`/api/v1/filters/${id}`, {
       method: "DELETE",
-      headers: authHeaders(token),
     });
     if (!res.ok) {
       const msg = await res.text();
@@ -101,6 +76,7 @@ export async function deleteSavedFilterAction(id: number) {
     }
     return { error: null };
   } catch (e: any) {
+    if (e.message === "NEXT_REDIRECT") throw e;
     return { error: e.message };
   }
 }
