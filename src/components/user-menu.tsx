@@ -10,7 +10,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { signOutAction } from "@/app/actions/auth";
 
 interface UserMenuProps {
   user: {
@@ -22,6 +21,15 @@ interface UserMenuProps {
 
 export function UserMenu({ user }: UserMenuProps) {
   const router = useRouter();
+
+  const handleLogout = () => {
+    // Hard navigation to the logout route handler.
+    // Using window.location.href (not router.push) forces a full page reload,
+    // which clears the Next.js client-side router cache so /login is never
+    // served stale and won't redirect back to /jobs.
+    window.location.href = "/api/auth/logout";
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -49,30 +57,19 @@ export function UserMenu({ user }: UserMenuProps) {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={() => router.push("/filters")}
-          className="cursor-pointer"
-        >
+        <DropdownMenuItem onClick={() => router.push("/filters")} className="cursor-pointer">
           Saved Filters
         </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => router.push("/settings/sessions")}
-          className="cursor-pointer"
-        >
+        <DropdownMenuItem onClick={() => router.push("/settings/sessions")} className="cursor-pointer">
           Active Sessions
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        {/* Use a form + server action — the only reliable sign-out in NextAuth v5 */}
-        <form action={signOutAction}>
-          <DropdownMenuItem asChild>
-            <button
-              type="submit"
-              className="w-full cursor-pointer text-destructive focus:text-destructive"
-            >
-              Log out
-            </button>
-          </DropdownMenuItem>
-        </form>
+        <DropdownMenuItem
+          onClick={handleLogout}
+          className="cursor-pointer text-destructive focus:text-destructive"
+        >
+          Log out
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
