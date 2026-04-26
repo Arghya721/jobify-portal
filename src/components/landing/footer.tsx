@@ -27,7 +27,7 @@ export function Footer() {
             <Github className="h-4 w-4" />
           </a>
           <span className="text-xs text-muted-foreground/80">
-            © 2024 Jobify Inc. Built for builders.
+            © 2026 Jobify Inc. Built for builders.
           </span>
         </div>
       </div>

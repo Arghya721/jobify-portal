@@ -1,6 +1,5 @@
 "use client";
 
-import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,6 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { signOutAction } from "@/app/actions/auth";
 
 interface UserMenuProps {
   user: {
@@ -27,9 +27,9 @@ export function UserMenu({ user }: UserMenuProps) {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-9 w-9 rounded-full p-0 overflow-hidden">
           {user.image ? (
-            <img 
-              src={user.image} 
-              alt={user.name || "User"} 
+            <img
+              src={user.image}
+              alt={user.name || "User"}
               className="h-full w-full object-cover"
             />
           ) : (
@@ -49,16 +49,30 @@ export function UserMenu({ user }: UserMenuProps) {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => router.push("/filters")} className="cursor-pointer">
+        <DropdownMenuItem
+          onClick={() => router.push("/filters")}
+          className="cursor-pointer"
+        >
           Saved Filters
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push("/settings/sessions")} className="cursor-pointer">
+        <DropdownMenuItem
+          onClick={() => router.push("/settings/sessions")}
+          className="cursor-pointer"
+        >
           Active Sessions
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/" })} className="cursor-pointer text-destructive focus:text-destructive">
-          Log out
-        </DropdownMenuItem>
+        {/* Use a form + server action — the only reliable sign-out in NextAuth v5 */}
+        <form action={signOutAction}>
+          <DropdownMenuItem asChild>
+            <button
+              type="submit"
+              className="w-full cursor-pointer text-destructive focus:text-destructive"
+            >
+              Log out
+            </button>
+          </DropdownMenuItem>
+        </form>
       </DropdownMenuContent>
     </DropdownMenu>
   );
