@@ -12,7 +12,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { FilterSidebar } from "./filter-sidebar";
 
-export function MobileFilterSheet() {
+interface MobileFilterSheetProps {
+  savedFilters?: { id: number; name: string; filters: Record<string, any>; created_at: string }[];
+  maxFilters?: number;
+}
+
+export function MobileFilterSheet({ savedFilters = [], maxFilters = 3 }: MobileFilterSheetProps) {
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -39,7 +44,7 @@ export function MobileFilterSheet() {
           </SheetClose>
         </SheetHeader>
         <div className="overflow-y-auto px-5 py-4">
-          <FilterSidebar />
+          <FilterSidebar savedFilters={savedFilters} maxFilters={maxFilters} />
         </div>
       </SheetContent>
     </Sheet>

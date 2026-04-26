@@ -49,6 +49,9 @@ export function UserMenu({ user }: UserMenuProps) {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => router.push("/filters")} className="cursor-pointer">
+          Saved Filters
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={() => router.push("/settings/sessions")} className="cursor-pointer">
           Active Sessions
         </DropdownMenuItem>

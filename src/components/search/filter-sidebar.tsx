@@ -7,6 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { SaveFilterButton } from "./save-filter-button";
 import {
   Command,
   CommandEmpty,
@@ -61,7 +62,12 @@ const SOURCES = [
   { label: "Eightfold"},
 ];
 
-export function FilterSidebar() {
+interface FilterSidebarProps {
+  savedFilters?: { id: number; name: string; filters: Record<string, any>; created_at: string }[];
+  maxFilters?: number;
+}
+
+export function FilterSidebar({ savedFilters = [], maxFilters = 3 }: FilterSidebarProps) {
   return (
     <aside className="space-y-1">
       <LocationFilter />
@@ -75,6 +81,8 @@ export function FilterSidebar() {
       <ExperienceFilter />
       <Separator className="my-3 bg-border/50" />
       <ActiveToggle />
+      <Separator className="my-3 bg-border/50" />
+      <SaveFilterButton savedFilters={savedFilters} maxFilters={maxFilters} />
     </aside>
   );
 }

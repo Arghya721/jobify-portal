@@ -4,13 +4,20 @@ import { QuickToggles } from "@/components/search/quick-toggles";
 import { FilterSidebar } from "@/components/search/filter-sidebar";
 import { MobileFilterSheet } from "@/components/search/mobile-filter-sheet";
 import { JobFeed } from "@/components/search/job-feed";
+import { getSavedFiltersAction } from "@/app/actions/saved-filters";
 
 export const metadata = {
   title: "Search Jobs — Jobify",
   description: "Find your next engineering role. Filter by tech stack, location, remote, and more.",
 };
 
-export default function JobsPage() {
+const MAX_FILTERS = 3;
+
+export default async function JobsPage() {
+  // Fetch saved filters server-side so the access token never leaves the server.
+  // Gracefully falls back to empty array for unauthenticated users.
+  const { filters: savedFilters } = await getSavedFiltersAction();
+
   return (
     <div className="mx-auto max-w-screen-2xl px-4 py-8 md:px-6">
       {/* Page Header */}
@@ -33,7 +40,7 @@ export default function JobsPage() {
           <QuickToggles />
         </Suspense>
         <Suspense fallback={null}>
-          <MobileFilterSheet />
+          <MobileFilterSheet savedFilters={savedFilters} maxFilters={MAX_FILTERS} />
         </Suspense>
       </div>
 
@@ -43,7 +50,7 @@ export default function JobsPage() {
         <div className="hidden w-[240px] shrink-0 lg:block">
           <div className="sticky top-20 max-h-[calc(100dvh-5rem)] overflow-y-auto overscroll-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <Suspense fallback={null}>
-              <FilterSidebar />
+              <FilterSidebar savedFilters={savedFilters} maxFilters={MAX_FILTERS} />
             </Suspense>
           </div>
         </div>
