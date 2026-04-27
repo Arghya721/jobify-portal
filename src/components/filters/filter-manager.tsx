@@ -2,8 +2,9 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Bookmark, Edit2, Loader2, Plus, Trash2, X, Check, AlertTriangle } from "lucide-react";
+import { Bookmark, Edit2, Loader2, Plus, Trash2, X, Check, AlertTriangle, Bell, BellOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -22,6 +23,7 @@ interface SavedFilter {
   id: number;
   name: string;
   filters: Record<string, any>;
+  is_notification_enabled: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -74,12 +76,33 @@ export function FilterManager({ initialFilters, maxFilters }: FilterManagerProps
     if (!editName.trim()) { setEditError("Name is required."); return; }
     const target = filters.find((f) => f.id === editId)!;
     startTransition(async () => {
-      const { filter, error } = await updateSavedFilterAction(editId!, editName.trim(), target.filters);
+      const { filter, error } = await updateSavedFilterAction(editId!, {
+        name: editName.trim(),
+        filters: target.filters
+      });
       if (error) {
         setEditError(error);
       } else if (filter) {
         setFilters((prev) => prev.map((f) => (f.id === editId ? filter : f)));
         setEditId(null);
+      }
+    });
+  };
+
+  const handleToggleNotification = (f: SavedFilter) => {
+    const newValue = !f.is_notification_enabled;
+    // Optimistic update
+    setFilters((prev) => prev.map((item) => (item.id === f.id ? { ...item, is_notification_enabled: newValue } : item)));
+    
+    startTransition(async () => {
+      const { filter, error } = await updateSavedFilterAction(f.id, {
+        is_notification_enabled: newValue
+      });
+      if (error) {
+        // Revert on error
+        setFilters((prev) => prev.map((item) => (item.id === f.id ? { ...item, is_notification_enabled: !newValue } : item)));
+      } else if (filter) {
+        setFilters((prev) => prev.map((item) => (item.id === f.id ? filter : item)));
       }
     });
   };
@@ -204,6 +227,21 @@ export function FilterManager({ initialFilters, maxFilters }: FilterManagerProps
                   </p>
                 </div>
                 <div className="flex shrink-0 items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex items-center gap-2 mr-3 px-2 border-r border-border/50">
+                    <Switch
+                      checked={f.is_notification_enabled}
+                      onCheckedChange={() => handleToggleNotification(f)}
+                      disabled={isPending}
+                      className="data-[state=checked]:bg-indigo-500"
+                    />
+                    <span className="text-[11px] font-medium text-muted-foreground flex items-center gap-1">
+                      {f.is_notification_enabled ? (
+                        <><Bell className="h-3 w-3 text-indigo-400" /> On</>
+                      ) : (
+                        <><BellOff className="h-3 w-3" /> Off</>
+                      )}
+                    </span>
+                  </div>
                   <Button
                     size="icon"
                     variant="ghost"

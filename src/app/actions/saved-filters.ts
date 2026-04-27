@@ -45,13 +45,16 @@ export async function createSavedFilterAction(
 // ─────────────────── Update ───────────────────
 export async function updateSavedFilterAction(
   id: number,
-  name: string,
-  filters: Record<string, any>
+  data: {
+    name?: string;
+    filters?: Record<string, any>;
+    is_notification_enabled?: boolean;
+  }
 ) {
   try {
     const res = await authFetch(`/api/v1/filters/${id}`, {
       method: "PUT",
-      body: JSON.stringify({ name, filters }),
+      body: JSON.stringify(data),
     });
     if (!res.ok) {
       const msg = await res.text();
