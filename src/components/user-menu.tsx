@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -59,6 +60,10 @@ export function UserMenu({ user }: UserMenuProps) {
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => router.push("/filters")} className="cursor-pointer">
           Saved Filters
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push("/settings/notifications")} className="cursor-pointer">
+          <Bell className="mr-2 h-3.5 w-3.5" />
+          Notification Settings
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => router.push("/settings/sessions")} className="cursor-pointer">
           Active Sessions
