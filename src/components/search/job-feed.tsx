@@ -44,6 +44,7 @@ export function JobFeed() {
   const [totalCount, setTotalCount] = useState(0);
   const [lastFetchCount, setLastFetchCount] = useState(0);
   const pageRef = useRef(1);
+  const loaderRef = useRef<HTMLDivElement>(null);
   const [isLoadMorePending, setIsLoadMorePending] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -123,6 +124,29 @@ export function JobFeed() {
   }, [q, companyId, remote, country, region, city, tags, sources, showClosed, sort, since, expMin, expMax]);
 
   const hasMore = lastFetchCount === PAGE_SIZE;
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !isLoading && !isLoadMorePending) {
+          setIsLoadMorePending(true);
+          fetchJobs(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const currentLoader = loaderRef.current;
+    if (currentLoader) {
+      observer.observe(currentLoader);
+    }
+
+    return () => {
+      if (currentLoader) {
+        observer.unobserve(currentLoader);
+      }
+    };
+  }, [hasMore, isLoading, isLoadMorePending, fetchJobs]);
 
   const searchLabel = q
     ? `for '${q}'`
@@ -236,18 +260,12 @@ export function JobFeed() {
         )}
       </div>
 
-      {/* Load More */}
+      {/* Infinite Scroll Loader */}
       {hasMore && !isLoading && (
-        <div className="flex justify-center pt-4">
-          <button
-            onClick={() => {
-              setIsLoadMorePending(true);
-              fetchJobs(true);
-            }}
-            className="rounded-xl border border-border/60 bg-secondary/30 px-8 py-3 text-sm font-medium text-muted-foreground transition-all hover:border-border hover:bg-secondary/50 hover:text-foreground"
-          >
-            {isLoadMorePending ? "Loading..." : "Load More Results"}
-          </button>
+        <div ref={loaderRef} className="flex justify-center py-8">
+          {isLoadMorePending && (
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-muted-foreground border-t-foreground" />
+          )}
         </div>
       )}
     </div>
