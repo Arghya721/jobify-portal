@@ -131,10 +131,6 @@ export function JobFeed() {
     if (expMin != null) params.experience_min = expMin;
     if (expMax != null) params.experience_max = expMax;
 
-    // Save scroll position before the server action (Next.js production builds
-    // can reset scroll during server-action router re-renders).
-    const savedScrollY = isLoadMore ? window.scrollY : 0;
-
     const response = await fetchJobsAction(params);
     
     if (isLoadMore) {
@@ -154,14 +150,6 @@ export function JobFeed() {
       pageRef.current = currentPage;
       setIsLoadMorePending(false);
       isFetchingMore.current = false;
-
-      // Restore scroll position after React commits the DOM update.
-      // Use double-rAF to fire after both the React commit and browser paint.
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          window.scrollTo(0, savedScrollY);
-        });
-      });
     } else {
       // Reset seen IDs for fresh loads
       seenJobIds.current = new Set(response.jobIds || []);
