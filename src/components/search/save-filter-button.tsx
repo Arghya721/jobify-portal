@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect as import_react_useEffect } from "react";
 import {
   useQueryStates,
   parseAsString,
@@ -76,6 +76,10 @@ export function SaveFilterButton({
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Prevent hydration mismatches
+  import_react_useEffect(() => setIsMounted(true), []);
 
   // ── Single source of truth for all query params ────────────────────
   const [currentParams, setCurrentParams] = useQueryStates(FILTER_PARSERS);
@@ -92,7 +96,9 @@ export function SaveFilterButton({
       return true;
     })
   );
-  const hasActiveFilters = Object.keys(activeFilters).length > 0;
+  
+  // Prevent hydration mismatch by using default state before mount
+  const hasActiveFilters = isMounted ? Object.keys(activeFilters).length > 0 : false;
 
   // ── Apply a saved filter (atomic update — no racing) ────────────────
   const applyFilter = (saved: Record<string, any>) => {

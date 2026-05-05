@@ -12,6 +12,17 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchJobsAction } from "@/app/actions/jobs";
 import { cn } from "@/lib/utils";
+import { SKELETON_COUNT, SkeletonJobCard } from "./skeleton-job-card";
+
+// Global flag to detect initial hydration pass.
+// Fast Refresh re-evaluates the module, resetting this to true,
+// preventing hydration mismatches in development.
+let isInitialHydration = true;
+if (typeof window !== "undefined") {
+  setTimeout(() => {
+    isInitialHydration = false;
+  }, 0);
+}
 
 interface FeedCache {
   nodes: ReactNode[];
@@ -53,25 +64,31 @@ export function JobFeed() {
   const [expMin] = useQueryState("exp_min", parseAsInteger);
   const [expMax] = useQueryState("exp_max", parseAsInteger);
 
-  const [jobNodes, setJobNodes] = useState<any[]>([]);
-  const [totalCount, setTotalCount] = useState(0);
-  const [lastFetchCount, setLastFetchCount] = useState(0);
-  const pageRef = useRef(1);
-  const loaderRef = useRef<HTMLDivElement>(null);
-  const [isLoadMorePending, setIsLoadMorePending] = useState(false);
-  const isFetchingMore = useRef(false);
-  const seenJobIds = useRef<Set<number>>(new Set());
-  const [isLoading, setIsLoading] = useState(true);
-
-  const scrollYRef = useRef(0);
-  const isFirstRun = useRef(true);
-  const isRestoringFromCache = useRef(false);
-  const stateRef = useRef<FeedCache>({ nodes: [], page: 1, scrollY: 0, filterKey: "", totalCount: 0, lastFetchCount: 0, seenIds: [] });
-
   const filterKey = useMemo(
     () => [q, companyId, String(remote), country, region, city, JSON.stringify(tags), JSON.stringify(sources), String(showClosed), sort, since, String(expMin), String(expMax)].join("|"),
     [q, companyId, remote, country, region, city, tags, sources, showClosed, sort, since, expMin, expMax]
   );
+
+  const isCacheValid = !isInitialHydration && feedCache && feedCache.filterKey === filterKey;
+
+  const [jobNodes, setJobNodes] = useState<any[]>(() => isCacheValid ? feedCache!.nodes : []);
+  const [totalCount, setTotalCount] = useState(() => isCacheValid ? feedCache!.totalCount : 0);
+  const [lastFetchCount, setLastFetchCount] = useState(() => isCacheValid ? feedCache!.lastFetchCount : 0);
+  const pageRef = useRef(isCacheValid ? feedCache!.page : 1);
+  const restoredCount = useRef(isCacheValid ? feedCache!.nodes.length : 0);
+  const loaderRef = useRef<HTMLDivElement>(null);
+  const [isLoadMorePending, setIsLoadMorePending] = useState(false);
+  const isFetchingMore = useRef(false);
+  const seenJobIds = useRef<Set<number>>(new Set(isCacheValid ? feedCache!.seenIds : []));
+  const [isLoading, setIsLoading] = useState(!isCacheValid);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => setIsMounted(true), []);
+
+  const scrollYRef = useRef(0);
+  const isFirstRun = useRef(true);
+  const prevFilterKey = useRef(filterKey);
+  const stateRef = useRef<FeedCache>({ nodes: [], page: 1, scrollY: 0, filterKey: "", totalCount: 0, lastFetchCount: 0, seenIds: [] });
 
   // Fetch jobs from server action
   const fetchJobs = useCallback(async (isLoadMore = false) => {
@@ -157,36 +174,29 @@ export function JobFeed() {
 
   }, [q, companyId, remote, country, region, city, tags, sources, showClosed, sort, since, expMin, expMax]);
 
-  // Initial fetch and on filter change — restore from cache on first mount if filters match
+  // Fetch jobs on filter change (if not restored from cache)
   useEffect(() => {
     if (isFirstRun.current) {
       isFirstRun.current = false;
-      if (feedCache && feedCache.filterKey === filterKey) {
-        isRestoringFromCache.current = true;
-        setJobNodes(feedCache.nodes as any[]);
-        setTotalCount(feedCache.totalCount);
-        setLastFetchCount(feedCache.lastFetchCount);
-        pageRef.current = feedCache.page;
-        seenJobIds.current = new Set(feedCache.seenIds || []);
-        setIsLoading(false);
-        const savedScrollY = feedCache.scrollY;
-        requestAnimationFrame(() => requestAnimationFrame(() => {
-          window.scrollTo(0, savedScrollY);
-          isRestoringFromCache.current = false;
-        }));
-        return;
-      }
+      if (isCacheValid) return; // Already restored synchronously
+      fetchJobs(false);
+      return;
     }
-    fetchJobs(false);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [q, companyId, remote, country, region, city, tags, sources, showClosed, sort, since, expMin, expMax]);
+    
+    // On subsequent runs, ONLY fetch if the filter actually changed
+    // This prevents double-fetching when nuqs syncs URL params on mount
+    if (prevFilterKey.current !== filterKey) {
+      prevFilterKey.current = filterKey;
+      fetchJobs(false);
+    }
+  }, [filterKey, fetchJobs, isCacheValid]);
 
   const hasMore = lastFetchCount === PAGE_SIZE;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasMore && !isLoading && !isFetchingMore.current && !isRestoringFromCache.current) {
+        if (entries[0].isIntersecting && hasMore && !isLoading && !isFetchingMore.current) {
           isFetchingMore.current = true;
           setIsLoadMorePending(true);
           fetchJobs(true);
@@ -237,8 +247,10 @@ export function JobFeed() {
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap gap-2">
             {CATEGORIES.map((cat) => {
-              // We consider "All Jobs" active when there's no q, or when q equals "All Jobs".
-              const isActive = cat === "All Jobs" ? !q || q === "All Jobs" : q.toLowerCase() === cat.toLowerCase();
+              // Prevent hydration mismatches by defaulting to 'All Jobs' on first render
+              const isActive = isMounted 
+                ? (cat === "All Jobs" ? !q || q === "All Jobs" : q?.toLowerCase() === cat.toLowerCase())
+                : (cat === "All Jobs");
               return (
                 <button
                   key={cat}
@@ -316,9 +328,18 @@ export function JobFeed() {
       )}
 
       {/* Job List */}
+      {restoredCount.current > 0 && (
+        <style>{`
+          .job-feed-list > :nth-child(-n+${restoredCount.current}) {
+            animation: none !important;
+            opacity: 1 !important;
+            transform: none !important;
+          }
+        `}</style>
+      )}
       <div 
         className={cn(
-          "space-y-3 transition-opacity duration-300", 
+          "space-y-3 transition-opacity duration-300 job-feed-list", 
           isLoading && jobNodes.length > 0 && "opacity-40 blur-[2px] pointer-events-none"
         )}
       >
