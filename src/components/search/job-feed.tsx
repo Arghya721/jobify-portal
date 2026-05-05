@@ -12,7 +12,6 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchJobsAction } from "@/app/actions/jobs";
 import { cn } from "@/lib/utils";
-import { SKELETON_COUNT, SkeletonJobCard } from "./skeleton-job-card";
 
 // Global flag to detect initial hydration pass.
 // Fast Refresh re-evaluates the module, resetting this to true,
