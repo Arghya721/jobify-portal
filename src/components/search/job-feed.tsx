@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, useMemo, type ReactNode } from "react";
 import { useQueryState, parseAsString, parseAsBoolean, parseAsArrayOf, parseAsInteger } from "nuqs";
 import {
   Select,
@@ -12,6 +12,18 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchJobsAction } from "@/app/actions/jobs";
 import { cn } from "@/lib/utils";
+
+interface FeedCache {
+  nodes: ReactNode[];
+  page: number;
+  scrollY: number;
+  filterKey: string;
+  totalCount: number;
+  lastFetchCount: number;
+}
+
+// Module-level — survives SPA navigations within the same session
+let feedCache: FeedCache | null = null;
 
 const PAGE_SIZE = 10;
 
@@ -47,6 +59,16 @@ export function JobFeed() {
   const loaderRef = useRef<HTMLDivElement>(null);
   const [isLoadMorePending, setIsLoadMorePending] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  const scrollYRef = useRef(0);
+  const isFirstRun = useRef(true);
+  const isRestoringFromCache = useRef(false);
+  const stateRef = useRef<FeedCache>({ nodes: [], page: 1, scrollY: 0, filterKey: "", totalCount: 0, lastFetchCount: 0 });
+
+  const filterKey = useMemo(
+    () => [q, companyId, String(remote), country, region, city, JSON.stringify(tags), JSON.stringify(sources), String(showClosed), sort, since, String(expMin), String(expMax)].join("|"),
+    [q, companyId, remote, country, region, city, tags, sources, showClosed, sort, since, expMin, expMax]
+  );
 
   // Fetch jobs from server action
   const fetchJobs = useCallback(async (isLoadMore = false) => {
@@ -118,9 +140,27 @@ export function JobFeed() {
 
   }, [q, companyId, remote, country, region, city, tags, sources, showClosed, sort, since, expMin, expMax]);
 
-  // Initial fetch and on filter change
+  // Initial fetch and on filter change — restore from cache on first mount if filters match
   useEffect(() => {
+    if (isFirstRun.current) {
+      isFirstRun.current = false;
+      if (feedCache && feedCache.filterKey === filterKey) {
+        isRestoringFromCache.current = true;
+        setJobNodes(feedCache.nodes as any[]);
+        setTotalCount(feedCache.totalCount);
+        setLastFetchCount(feedCache.lastFetchCount);
+        pageRef.current = feedCache.page;
+        setIsLoading(false);
+        const savedScrollY = feedCache.scrollY;
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          window.scrollTo(0, savedScrollY);
+          isRestoringFromCache.current = false;
+        }));
+        return;
+      }
+    }
     fetchJobs(false);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [q, companyId, remote, country, region, city, tags, sources, showClosed, sort, since, expMin, expMax]);
 
   const hasMore = lastFetchCount === PAGE_SIZE;
@@ -128,7 +168,7 @@ export function JobFeed() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasMore && !isLoading && !isLoadMorePending) {
+        if (entries[0].isIntersecting && hasMore && !isLoading && !isLoadMorePending && !isRestoringFromCache.current) {
           setIsLoadMorePending(true);
           fetchJobs(true);
         }
@@ -147,6 +187,23 @@ export function JobFeed() {
       }
     };
   }, [hasMore, isLoading, isLoadMorePending, fetchJobs]);
+
+  // Track scroll position so we can restore it after back-navigation
+  useEffect(() => {
+    const onScroll = () => { scrollYRef.current = window.scrollY; };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Keep stateRef current after every render
+  useEffect(() => {
+    stateRef.current = { nodes: jobNodes, page: pageRef.current, scrollY: scrollYRef.current, filterKey, totalCount, lastFetchCount };
+  });
+
+  // Save to module cache on unmount (back-navigation will restore it)
+  useEffect(() => {
+    return () => { feedCache = { ...stateRef.current }; };
+  }, []);
 
   const searchLabel = q
     ? `for '${q}'`

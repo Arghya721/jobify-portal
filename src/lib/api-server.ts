@@ -16,7 +16,7 @@ export async function fetchJobs(params: any = {}) {
   }
 }
 
-export async function fetchJobById(id: number) {
+export async function fetchJobById(id: number | string) {
   try {
     const job = await getJobByIdGrpc(id);
     return job;

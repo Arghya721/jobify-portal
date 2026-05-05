@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Navbar } from "@/components/navbar";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ViewTransitionHandler } from "@/components/ui/transition-anchor";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -39,6 +40,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <NuqsAdapter>
+            <ViewTransitionHandler />
             <Navbar />
             <main>{children}</main>
           </NuqsAdapter>

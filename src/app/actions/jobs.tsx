@@ -24,6 +24,6 @@ export async function fetchJobsAction(params: any) {
   };
 }
 
-export async function fetchJobByIdAction(id: number) {
+export async function fetchJobByIdAction(id: number | string) {
   return fetchJobById(id);
 }

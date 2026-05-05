@@ -69,7 +69,7 @@ const promisifyGrpcCall = (client: any, method: string, request: any = {}) => {
 
 // Job Service
 export const getJobsGrpc = (request: any = {}) => promisifyGrpcCall(jobClient, 'GetJobs', request);
-export const getJobByIdGrpc = (id: number) => promisifyGrpcCall(jobClient, 'GetJobById', { id });
+export const getJobByIdGrpc = (id: number | string) => promisifyGrpcCall(jobClient, 'GetJobById', { id });
 
 // Location Services
 export const getCitiesGrpc = (id: number) => promisifyGrpcCall(cityClient, 'GetCities', { id });

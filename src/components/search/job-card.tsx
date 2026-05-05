@@ -14,7 +14,7 @@ export function JobCard({ job, index }: JobCardProps) {
   const employmentType = isRemote ? "Remote" : "On-site";
   // Use actual posted date from the API response
   const postedAtStr = job.details?.job_posted_at || job.created_at || "";
-  
+
   // Safe array fallback
   const tags: string[] = job.matched_tags || [];
 
@@ -24,15 +24,21 @@ export function JobCard({ job, index }: JobCardProps) {
   return (
     <div
       className="job-card-enter group relative rounded-xl border border-border/50 bg-card/50 p-5 transition-all duration-200 hover:border-border hover:bg-card/80 hover:shadow-lg hover:shadow-black/20"
-      style={{ animationDelay: `${index * 60}ms` }}
+      style={{ animationDelay: `${index * 60}ms`, viewTransitionName: `job-card-${job.id}` as any }}
     >
-      <div className="flex items-start gap-4">
+      <a
+        href={`/jobs/${job.id}`}
+        data-view-transition="true"
+        className="absolute inset-0 z-10 rounded-xl"
+        aria-label={`View details for ${job.title}`}
+      />
+      <div className="pointer-events-none relative z-20 flex items-start gap-4">
         {/* Company Icon */}
         <div className="flex h-11 w-11 shrink-0 overflow-hidden items-center justify-center rounded-lg bg-secondary/80 text-muted-foreground relative">
           {logoUrl ? (
-            <img 
-              src={logoUrl} 
-              alt={`${companyName} logo`} 
+            <img
+              src={logoUrl}
+              alt={`${companyName} logo`}
               className="h-full w-full object-cover p-1"
             />
           ) : (
@@ -98,7 +104,7 @@ export function JobCard({ job, index }: JobCardProps) {
             href={job.job_url || "#"}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-1 inline-flex items-center gap-1.5 rounded-lg border border-border/60 bg-secondary/30 px-3.5 py-1.5 text-xs font-medium text-muted-foreground transition-all hover:border-border hover:bg-secondary/60 hover:text-foreground"
+            className="pointer-events-auto relative z-30 mt-1 inline-flex items-center gap-1.5 rounded-lg border border-border/60 bg-secondary/30 px-3.5 py-1.5 text-xs font-medium text-muted-foreground transition-all hover:border-border hover:bg-secondary/60 hover:text-foreground"
           >
             View <ExternalLink className="h-3 w-3" />
           </a>
@@ -106,7 +112,7 @@ export function JobCard({ job, index }: JobCardProps) {
       </div>
 
       {/* Mobile salary + view */}
-      <div className="mt-3 flex items-center justify-between sm:hidden">
+      <div className="pointer-events-none relative z-20 mt-3 flex items-center justify-between sm:hidden">
         <div>
           {experienceRaw && (
             <span className="text-sm font-semibold text-foreground">
@@ -121,7 +127,7 @@ export function JobCard({ job, index }: JobCardProps) {
           href={job.job_url || "#"}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 rounded-lg border border-border/60 bg-secondary/30 px-3 py-1.5 text-xs font-medium text-muted-foreground transition-all hover:border-border hover:text-foreground"
+          className="pointer-events-auto relative z-30 inline-flex items-center gap-1.5 rounded-lg border border-border/60 bg-secondary/30 px-3 py-1.5 text-xs font-medium text-muted-foreground transition-all hover:border-border hover:text-foreground"
         >
           View <ExternalLink className="h-3 w-3" />
         </a>
