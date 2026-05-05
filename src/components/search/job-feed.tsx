@@ -20,6 +20,7 @@ interface FeedCache {
   filterKey: string;
   totalCount: number;
   lastFetchCount: number;
+  seenIds: number[];
 }
 
 // Module-level — survives SPA navigations within the same session
@@ -58,12 +59,14 @@ export function JobFeed() {
   const pageRef = useRef(1);
   const loaderRef = useRef<HTMLDivElement>(null);
   const [isLoadMorePending, setIsLoadMorePending] = useState(false);
+  const isFetchingMore = useRef(false);
+  const seenJobIds = useRef<Set<number>>(new Set());
   const [isLoading, setIsLoading] = useState(true);
 
   const scrollYRef = useRef(0);
   const isFirstRun = useRef(true);
   const isRestoringFromCache = useRef(false);
-  const stateRef = useRef<FeedCache>({ nodes: [], page: 1, scrollY: 0, filterKey: "", totalCount: 0, lastFetchCount: 0 });
+  const stateRef = useRef<FeedCache>({ nodes: [], page: 1, scrollY: 0, filterKey: "", totalCount: 0, lastFetchCount: 0, seenIds: [] });
 
   const filterKey = useMemo(
     () => [q, companyId, String(remote), country, region, city, JSON.stringify(tags), JSON.stringify(sources), String(showClosed), sort, since, String(expMin), String(expMax)].join("|"),
@@ -119,10 +122,22 @@ export function JobFeed() {
     const response = await fetchJobsAction(params);
     
     if (isLoadMore) {
-      setJobNodes(prev => [...prev, ...response.ui]);
-      setTotalCount(prev => prev + response.count);
+      // Filter out any jobs we've already rendered to prevent duplicate
+      // viewTransitionName values (which cause InvalidStateError).
+      const newUi: any[] = [];
+      const newIds: number[] = response.jobIds || [];
+      for (let i = 0; i < response.ui.length; i++) {
+        const id = newIds[i];
+        if (id != null && seenJobIds.current.has(id)) continue;
+        if (id != null) seenJobIds.current.add(id);
+        newUi.push(response.ui[i]);
+      }
+
+      setJobNodes(prev => [...prev, ...newUi]);
+      setTotalCount(prev => prev + newUi.length);
       pageRef.current = currentPage;
       setIsLoadMorePending(false);
+      isFetchingMore.current = false;
 
       // Restore scroll position after React commits the DOM update.
       // Use double-rAF to fire after both the React commit and browser paint.
@@ -132,6 +147,8 @@ export function JobFeed() {
         });
       });
     } else {
+      // Reset seen IDs for fresh loads
+      seenJobIds.current = new Set(response.jobIds || []);
       setJobNodes(response.ui);
       setTotalCount(response.count);
       setIsLoading(false);
@@ -150,6 +167,7 @@ export function JobFeed() {
         setTotalCount(feedCache.totalCount);
         setLastFetchCount(feedCache.lastFetchCount);
         pageRef.current = feedCache.page;
+        seenJobIds.current = new Set(feedCache.seenIds || []);
         setIsLoading(false);
         const savedScrollY = feedCache.scrollY;
         requestAnimationFrame(() => requestAnimationFrame(() => {
@@ -168,7 +186,8 @@ export function JobFeed() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasMore && !isLoading && !isLoadMorePending && !isRestoringFromCache.current) {
+        if (entries[0].isIntersecting && hasMore && !isLoading && !isFetchingMore.current && !isRestoringFromCache.current) {
+          isFetchingMore.current = true;
           setIsLoadMorePending(true);
           fetchJobs(true);
         }
@@ -186,7 +205,7 @@ export function JobFeed() {
         observer.unobserve(currentLoader);
       }
     };
-  }, [hasMore, isLoading, isLoadMorePending, fetchJobs]);
+  }, [hasMore, isLoading, fetchJobs]);
 
   // Track scroll position so we can restore it after back-navigation
   useEffect(() => {
@@ -197,7 +216,7 @@ export function JobFeed() {
 
   // Keep stateRef current after every render
   useEffect(() => {
-    stateRef.current = { nodes: jobNodes, page: pageRef.current, scrollY: scrollYRef.current, filterKey, totalCount, lastFetchCount };
+    stateRef.current = { nodes: jobNodes, page: pageRef.current, scrollY: scrollYRef.current, filterKey, totalCount, lastFetchCount, seenIds: Array.from(seenJobIds.current) };
   });
 
   // Save to module cache on unmount (back-navigation will restore it)

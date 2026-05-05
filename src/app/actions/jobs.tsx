@@ -21,6 +21,7 @@ export async function fetchJobsAction(params: any) {
   return {
     ui,
     count: data.length,
+    jobIds: data.map((job: any) => job.id),
   };
 }
 

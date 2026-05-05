@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useTransition } from "react";
+import { useEffect, useTransition, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { viewTransitionResolver } from "@/lib/view-transition";
 
@@ -16,6 +16,7 @@ export function ViewTransitionHandler() {
   const router = useRouter();
   const pathname = usePathname();
   const [, startTransition] = useTransition();
+  const activeTransition = useRef<ViewTransition | null>(null);
 
   // Resolve any pending transition (from link clicks or BackButton) when pathname changes
   useEffect(() => {
@@ -40,27 +41,54 @@ export function ViewTransitionHandler() {
 
       const targetPathname = href.split("?")[0].split("#")[0];
 
-      // If going to the same pathname or no VT support
-      if (!document.startViewTransition || pathname === targetPathname) {
+      const doNavigate = () => {
         startTransition(() => {
           router.push(href);
         });
+      };
+
+      // If going to the same pathname or no VT support
+      if (!document.startViewTransition || pathname === targetPathname) {
+        doNavigate();
         return;
       }
 
-      try {
-                document.startViewTransition(() => {
+      // If there's already an active transition, skip it and resolve any
+      // stale promise so the browser can clean up before we start a new one.
+      if (activeTransition.current) {
+        try { activeTransition.current.skipTransition(); } catch {}
+        activeTransition.current = null;
+      }
+      if (viewTransitionResolver.current) {
+        viewTransitionResolver.current();
+        viewTransitionResolver.current = null;
+      }
 
-        return new Promise<void>((resolve) => {
+      try {
+        const transition = document.startViewTransition(() => {
+          return new Promise<void>((resolve) => {
             viewTransitionResolver.current = resolve;
-            startTransition(() => {
-              router.push(href);
-            });
+            doNavigate();
           });
         });
+
+        activeTransition.current = transition;
+
+        // Clean up the ref once the transition completes (success or abort)
+        transition.finished.then(() => {
+          activeTransition.current = null;
+        }).catch(() => {
+          activeTransition.current = null;
+          // Also resolve any dangling promise to prevent memory leaks
+          if (viewTransitionResolver.current) {
+            viewTransitionResolver.current();
+            viewTransitionResolver.current = null;
+          }
+        });
       } catch {
-        // Another transition still animating — navigate without animation
-        startTransition(() => { router.push(href); });
+        // startViewTransition threw synchronously — navigate without animation
+        activeTransition.current = null;
+        doNavigate();
       }
     };
 
