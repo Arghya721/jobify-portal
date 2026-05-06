@@ -85,6 +85,7 @@ export function JobFeed() {
   useEffect(() => setIsMounted(true), []);
 
   const scrollYRef = useRef(0);
+  const savedScrollRef = useRef<number | null>(null);
   const isFirstRun = useRef(true);
   const prevFilterKey = useRef(filterKey);
   const stateRef = useRef<FeedCache>({ nodes: [], page: 1, scrollY: 0, filterKey: "", totalCount: 0, lastFetchCount: 0, seenIds: [] });
@@ -94,6 +95,8 @@ export function JobFeed() {
     if (!isLoadMore) {
       setIsLoading(true);
       pageRef.current = 1;
+    } else {
+      savedScrollRef.current = window.scrollY;
     }
     
     const currentPage = isLoadMore ? pageRef.current + 1 : 1;
@@ -210,6 +213,29 @@ export function JobFeed() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Restore scroll position after load-more to fix mobile scroll-to-top.
+  // Next.js Server Actions can trigger a router cache refresh that resets
+  // window.scrollY on real mobile devices but not in desktop DevTools emulation.
+  useEffect(() => {
+    if (savedScrollRef.current === null) return;
+    const targetY = savedScrollRef.current;
+    savedScrollRef.current = null;
+
+    const rafId = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (window.scrollY < targetY - 50) window.scrollTo(0, targetY);
+      });
+    });
+    const tid = window.setTimeout(() => {
+      if (window.scrollY < targetY - 50) window.scrollTo(0, targetY);
+    }, 300);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      clearTimeout(tid);
+    };
+  }, [jobNodes]);
 
   // Keep stateRef current after every render
   useEffect(() => {
