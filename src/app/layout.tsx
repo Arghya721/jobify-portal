@@ -17,6 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.AUTH_URL || "https://jobify-portal-355605934376.asia-south1.run.app"),
   title: "Jobify — Find Your Next Role",
   description:
     "Search thousands of engineering jobs. Filter by tech stack, location, remote status, and more.",

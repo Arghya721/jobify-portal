@@ -1,4 +1,6 @@
 import { notFound } from "next/navigation";
+import { cache } from "react";
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { BackButton } from "@/components/ui/back-button";
 import {
@@ -12,10 +14,15 @@ import {
   XCircle,
   Sparkles,
 } from "lucide-react";
-import { fetchJobById } from "@/lib/api-server";
+import { fetchJobById as _fetchJobById } from "@/lib/api-server";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import companyLogos from "@/lib/company-logos.json";
+
+// Deduplicate gRPC calls between generateMetadata and the page component
+const fetchJobById = cache(_fetchJobById);
+
+const SITE_URL = process.env.AUTH_URL || "https://jobify-portal-355605934376.asia-south1.run.app";
 
 type JobLocation = {
   city?: { name?: string };
@@ -27,6 +34,62 @@ type JobLocation = {
 type JobDetailPageProps = {
   params: Promise<{ id: string }>;
 };
+
+export async function generateMetadata({ params }: JobDetailPageProps): Promise<Metadata> {
+  const { id } = await params;
+  const job = await fetchJobById(id);
+
+  if (!job || !job.id) {
+    return {
+      title: "Job Not Found | Jobify",
+      robots: { index: false, follow: false },
+    };
+  }
+
+  const companyName = job.company?.name || "Company";
+  const title = `${job.title} at ${companyName} | Jobify`;
+  const rawDesc: string = job.details?.raw_description || "";
+  const description = rawDesc.length > 155
+    ? rawDesc.slice(0, 152).trim() + "..."
+    : rawDesc || `${job.title} position at ${companyName}. ${job.location_name || "Remote"}. Apply now on Jobify.`;
+
+  const pageUrl = `${SITE_URL}/jobs/${id}`;
+  const isRemote = hasRemoteLocation(job.locations || []);
+
+  const keywords = [
+    job.title,
+    companyName,
+    job.location_name,
+    "job opening",
+    "career",
+    "hiring",
+    isRemote ? "remote job" : null,
+    isRemote ? "work from home" : null,
+  ].filter(Boolean).join(", ");
+
+  return {
+    title,
+    description,
+    keywords,
+    alternates: { canonical: pageUrl },
+    openGraph: {
+      type: "article",
+      title,
+      description,
+      url: pageUrl,
+      siteName: "Jobify",
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
+}
 
 export default async function JobDetailPage({ params }: JobDetailPageProps) {
   const { id } = await params;
@@ -43,8 +106,42 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
   const experience = details.experience_raw || formatExperience(details.experience_min, details.experience_max);
   const locations = buildLocationLabels(job.locations || []);
 
+  const jobPostingSchema = {
+    "@context": "https://schema.org",
+    "@type": "JobPosting",
+    "title": job.title,
+    "description": details.raw_description || `${job.title} at ${companyName}`,
+    "datePosted": postedAt || new Date().toISOString(),
+    "hiringOrganization": {
+      "@type": "Organization",
+      "name": companyName,
+    },
+    "directApply": !!job.job_url,
+    ...(hasRemoteLocation(job.locations || [])
+      ? {
+          "jobLocationType": "TELECOMMUTE",
+          "applicantLocationRequirements": { "@type": "Country", "name": "Worldwide" },
+        }
+      : job.location_name
+      ? {
+          "jobLocation": {
+            "@type": "Place",
+            "address": { "@type": "PostalAddress", "addressLocality": job.location_name },
+          },
+        }
+      : {}),
+    ...(!job.is_active ? { "validThrough": postedAt || new Date().toISOString() } : {}),
+    ...(details.experience_min != null
+      ? { "experienceRequirements": { "@type": "OccupationalExperienceRequirements", "monthsOfExperience": details.experience_min * 12 } }
+      : {}),
+  };
+
   return (
     <div className="mx-auto max-w-screen-xl px-4 py-8 md:px-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jobPostingSchema) }}
+      />
       <BackButton />
 
       {/* Adding viewTransitionName to the main container wrapper to link it to the job card */}
