@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { fetchCompanies } from "@/app/actions/companies";
+import { STATIC_COMPANIES } from "@/lib/companies-static";
 
 interface TickerItem {
   id: number;
@@ -20,6 +20,12 @@ const COLORS = [
   "#14b8a6",
   "#f97316",
 ];
+
+const tickerItems: TickerItem[] = STATIC_COMPANIES.slice(0, 15).map((c, i) => ({
+  id: c.id,
+  company: c.name,
+  color: COLORS[i % COLORS.length],
+}));
 
 function TickerPill({ item }: { item: TickerItem }) {
   return (
@@ -41,27 +47,6 @@ export function JobTicker() {
   const positionRef = useRef(0);
   const isPausedRef = useRef(false);
 
-  const [tickerItems, setTickerItems] = useState<TickerItem[]>([]);
-
-  useEffect(() => {
-    async function loadCompanies() {
-      try {
-        const companies = await fetchCompanies();
-        // Get top 15 companies
-        const topCompanies = companies.slice(0, 15).map((c: any, i: number) => ({
-          id: c.id,
-          company: c.name,
-          color: COLORS[i % COLORS.length],
-        }));
-        setTickerItems(topCompanies);
-      } catch (err) {
-        console.error("Failed to load ticker companies", err);
-      }
-    }
-    loadCompanies();
-  }, []);
-
-  // Duplicate items for seamless infinite scroll
   const items = tickerItems.length > 0 ? [...tickerItems, ...tickerItems] : [];
 
   useEffect(() => {
@@ -96,7 +81,6 @@ export function JobTicker() {
 
   return (
     <section className="relative border-y border-border/60 bg-background py-5">
-      {/* Edge fades */}
       <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-background to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-background to-transparent" />
 

@@ -1,6 +1,6 @@
 import { signIn } from "@/auth";
+import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
-import { Grid3X3 } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
@@ -23,15 +23,13 @@ export default async function LoginPage() {
         <div className="absolute inset-0 bg-zinc-900" />
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-zinc-900/10" />
         <Link href="/" className="relative z-20 flex items-center text-lg font-medium">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 backdrop-blur mr-2">
-             <Grid3X3 className="h-4 w-4 text-white" />
-          </div>
+          <BrandLogo className="mr-2 h-8 w-8 ring-white/15" priority />
           Jobify
         </Link>
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">
             <p className="text-lg">
-              "This platform revolutionized our hiring process. We found the perfect candidates in half the time it usually takes."
+              &ldquo;This platform revolutionized our hiring process. We found the perfect candidates in half the time it usually takes.&rdquo;
             </p>
             <footer className="text-sm">Sofia Davis, HR Director</footer>
           </blockquote>

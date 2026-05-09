@@ -21,6 +21,37 @@ export const metadata: Metadata = {
   title: "Jobify — Find Your Next Role",
   description:
     "Search thousands of engineering jobs. Filter by tech stack, location, remote status, and more.",
+  keywords: [
+    "engineering jobs",
+    "software developer jobs",
+    "remote tech jobs",
+    "ATS jobs",
+    "no recruiter jobs",
+    "software engineer jobs",
+    "developer job board",
+  ],
+  openGraph: {
+    type: "website",
+    siteName: "Jobify",
+    title: "Jobify — Find Your Next Role",
+    description:
+      "Search thousands of engineering jobs. Filter by tech stack, location, remote status, and more.",
+    images: [{ url: "/jobify-og-image.png", width: 1200, height: 630, alt: "Jobify" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Jobify — Find Your Next Role",
+    description: "Search thousands of engineering jobs. Filter by tech stack, location, remote status, and more.",
+    images: ["/jobify-og-image.png"],
+  },
+  icons: {
+    icon: [
+      { url: "/jobify-icon.png", sizes: "512x512", type: "image/png" },
+      { url: "/jobify-mark-dark.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/jobify-apple-icon.png", sizes: "180x180", type: "image/png" }],
+  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({

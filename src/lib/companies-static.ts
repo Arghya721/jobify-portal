@@ -1,0 +1,68 @@
+export interface StaticCompany {
+  id: number;
+  name: string;
+  source: string;
+  logo: string;
+}
+
+export const STATIC_COMPANIES: StaticCompany[] = [
+  { id: 1,  name: "Nice",                   source: "greenhouse", logo: "/logos/nice.png" },
+  { id: 2,  name: "RazorPay",               source: "greenhouse", logo: "/logos/razorpay.png" },
+  { id: 3,  name: "Stripe",                 source: "greenhouse", logo: "/logos/stripe.png" },
+  { id: 4,  name: "Toast",                  source: "greenhouse", logo: "/logos/toast.png" },
+  { id: 5,  name: "Rubrik",                 source: "greenhouse", logo: "/logos/rubrik.png" },
+  { id: 6,  name: "Databricks",             source: "greenhouse", logo: "/logos/databricks.png" },
+  { id: 7,  name: "Coinbase",               source: "greenhouse", logo: "/logos/coinbase.png" },
+  { id: 8,  name: "MongoDB",                source: "greenhouse", logo: "/logos/mongodb.png" },
+  { id: 9,  name: "Airbnb",                 source: "greenhouse", logo: "/logos/airbnb.png" },
+  { id: 10, name: "The Trade Desk",         source: "greenhouse", logo: "/logos/the-trade-desk.png" },
+  { id: 11, name: "Tower Research Capital", source: "greenhouse", logo: "/logos/tower-research-capital.png" },
+  { id: 12, name: "Hackerrank",             source: "greenhouse", logo: "/logos/hackerrank.png" },
+  { id: 13, name: "Cloudflare",             source: "greenhouse", logo: "/logos/cloudflare.png" },
+  { id: 14, name: "Diligent Corporation",   source: "greenhouse", logo: "/logos/diligent-corporation.png" },
+  { id: 15, name: "Altium",                 source: "greenhouse", logo: "/logos/altium.png" },
+  { id: 16, name: "Coursera",               source: "greenhouse", logo: "/logos/coursera.png" },
+  { id: 17, name: "Tekion",                 source: "greenhouse", logo: "/logos/tekion.png" },
+  { id: 18, name: "Flexport",               source: "greenhouse", logo: "/logos/flexport.png" },
+  { id: 19, name: "New Relic",              source: "greenhouse", logo: "/logos/new-relic.png" },
+  { id: 20, name: "CommerceIQ",             source: "greenhouse", logo: "/logos/commerceiq.png" },
+  { id: 22, name: "Yugabyte",               source: "greenhouse", logo: "/logos/yugabyte.png" },
+  { id: 23, name: "Postman",                source: "greenhouse", logo: "/logos/postman.png" },
+  { id: 24, name: "Rockstar Games",         source: "greenhouse", logo: "/logos/rockstar-games.png" },
+  { id: 25, name: "FamPay",                 source: "lever",      logo: "/logos/fampay.png" },
+  { id: 26, name: "Netomi",                 source: "lever",      logo: "/logos/netomi.png" },
+  { id: 27, name: "Mindtickle",             source: "lever",      logo: "/logos/mindtickle.png" },
+  { id: 28, name: "Paytm",                  source: "lever",      logo: "/logos/paytm.png" },
+  { id: 29, name: "Upstox",                 source: "lever",      logo: "/logos/upstox.png" },
+  { id: 30, name: "ION",                    source: "lever",      logo: "/logos/ion.png" },
+  { id: 31, name: "pattern",                source: "lever",      logo: "/logos/pattern.png" },
+  { id: 32, name: "SAFE",                   source: "lever",      logo: "/logos/safe.png" },
+  { id: 33, name: "Brillio",                source: "lever",      logo: "/logos/brillio.png" },
+  { id: 34, name: "Sprinto",                source: "lever",      logo: "/logos/sprinto.png" },
+  { id: 35, name: "Zeta",                   source: "lever",      logo: "/logos/zeta.png" },
+  { id: 36, name: "Skypoint",               source: "lever",      logo: "/logos/skypoint.png" },
+  { id: 37, name: "Dozee",                  source: "lever",      logo: "/logos/dozee.png" },
+  { id: 38, name: "CRED",                   source: "lever",      logo: "/logos/cred.png" },
+  { id: 39, name: "Slack",                  source: "workday",    logo: "/logos/slack.png" },
+  { id: 40, name: "Thomson Reuters",        source: "workday",    logo: "/logos/thomson-reuters.png" },
+  { id: 41, name: "Nvidia",                 source: "workday",    logo: "/logos/nvidia.png" },
+  { id: 42, name: "Adobe",                  source: "workday",    logo: "/logos/adobe.png" },
+  { id: 43, name: "Salesforce",             source: "workday",    logo: "/logos/salesforce.png" },
+  { id: 44, name: "Mastercard",             source: "workday",    logo: "/logos/mastercard.png" },
+  { id: 45, name: "HP",                     source: "workday",    logo: "/logos/hp.png" },
+  { id: 46, name: "Dell",                   source: "workday",    logo: "/logos/dell.png" },
+  { id: 47, name: "Walmart",                source: "workday",    logo: "/logos/walmart.png" },
+  { id: 48, name: "Target",                 source: "workday",    logo: "/logos/target.png" },
+  { id: 49, name: "FedEx",                  source: "workday",    logo: "/logos/fedex.png" },
+  { id: 50, name: "Philips",                source: "workday",    logo: "/logos/philips.png" },
+  { id: 51, name: "Netflix",                source: "workday",    logo: "/logos/netflix.png" },
+  { id: 52, name: "Autodesk",               source: "workday",    logo: "/logos/autodesk.png" },
+  { id: 53, name: "Morgan Stanley",         source: "eightfold",  logo: "/logos/morgan-stanley.jpeg" },
+  { id: 54, name: "PTC",                    source: "eightfold",  logo: "/logos/ptc.png" },
+  { id: 55, name: "Zebra",                  source: "eightfold",  logo: "/logos/zebra.jpg" },
+];
+
+/** Keyed by company name — drop-in replacement for company-logos.json imports */
+export const COMPANY_LOGOS: Record<string, string> = Object.fromEntries(
+  STATIC_COMPANIES.map((c) => [c.name, c.logo])
+);

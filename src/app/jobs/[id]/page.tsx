@@ -17,7 +17,7 @@ import {
 import { fetchJobById as _fetchJobById } from "@/lib/api-server";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import companyLogos from "@/lib/company-logos.json";
+import { COMPANY_LOGOS as companyLogos } from "@/lib/companies-static";
 
 // Deduplicate gRPC calls between generateMetadata and the page component
 const fetchJobById = cache(_fetchJobById);
@@ -100,7 +100,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
   }
 
   const companyName = job.company?.name || "Company";
-  const logoUrl = (companyLogos as Record<string, string>)[companyName];
+  const logoUrl = companyLogos[companyName];
   const details = job.details || {};
   const postedAt = details.job_posted_at || "";
   const experience = details.experience_raw || formatExperience(details.experience_min, details.experience_max);

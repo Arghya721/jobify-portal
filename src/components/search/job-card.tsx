@@ -1,6 +1,6 @@
 import { FileText, ExternalLink, MapPin, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import companyLogos from "@/lib/company-logos.json";
+import { COMPANY_LOGOS as companyLogos } from "@/lib/companies-static";
 
 interface JobCardProps {
   job: any; // We'll type this fully later
@@ -19,7 +19,7 @@ export function JobCard({ job, index }: JobCardProps) {
   const tags: string[] = job.matched_tags || [];
 
   const companyName = job.company?.name;
-  const logoUrl = companyName ? (companyLogos as Record<string, string>)[companyName] : undefined;
+  const logoUrl = companyName ? companyLogos[companyName] : undefined;
 
   return (
     <div

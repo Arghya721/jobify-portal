@@ -122,6 +122,8 @@ src/app/actions/notification-settings.ts
 src/app/actions/saved-filters.ts
 src/app/api/auth/[...nextauth]/route.ts
 src/app/api/auth/logout/route.ts
+src/app/companies/page.tsx
+src/app/cookies/page.tsx
 src/app/favicon.ico
 src/app/filters/page.tsx
 src/app/globals.css
@@ -130,20 +132,28 @@ src/app/jobs/page.tsx
 src/app/layout.tsx
 src/app/login/page.tsx
 src/app/page.tsx
+src/app/privacy/page.tsx
+src/app/robots.ts
 src/app/settings/notifications/notification-settings-form.tsx
 src/app/settings/notifications/page.tsx
 src/app/settings/sessions/actions.ts
 src/app/settings/sessions/page.tsx
 src/app/settings/sessions/revoke-button.tsx
+src/app/sitemap.ts
+src/app/terms/page.tsx
 src/auth.ts
+src/components/companies/company-grid.tsx
 src/components/filters/filter-manager.tsx
 src/components/force-logout.tsx
 src/components/landing/cta-section.tsx
+src/components/landing/features-section.tsx
 src/components/landing/footer.tsx
 src/components/landing/hero.tsx
 src/components/landing/job-ticker.tsx
 src/components/landing/landing-job-feed-client.tsx
 src/components/landing/landing-job-feed.tsx
+src/components/landing/manifesto-section.tsx
+src/components/landing/tech-stack-section.tsx
 src/components/mode-toggle.tsx
 src/components/navbar.tsx
 src/components/search/filter-sidebar.tsx
@@ -176,7 +186,7 @@ src/components/ui/view-transition-link.tsx
 src/components/user-menu.tsx
 src/lib/api-server.ts
 src/lib/auth-fetch.ts
-src/lib/company-logos.json
+src/lib/companies-static.ts
 src/lib/grpc-client.ts
 src/lib/utils.ts
 src/lib/view-transition.ts
@@ -185,6 +195,1535 @@ tsconfig.json
 
 <files>
 This section contains the contents of the repository's files.
+
+<file path="src/app/companies/page.tsx">
+import { STATIC_COMPANIES } from "@/lib/companies-static";
+import { CompanyGrid } from "@/components/companies/company-grid";
+import { Building2 } from "lucide-react";
+
+export const metadata = {
+  title: "Browse Companies — Jobify",
+  description:
+    "Explore all companies hiring engineers on Jobify. Direct from source ATS — no recruiters, no spam.",
+  keywords: [
+    "engineering companies hiring",
+    "tech companies jobs",
+    "software developer employers",
+    "ATS job board companies",
+  ],
+  openGraph: {
+    title: "Browse Companies — Jobify",
+    description: "Explore all companies hiring engineers. Direct from ATS.",
+    url: "/companies",
+  },
+};
+
+export default function CompaniesPage() {
+  return (
+    <div className="mx-auto max-w-screen-2xl px-4 py-8 md:px-6">
+      {/* Page header */}
+      <div className="mb-8">
+        <div className="mb-2 flex items-center gap-2.5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-emerald-500/20 bg-emerald-500/10">
+            <Building2 className="h-4 w-4 text-emerald-400" />
+          </div>
+          <span className="font-mono text-xs tracking-[0.15em] text-emerald-400/70 uppercase">
+            {STATIC_COMPANIES.length} companies
+          </span>
+        </div>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+          Browse Companies
+        </h1>
+        <p className="mt-2 text-muted-foreground">
+          All sourced directly from company ATS — no middlemen, no spam.
+        </p>
+      </div>
+
+      <CompanyGrid companies={STATIC_COMPANIES} />
+    </div>
+  );
+}
+</file>
+
+<file path="src/app/cookies/page.tsx">
+import Link from "next/link";
+import { Cookie } from "lucide-react";
+
+export const metadata = {
+  title: "Cookie Policy — Jobify",
+  description: "How Jobify uses cookies and similar technologies.",
+  robots: { index: true, follow: true },
+};
+
+const LAST_UPDATED = "May 9, 2026";
+const CONTACT_EMAIL = "privacy@jobify.dev";
+
+function Section({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
+  return (
+    <section id={id} className="scroll-mt-24">
+      <h2 className="mb-4 text-xl font-semibold tracking-tight text-foreground">{title}</h2>
+      <div className="space-y-3 text-sm leading-relaxed text-muted-foreground">{children}</div>
+    </section>
+  );
+}
+
+const NAV_ITEMS = [
+  { id: "what-are-cookies",  label: "What are cookies" },
+  { id: "what-we-use",       label: "What we use" },
+  { id: "what-we-dont-use",  label: "What we don't use" },
+  { id: "third-party",       label: "Third-party cookies" },
+  { id: "control",           label: "Your control" },
+  { id: "contact",           label: "Contact" },
+];
+
+const COOKIES_TABLE = [
+  {
+    name: "__session",
+    type: "Essential",
+    purpose: "Keeps you signed in. HTTP-only, Secure flag set.",
+    duration: "30 days (or until sign-out)",
+  },
+  {
+    name: "next-auth.csrf-token",
+    type: "Essential",
+    purpose: "CSRF protection for authentication flows.",
+    duration: "Session",
+  },
+  {
+    name: "next-auth.callback-url",
+    type: "Essential",
+    purpose: "Stores the URL to redirect to after sign-in.",
+    duration: "Session",
+  },
+  {
+    name: "theme",
+    type: "Preference",
+    purpose: "Remembers your light / dark mode preference.",
+    duration: "1 year",
+  },
+];
+
+export default function CookiesPage() {
+  return (
+    <div className="mx-auto max-w-screen-2xl px-4 py-10 md:px-6 md:py-16">
+      {/* Header */}
+      <div className="mb-12">
+        <div className="mb-3 flex items-center gap-2.5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-emerald-500/20 bg-emerald-500/10">
+            <Cookie className="h-4 w-4 text-emerald-400" />
+          </div>
+          <span className="font-mono text-xs tracking-[0.15em] text-emerald-400/70 uppercase">
+            Legal
+          </span>
+        </div>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+          Cookie Policy
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground">Last updated: {LAST_UPDATED}</p>
+        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+          Jobify uses a small number of strictly necessary cookies to operate. We
+          do not use advertising cookies, analytics cookies, or any third-party
+          tracking technology.
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-12 lg:flex-row lg:gap-16">
+        {/* Sticky sidebar nav */}
+        <aside className="hidden shrink-0 lg:block lg:w-52">
+          <nav className="sticky top-24 space-y-1" aria-label="Cookie policy sections">
+            {NAV_ITEMS.map((item) => (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                className="block rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary/60 hover:text-foreground"
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+        </aside>
+
+        {/* Content */}
+        <div className="min-w-0 flex-1 space-y-12 border-t border-border/40 pt-1 lg:border-l lg:border-t-0 lg:pl-12 lg:pt-0">
+
+          <Section id="what-are-cookies" title="1. What are cookies">
+            <p>
+              Cookies are small text files placed on your device by a website when you
+              visit it. They allow the site to remember information about your visit —
+              such as whether you are logged in — across page loads and sessions.
+            </p>
+            <p>
+              Cookies are not programs and cannot execute code or deliver viruses. They
+              are read only by the server that set them (or third parties, where applicable —
+              though Jobify sets none of those).
+            </p>
+          </Section>
+
+          <Section id="what-we-use" title="2. Cookies we use">
+            <p>
+              Jobify sets only four cookies, all strictly necessary or preference-based.
+              None are used for advertising or cross-site tracking.
+            </p>
+
+            {/* Table */}
+            <div className="mt-4 overflow-x-auto rounded-xl border border-border/40">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="border-b border-border/40 bg-secondary/40">
+                    <th className="px-4 py-3 text-left font-semibold text-foreground">Name</th>
+                    <th className="px-4 py-3 text-left font-semibold text-foreground">Type</th>
+                    <th className="px-4 py-3 text-left font-semibold text-foreground">Purpose</th>
+                    <th className="px-4 py-3 text-left font-semibold text-foreground whitespace-nowrap">Duration</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {COOKIES_TABLE.map((row, i) => (
+                    <tr
+                      key={row.name}
+                      className={i < COOKIES_TABLE.length - 1 ? "border-b border-border/30" : ""}
+                    >
+                      <td className="px-4 py-3 font-mono text-foreground/80">{row.name}</td>
+                      <td className="px-4 py-3">
+                        <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-medium ${
+                          row.type === "Essential"
+                            ? "bg-emerald-500/10 text-emerald-400"
+                            : "bg-blue-500/10 text-blue-400"
+                        }`}>
+                          {row.type}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-muted-foreground">{row.purpose}</td>
+                      <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{row.duration}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <p className="mt-2">
+              All cookies are set on the{" "}
+              <span className="font-mono text-foreground/80">jobify.dev</span> domain only.
+              None are accessible to third-party scripts.
+            </p>
+          </Section>
+
+          <Section id="what-we-dont-use" title="3. What we don't use">
+            <p>Jobify does not use:</p>
+            <ul className="ml-4 list-disc space-y-2">
+              <li>Google Analytics or any analytics platform cookies.</li>
+              <li>Facebook Pixel, Google Ads, or any advertising / retargeting cookies.</li>
+              <li>Hotjar, FullStory, or any session-recording cookies.</li>
+              <li>Intercom, HubSpot, or any CRM / chat widget cookies.</li>
+              <li>Any cookie that tracks you across other websites.</li>
+            </ul>
+          </Section>
+
+          <Section id="third-party" title="4. Third-party cookies">
+            <p>
+              Jobify does not load any third-party scripts that set cookies. When you
+              click &ldquo;View&rdquo; on a job listing and are redirected to an employer&apos;s
+              ATS (Greenhouse, Lever, Workday, Eightfold), that site operates under its
+              own cookie policy. Jobify has no control over cookies set by external sites.
+            </p>
+            <p>
+              When you sign in via Google or GitHub OAuth, those providers may set their
+              own cookies in the OAuth flow. Refer to{" "}
+              <a
+                href="https://policies.google.com/privacy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-emerald-400 hover:underline"
+              >
+                Google&apos;s Privacy Policy
+              </a>{" "}
+              and{" "}
+              <a
+                href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-emerald-400 hover:underline"
+              >
+                GitHub&apos;s Privacy Statement
+              </a>{" "}
+              for details.
+            </p>
+          </Section>
+
+          <Section id="control" title="5. Your control">
+            <p>
+              Because Jobify uses only essential and preference cookies, there is no
+              opt-out banner — opting out of essential cookies would break sign-in.
+            </p>
+            <p>You can still manage cookies through your browser:</p>
+            <ul className="ml-4 list-disc space-y-2">
+              <li>
+                <span className="font-medium text-foreground">Delete all cookies</span> — clears
+                your session (you will be signed out) and resets theme preference.
+              </li>
+              <li>
+                <span className="font-medium text-foreground">Block cookies</span> — you can
+                browse job listings without cookies, but sign-in will not work.
+              </li>
+              <li>
+                <span className="font-medium text-foreground">Incognito / private mode</span> —
+                cookies are deleted automatically when the window is closed.
+              </li>
+            </ul>
+            <p>
+              Browser-specific instructions:{" "}
+              <a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline">Chrome</a>
+              {" · "}
+              <a href="https://support.mozilla.org/en-US/kb/cookies-information-websites-store-on-your-computer" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline">Firefox</a>
+              {" · "}
+              <a href="https://support.apple.com/en-us/105082" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline">Safari</a>
+              {" · "}
+              <a href="https://support.microsoft.com/en-us/windows/manage-cookies-in-microsoft-edge-168dab11-0753-043d-7c16-ede5947fc64d" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline">Edge</a>
+            </p>
+          </Section>
+
+          <Section id="contact" title="6. Contact">
+            <p>Questions about this Cookie Policy:</p>
+            <p>
+              Email:{" "}
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-emerald-400 hover:underline">
+                {CONTACT_EMAIL}
+              </a>
+            </p>
+            <p className="mt-4 rounded-lg border border-border/40 bg-secondary/30 p-4 text-xs text-muted-foreground/80">
+              This policy may be updated when we add or remove cookies. The &ldquo;Last
+              updated&rdquo; date reflects the most recent revision.
+            </p>
+          </Section>
+
+        </div>
+      </div>
+
+      {/* Footer nav */}
+      <div className="mt-16 flex items-center gap-6 border-t border-border/40 pt-8">
+        <Link href="/" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+          ← Back to Jobify
+        </Link>
+        <Link href="/privacy" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+          Privacy Policy →
+        </Link>
+        <Link href="/terms" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+          Terms of Service →
+        </Link>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="src/app/privacy/page.tsx">
+import Link from "next/link";
+import { Shield } from "lucide-react";
+
+export const metadata = {
+  title: "Privacy Policy — Jobify",
+  description: "How Jobify collects, uses, and protects your personal data.",
+  robots: { index: true, follow: true },
+};
+
+const LAST_UPDATED = "May 9, 2026";
+const CONTACT_EMAIL = "privacy@jobify.dev";
+
+function Section({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
+  return (
+    <section id={id} className="scroll-mt-24">
+      <h2 className="mb-4 text-xl font-semibold tracking-tight text-foreground">{title}</h2>
+      <div className="space-y-3 text-sm leading-relaxed text-muted-foreground">{children}</div>
+    </section>
+  );
+}
+
+const NAV_ITEMS = [
+  { id: "what-we-collect",   label: "What we collect" },
+  { id: "how-we-use",        label: "How we use it" },
+  { id: "what-we-dont-do",   label: "What we don't do" },
+  { id: "third-parties",     label: "Third-party services" },
+  { id: "data-retention",    label: "Data retention" },
+  { id: "your-rights",       label: "Your rights" },
+  { id: "cookies",           label: "Cookies" },
+  { id: "security",          label: "Security" },
+  { id: "contact",           label: "Contact" },
+];
+
+export default function PrivacyPage() {
+  return (
+    <div className="mx-auto max-w-screen-2xl px-4 py-10 md:px-6 md:py-16">
+      {/* Header */}
+      <div className="mb-12">
+        <div className="mb-3 flex items-center gap-2.5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-emerald-500/20 bg-emerald-500/10">
+            <Shield className="h-4 w-4 text-emerald-400" />
+          </div>
+          <span className="font-mono text-xs tracking-[0.15em] text-emerald-400/70 uppercase">
+            Legal
+          </span>
+        </div>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+          Privacy Policy
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Last updated: {LAST_UPDATED}
+        </p>
+        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+          Jobify is a direct-from-ATS engineering job board. We collect only what
+          we need to run the service. We do not sell your data. We do not share
+          your profile with employers or recruiters.
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-12 lg:flex-row lg:gap-16">
+        {/* Sticky sidebar nav */}
+        <aside className="hidden shrink-0 lg:block lg:w-52">
+          <nav className="sticky top-24 space-y-1" aria-label="Privacy policy sections">
+            {NAV_ITEMS.map((item) => (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                className="block rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary/60 hover:text-foreground"
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+        </aside>
+
+        {/* Content */}
+        <div className="min-w-0 flex-1 space-y-12 border-t border-border/40 pt-1 lg:border-l lg:border-t-0 lg:pl-12 lg:pt-0">
+
+          <Section id="what-we-collect" title="1. What we collect">
+            <p>We collect the minimum data required to operate Jobify:</p>
+            <ul className="ml-4 list-disc space-y-2">
+              <li>
+                <span className="font-medium text-foreground">Account data</span> — your email
+                address and display name, provided via OAuth (Google or GitHub). We never see
+                or store your OAuth provider password.
+              </li>
+              <li>
+                <span className="font-medium text-foreground">Session tokens</span> — short-lived
+                tokens stored in secure, HTTP-only cookies to keep you logged in.
+              </li>
+              <li>
+                <span className="font-medium text-foreground">Saved filters</span> — job search
+                filters you choose to save for faster re-use.
+              </li>
+              <li>
+                <span className="font-medium text-foreground">Notification preferences</span> — if
+                you opt in, your Telegram chat ID or Discord webhook URL to deliver job alerts.
+              </li>
+              <li>
+                <span className="font-medium text-foreground">Usage data</span> — search queries,
+                job listing views, and basic interaction data used to improve the platform.
+              </li>
+              <li>
+                <span className="font-medium text-foreground">Technical data</span> — IP address,
+                browser type, device info, and server logs collected automatically on each request.
+              </li>
+            </ul>
+            <p>We do not collect résumés, cover letters, salary history, or any sensitive personal information.</p>
+          </Section>
+
+          <Section id="how-we-use" title="2. How we use it">
+            <ul className="ml-4 list-disc space-y-2">
+              <li>Authenticate your account and maintain your session.</li>
+              <li>Deliver job alert notifications via Telegram or Discord (only if you enable this).</li>
+              <li>Restore your saved search filters across sessions.</li>
+              <li>Diagnose errors and monitor platform performance.</li>
+              <li>Improve search relevance and job feed quality.</li>
+              <li>Comply with legal obligations.</li>
+            </ul>
+            <p>We do not use your data for automated profiling, credit scoring, or any form of algorithmic screening.</p>
+          </Section>
+
+          <Section id="what-we-dont-do" title="3. What we don't do">
+            <ul className="ml-4 list-disc space-y-2">
+              <li>We do not sell your personal data to any third party.</li>
+              <li>We do not share your profile, search history, or contact details with employers or recruiters.</li>
+              <li>We do not run advertising tracking or third-party ad pixels on any page.</li>
+              <li>We do not use your data to train AI or machine learning models.</li>
+              <li>We do not send marketing emails — the only emails we send are authentication-related (e.g. sign-in links).</li>
+            </ul>
+          </Section>
+
+          <Section id="third-parties" title="4. Third-party services">
+            <p>Jobify uses the following third-party services to operate. Each has its own privacy policy:</p>
+            <ul className="ml-4 list-disc space-y-2">
+              <li>
+                <span className="font-medium text-foreground">Google OAuth / GitHub OAuth</span> — used
+                for sign-in only. We receive your email and name; we do not receive access to your
+                Google Drive, email inbox, or GitHub repositories.
+              </li>
+              <li>
+                <span className="font-medium text-foreground">Google Cloud Platform</span> — our
+                backend infrastructure (Cloud Run, Cloud SQL) is hosted on GCP in the
+                asia-south1 region.
+              </li>
+              <li>
+                <span className="font-medium text-foreground">Telegram Bot API</span> — if you enable
+                Telegram notifications, your Telegram chat ID is stored and used solely to
+                deliver job alerts. You can revoke access at any time in Settings.
+              </li>
+              <li>
+                <span className="font-medium text-foreground">Discord Webhooks</span> — if you enable
+                Discord notifications, your webhook URL is stored and used solely to post
+                job alerts to your chosen channel. You can remove it at any time in Settings.
+              </li>
+            </ul>
+          </Section>
+
+          <Section id="data-retention" title="5. Data retention">
+            <ul className="ml-4 list-disc space-y-2">
+              <li>
+                <span className="font-medium text-foreground">Account data</span> — retained while
+                your account is active. Deleted within 30 days of an account deletion request.
+              </li>
+              <li>
+                <span className="font-medium text-foreground">Session tokens</span> — expire
+                automatically after 30 days of inactivity or on sign-out.
+              </li>
+              <li>
+                <span className="font-medium text-foreground">Notification credentials</span> — deleted
+                immediately when you disconnect Telegram or Discord in Settings.
+              </li>
+              <li>
+                <span className="font-medium text-foreground">Server logs</span> — retained for up to
+                90 days for security and debugging, then purged automatically.
+              </li>
+            </ul>
+          </Section>
+
+          <Section id="your-rights" title="6. Your rights">
+            <p>
+              Depending on where you are located, you may have rights under GDPR (EU/UK),
+              CCPA/CPRA (California), or equivalent laws:
+            </p>
+            <ul className="ml-4 list-disc space-y-2">
+              <li><span className="font-medium text-foreground">Access</span> — request a copy of the personal data we hold about you.</li>
+              <li><span className="font-medium text-foreground">Correction</span> — ask us to correct inaccurate data.</li>
+              <li><span className="font-medium text-foreground">Deletion</span> — request that we delete your account and associated data.</li>
+              <li><span className="font-medium text-foreground">Portability</span> — receive your data in a structured, machine-readable format.</li>
+              <li><span className="font-medium text-foreground">Opt-out of notifications</span> — disable Telegram or Discord alerts at any time in Settings → Notifications.</li>
+              <li><span className="font-medium text-foreground">Withdraw consent</span> — delete your account at any time in Settings.</li>
+            </ul>
+            <p>
+              To exercise any of these rights, email{" "}
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-emerald-400 hover:underline">
+                {CONTACT_EMAIL}
+              </a>
+              . We will respond within 30 days.
+            </p>
+          </Section>
+
+          <Section id="cookies" title="7. Cookies">
+            <p>Jobify uses only essential cookies:</p>
+            <ul className="ml-4 list-disc space-y-2">
+              <li>
+                <span className="font-medium text-foreground">Session cookie</span> — keeps you
+                signed in. Secure, HTTP-only, expires after 30 days of inactivity.
+              </li>
+              <li>
+                <span className="font-medium text-foreground">Theme preference</span> — stores your
+                light/dark mode choice. No personal data, expires after 1 year.
+              </li>
+            </ul>
+            <p>
+              We do not use advertising cookies, analytics cookies (e.g. Google Analytics),
+              or any third-party tracking cookies.
+            </p>
+          </Section>
+
+          <Section id="security" title="8. Security">
+            <p>
+              We implement industry-standard safeguards including TLS encryption in transit,
+              encrypted storage at rest on GCP, and HTTP-only secure session cookies.
+              OAuth tokens are never stored in plaintext.
+            </p>
+            <p>
+              No system is perfectly secure. If you discover a security vulnerability,
+              please disclose it responsibly to{" "}
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-emerald-400 hover:underline">
+                {CONTACT_EMAIL}
+              </a>
+              .
+            </p>
+          </Section>
+
+          <Section id="contact" title="9. Contact">
+            <p>For privacy requests, questions, or concerns:</p>
+            <p>
+              Email:{" "}
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-emerald-400 hover:underline">
+                {CONTACT_EMAIL}
+              </a>
+            </p>
+            <p className="mt-4 rounded-lg border border-border/40 bg-secondary/30 p-4 text-xs text-muted-foreground/80">
+              This policy may be updated periodically. The &ldquo;Last updated&rdquo; date at
+              the top of this page reflects the most recent revision. Continued use of Jobify
+              after a policy change constitutes acceptance of the updated terms.
+            </p>
+          </Section>
+
+        </div>
+      </div>
+
+      {/* Back to home */}
+      <div className="mt-16 border-t border-border/40 pt-8">
+        <Link
+          href="/"
+          className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+        >
+          ← Back to Jobify
+        </Link>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="src/app/robots.ts">
+import { MetadataRoute } from "next";
+
+const BASE_URL =
+  process.env.AUTH_URL ||
+  "https://jobify-portal-355605934376.asia-south1.run.app";
+
+export default function robots(): MetadataRoute.Robots {
+  return {
+    rules: {
+      userAgent: "*",
+      allow: "/",
+      disallow: ["/api/", "/settings/"],
+    },
+    sitemap: `${BASE_URL}/sitemap.xml`,
+  };
+}
+</file>
+
+<file path="src/app/sitemap.ts">
+import { MetadataRoute } from "next";
+
+const BASE_URL =
+  process.env.AUTH_URL ||
+  "https://jobify-portal-355605934376.asia-south1.run.app";
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  return [
+    {
+      url: BASE_URL,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 1,
+    },
+    {
+      url: `${BASE_URL}/jobs`,
+      lastModified: new Date(),
+      changeFrequency: "hourly",
+      priority: 0.9,
+    },
+  ];
+}
+</file>
+
+<file path="src/app/terms/page.tsx">
+import Link from "next/link";
+import { ScrollText } from "lucide-react";
+
+export const metadata = {
+  title: "Terms of Service — Jobify",
+  description: "The terms and conditions governing your use of Jobify.",
+  robots: { index: true, follow: true },
+};
+
+const LAST_UPDATED = "May 9, 2026";
+const CONTACT_EMAIL = "legal@jobify.dev";
+
+function Section({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
+  return (
+    <section id={id} className="scroll-mt-24">
+      <h2 className="mb-4 text-xl font-semibold tracking-tight text-foreground">{title}</h2>
+      <div className="space-y-3 text-sm leading-relaxed text-muted-foreground">{children}</div>
+    </section>
+  );
+}
+
+const NAV_ITEMS = [
+  { id: "acceptance",        label: "Acceptance" },
+  { id: "description",       label: "The service" },
+  { id: "accounts",          label: "Your account" },
+  { id: "acceptable-use",    label: "Acceptable use" },
+  { id: "job-listings",      label: "Job listings" },
+  { id: "intellectual-prop", label: "Intellectual property" },
+  { id: "disclaimers",       label: "Disclaimers" },
+  { id: "liability",         label: "Limitation of liability" },
+  { id: "termination",       label: "Termination" },
+  { id: "changes",           label: "Changes to terms" },
+  { id: "governing-law",     label: "Governing law" },
+  { id: "contact",           label: "Contact" },
+];
+
+export default function TermsPage() {
+  return (
+    <div className="mx-auto max-w-screen-2xl px-4 py-10 md:px-6 md:py-16">
+      {/* Header */}
+      <div className="mb-12">
+        <div className="mb-3 flex items-center gap-2.5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-emerald-500/20 bg-emerald-500/10">
+            <ScrollText className="h-4 w-4 text-emerald-400" />
+          </div>
+          <span className="font-mono text-xs tracking-[0.15em] text-emerald-400/70 uppercase">
+            Legal
+          </span>
+        </div>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+          Terms of Service
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Last updated: {LAST_UPDATED}
+        </p>
+        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+          These Terms of Service govern your use of Jobify. By accessing or using
+          the platform you agree to be bound by them. If you do not agree, do not
+          use Jobify.
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-12 lg:flex-row lg:gap-16">
+        {/* Sticky sidebar nav */}
+        <aside className="hidden shrink-0 lg:block lg:w-52">
+          <nav className="sticky top-24 space-y-1" aria-label="Terms sections">
+            {NAV_ITEMS.map((item) => (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                className="block rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary/60 hover:text-foreground"
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+        </aside>
+
+        {/* Content */}
+        <div className="min-w-0 flex-1 space-y-12 border-t border-border/40 pt-1 lg:border-l lg:border-t-0 lg:pl-12 lg:pt-0">
+
+          <Section id="acceptance" title="1. Acceptance of Terms">
+            <p>
+              By creating an account or otherwise using Jobify (&ldquo;the Service&rdquo;,
+              &ldquo;we&rdquo;, &ldquo;us&rdquo;), you confirm that you are at least 16 years
+              old and have the legal capacity to enter into a binding agreement. If you are
+              using Jobify on behalf of an organisation, you represent that you have authority
+              to bind that organisation to these terms.
+            </p>
+          </Section>
+
+          <Section id="description" title="2. The Service">
+            <p>
+              Jobify is a read-only engineering job aggregator. We index job listings
+              directly from company applicant tracking systems (ATS) including Greenhouse,
+              Lever, Workday, and Eightfold. We do not accept job applications, host
+              résumés, or facilitate hiring in any way.
+            </p>
+            <p>
+              All job listings on Jobify are sourced from publicly accessible ATS pages.
+              Clicking &ldquo;View&rdquo; on any listing redirects you to the employer&apos;s
+              own application page. Your relationship with that employer is entirely separate
+              from your relationship with Jobify.
+            </p>
+          </Section>
+
+          <Section id="accounts" title="3. Your Account">
+            <p>
+              Accounts are created via Google or GitHub OAuth. You are responsible for
+              maintaining the confidentiality of your session and for all activity that
+              occurs under your account.
+            </p>
+            <ul className="ml-4 list-disc space-y-2">
+              <li>Do not share your account credentials with others.</li>
+              <li>Notify us immediately at{" "}
+                <a href={`mailto:${CONTACT_EMAIL}`} className="text-emerald-400 hover:underline">
+                  {CONTACT_EMAIL}
+                </a>{" "}
+                if you suspect unauthorised access.
+              </li>
+              <li>You may delete your account at any time in Settings. Deletion is permanent.</li>
+            </ul>
+            <p>
+              We reserve the right to suspend or terminate accounts that violate these terms,
+              abuse the platform, or engage in automated scraping without prior written consent.
+            </p>
+          </Section>
+
+          <Section id="acceptable-use" title="4. Acceptable Use">
+            <p>You agree not to:</p>
+            <ul className="ml-4 list-disc space-y-2">
+              <li>Scrape, crawl, or systematically extract job data without written permission.</li>
+              <li>Use automated scripts to query the platform at a rate that disrupts service for other users.</li>
+              <li>Attempt to gain unauthorised access to any part of the infrastructure.</li>
+              <li>Use the platform to distribute spam, malware, or harmful content.</li>
+              <li>Impersonate another person or organisation.</li>
+              <li>Circumvent any rate limits, access controls, or security measures.</li>
+              <li>Use the Service for any unlawful purpose.</li>
+            </ul>
+            <p>
+              Violation of these rules may result in immediate account termination and,
+              where applicable, legal action.
+            </p>
+          </Section>
+
+          <Section id="job-listings" title="5. Job Listings">
+            <p>
+              Jobify does not create, verify, or endorse any job listing. Listings are
+              sourced automatically from public ATS pages and may contain errors, be
+              outdated, or no longer be accepting applications.
+            </p>
+            <ul className="ml-4 list-disc space-y-2">
+              <li>We make no guarantee that any listed role is currently open or accurately described.</li>
+              <li>We are not responsible for the hiring practices, compensation, or conduct of any employer.</li>
+              <li>Any application you submit through a linked ATS is solely between you and that employer.</li>
+              <li>Jobify does not guarantee employment, interviews, or responses from any employer.</li>
+            </ul>
+            <p>
+              If you believe a listing is fraudulent or violates applicable law, contact us at{" "}
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-emerald-400 hover:underline">
+                {CONTACT_EMAIL}
+              </a>
+              .
+            </p>
+          </Section>
+
+          <Section id="intellectual-prop" title="6. Intellectual Property">
+            <p>
+              The Jobify name, logo, UI design, and source code are the property of Jobify
+              and are protected by applicable intellectual property law. You may not copy,
+              reproduce, or redistribute them without prior written consent.
+            </p>
+            <p>
+              Job listing content (titles, descriptions, company names) belongs to the
+              respective employers. Jobify does not claim ownership of indexed third-party content.
+            </p>
+          </Section>
+
+          <Section id="disclaimers" title="7. Disclaimers">
+            <p>
+              The Service is provided <span className="font-medium text-foreground">&ldquo;as is&rdquo;</span> and{" "}
+              <span className="font-medium text-foreground">&ldquo;as available&rdquo;</span> without
+              warranties of any kind, either express or implied, including but not limited to
+              warranties of merchantability, fitness for a particular purpose, or
+              non-infringement.
+            </p>
+            <p>
+              We do not warrant that the Service will be uninterrupted, error-free, or free
+              of viruses or other harmful components. Job data may be incomplete, inaccurate,
+              or stale.
+            </p>
+          </Section>
+
+          <Section id="liability" title="8. Limitation of Liability">
+            <p>
+              To the fullest extent permitted by law, Jobify and its affiliates, officers,
+              employees, and agents shall not be liable for any indirect, incidental, special,
+              consequential, or punitive damages arising from your use of (or inability to use)
+              the Service, including but not limited to:
+            </p>
+            <ul className="ml-4 list-disc space-y-2">
+              <li>Loss of employment opportunities or income.</li>
+              <li>Reliance on inaccurate or outdated job listings.</li>
+              <li>Unauthorised access to your account data.</li>
+              <li>Any actions or omissions of third-party employers.</li>
+            </ul>
+            <p>
+              Our total aggregate liability to you for any claim arising under these Terms
+              shall not exceed USD $100.
+            </p>
+          </Section>
+
+          <Section id="termination" title="9. Termination">
+            <p>
+              Either party may terminate the relationship at any time. You may delete your
+              account in Settings. We may suspend or terminate your access immediately,
+              without notice, if we believe you have violated these Terms or if we discontinue
+              the Service.
+            </p>
+            <p>
+              Upon termination, your right to use the Service ceases immediately. Sections
+              covering intellectual property, disclaimers, limitation of liability, and
+              governing law survive termination.
+            </p>
+          </Section>
+
+          <Section id="changes" title="10. Changes to Terms">
+            <p>
+              We may update these Terms at any time. Material changes will be indicated by
+              updating the &ldquo;Last updated&rdquo; date at the top of this page. Continued
+              use of Jobify after changes are posted constitutes your acceptance of the
+              revised Terms.
+            </p>
+            <p>
+              We encourage you to review this page periodically. We will not notify users
+              of minor editorial changes.
+            </p>
+          </Section>
+
+          <Section id="governing-law" title="11. Governing Law">
+            <p>
+              These Terms are governed by and construed in accordance with the laws of India,
+              without regard to conflict of law provisions. Any disputes arising under these
+              Terms shall be subject to the exclusive jurisdiction of the courts located in India.
+            </p>
+            <p>
+              If any provision of these Terms is found to be unenforceable, the remaining
+              provisions will continue in full force and effect.
+            </p>
+          </Section>
+
+          <Section id="contact" title="12. Contact">
+            <p>For questions about these Terms:</p>
+            <p>
+              Email:{" "}
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-emerald-400 hover:underline">
+                {CONTACT_EMAIL}
+              </a>
+            </p>
+            <p className="mt-4 rounded-lg border border-border/40 bg-secondary/30 p-4 text-xs text-muted-foreground/80">
+              These Terms constitute the entire agreement between you and Jobify regarding
+              use of the Service and supersede any prior agreements.
+            </p>
+          </Section>
+
+        </div>
+      </div>
+
+      {/* Footer nav */}
+      <div className="mt-16 flex items-center gap-6 border-t border-border/40 pt-8">
+        <Link href="/" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+          ← Back to Jobify
+        </Link>
+        <Link href="/privacy" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+          Privacy Policy →
+        </Link>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/companies/company-grid.tsx">
+"use client";
+
+import { useState, useMemo } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { Search, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
+import type { StaticCompany } from "@/lib/companies-static";
+
+interface CompanyGridProps {
+  companies: StaticCompany[];
+}
+
+// Deterministic color from company name — avoids random flicker on re-render
+function getAvatarColor(name: string): string {
+  const PALETTE = [
+    "bg-emerald-500/15 text-emerald-400 border-emerald-500/20",
+    "bg-blue-500/15 text-blue-400 border-blue-500/20",
+    "bg-violet-500/15 text-violet-400 border-violet-500/20",
+    "bg-amber-500/15 text-amber-400 border-amber-500/20",
+    "bg-rose-500/15 text-rose-400 border-rose-500/20",
+    "bg-teal-500/15 text-teal-400 border-teal-500/20",
+    "bg-orange-500/15 text-orange-400 border-orange-500/20",
+    "bg-cyan-500/15 text-cyan-400 border-cyan-500/20",
+  ];
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
+  }
+  return PALETTE[hash % PALETTE.length];
+}
+
+function CompanyCard({ company, index }: { company: StaticCompany; index: number }) {
+  const initials = company.name
+    .split(/[\s&,_-]+/)
+    .slice(0, 2)
+    .map((w) => w[0]?.toUpperCase() ?? "")
+    .join("");
+
+  const colorClass = getAvatarColor(company.name);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: Math.min(index * 0.03, 0.5), ease: "easeOut" }}
+    >
+      <Link
+        href={`/jobs?company_id=${company.id}`}
+        className="group flex items-center gap-4 rounded-xl border border-border/40 bg-card/50 p-4 backdrop-blur-sm transition-all duration-200 hover:border-emerald-500/30 hover:bg-card/80 hover:shadow-sm"
+      >
+        {/* Logo or initials avatar */}
+        {company.logo ? (
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border/30 bg-white/5 p-1.5">
+            <Image
+              src={company.logo}
+              alt={company.name}
+              width={32}
+              height={32}
+              className="h-full w-full object-contain"
+            />
+          </div>
+        ) : (
+          <div
+            className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border text-sm font-bold tracking-tight transition-colors duration-200 ${colorClass}`}
+          >
+            {initials || company.name[0]?.toUpperCase()}
+          </div>
+        )}
+
+        {/* Name */}
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-semibold text-foreground">
+            {company.name}
+          </p>
+        </div>
+
+        {/* Arrow */}
+        <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground/40 transition-all duration-200 group-hover:-rotate-45 group-hover:text-emerald-400" />
+      </Link>
+    </motion.div>
+  );
+}
+
+export function CompanyGrid({ companies }: CompanyGridProps) {
+  const [query, setQuery] = useState("");
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return companies;
+    return companies.filter((c) => c.name.toLowerCase().includes(q));
+  }, [companies, query]);
+
+  // Group filtered results alphabetically
+  const grouped = useMemo(() => {
+    const map = new Map<string, StaticCompany[]>();
+    for (const company of filtered) {
+      const letter = /^[A-Za-z]/.test(company.name)
+        ? company.name[0].toUpperCase()
+        : "#";
+      if (!map.has(letter)) map.set(letter, []);
+      map.get(letter)!.push(company);
+    }
+    return Array.from(map.entries()).sort(([a], [b]) => a.localeCompare(b));
+  }, [filtered]);
+
+  return (
+    <div>
+      {/* Search input */}
+      <div className="relative mb-8 max-w-md">
+        <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search companies…"
+          aria-label="Search companies"
+          className="h-11 w-full rounded-lg border border-border/60 bg-secondary/60 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-border focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+        />
+      </div>
+
+      {filtered.length === 0 ? (
+        <div className="py-20 text-center text-muted-foreground">
+          No companies match &ldquo;{query}&rdquo;
+        </div>
+      ) : query ? (
+        // Flat grid when searching — no letter groups
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {filtered.map((company, i) => (
+            <CompanyCard key={company.name} company={company} index={i} />
+          ))}
+        </div>
+      ) : (
+        // Alphabetical groups when not searching
+        <div className="space-y-10">
+          {grouped.map(([letter, group]) => (
+            <section key={letter} aria-label={`Companies starting with ${letter}`}>
+              <h2 className="mb-3 font-mono text-xs font-semibold tracking-[0.2em] text-muted-foreground/50 uppercase">
+                {letter}
+              </h2>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {group.map((company, i) => (
+                  <CompanyCard key={company.name} company={company} index={i} />
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/landing/features-section.tsx">
+"use client";
+
+import { motion } from "framer-motion";
+import { Database, SlidersHorizontal, Zap } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+
+interface Feature {
+  index: string;
+  icon: LucideIcon;
+  title: string;
+  description: string;
+}
+
+const FEATURES: Feature[] = [
+  {
+    index: "01",
+    icon: Database,
+    title: "Direct from ATS",
+    description:
+      "Jobs pulled straight from company applicant tracking systems. No aggregator middlemen, no stale listings, no duplicate noise.",
+  },
+  {
+    index: "02",
+    icon: SlidersHorizontal,
+    title: "Stack-first filtering",
+    description:
+      "Filter by language, framework, and remote status — not just job title keywords. Find the stack you actually want to work in.",
+  },
+  {
+    index: "03",
+    icon: Zap,
+    title: "Real-time feed",
+    description:
+      "New roles land within minutes of posting. Set alerts, save searches, and never miss the window on a fresh opening.",
+  },
+];
+
+export function FeaturesSection() {
+  return (
+    <section className="relative py-20 md:py-28" aria-labelledby="features-heading">
+      {/* Top divider */}
+      <div
+        className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border/60 to-transparent"
+        aria-hidden="true"
+      />
+
+      <div className="mx-auto max-w-screen-2xl px-4 md:px-6">
+        {/* Section header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="mb-14 text-center"
+        >
+          <p className="mb-3 font-mono text-xs tracking-[0.2em] text-emerald-400/70 uppercase">
+            Why engineers choose Jobify
+          </p>
+          <h2
+            id="features-heading"
+            className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl"
+          >
+            No noise. No gatekeepers.
+            <br />
+            <span className="bg-gradient-to-r from-emerald-400 to-emerald-300 bg-clip-text text-transparent">
+              Just jobs.
+            </span>
+          </h2>
+        </motion.div>
+
+        {/* Feature cards */}
+        <div className="grid gap-5 md:grid-cols-3">
+          {FEATURES.map((feature, i) => {
+            const Icon = feature.icon;
+            return (
+              <motion.article
+                key={feature.index}
+                initial={{ opacity: 0, y: 28 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.5, delay: i * 0.1, ease: "easeOut" }}
+                className="group relative overflow-hidden rounded-2xl border border-border/40 bg-card/50 p-8 backdrop-blur-sm transition-colors duration-300 hover:border-emerald-500/30 hover:bg-card/80"
+              >
+                {/* Watermark index number */}
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -right-3 -top-5 select-none font-mono text-[7rem] font-bold leading-none text-foreground/[0.035] transition-colors duration-300 group-hover:text-emerald-400/[0.055]"
+                >
+                  {feature.index}
+                </span>
+
+                {/* Icon badge */}
+                <div className="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-lg border border-emerald-500/20 bg-emerald-500/10 transition-colors duration-300 group-hover:border-emerald-500/35 group-hover:bg-emerald-500/15">
+                  <Icon className="h-5 w-5 text-emerald-400" aria-hidden="true" />
+                </div>
+
+                {/* Text */}
+                <h3 className="mb-2.5 text-lg font-semibold text-foreground">
+                  {feature.title}
+                </h3>
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                  {feature.description}
+                </p>
+
+                {/* Bottom slide-in accent */}
+                <div
+                  aria-hidden="true"
+                  className="absolute bottom-0 left-0 h-[2px] w-0 bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all duration-500 ease-out group-hover:w-full"
+                />
+              </motion.article>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Bottom divider */}
+      <div
+        className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-border/60 to-transparent"
+        aria-hidden="true"
+      />
+    </section>
+  );
+}
+</file>
+
+<file path="src/components/landing/manifesto-section.tsx">
+"use client";
+
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
+
+const MANIFESTO = [
+  "NO RECRUITERS",
+  "DIRECT FROM ATS",
+  "NO SPAM",
+  "ZERO MIDDLEMEN",
+  "REAL JOBS ONLY",
+  "FRESHLY INDEXED",
+  "NO DUPLICATES",
+  "ENGINEERS FIRST",
+  "NO GATEKEEPERS",
+  "JUST SIGNAL",
+];
+
+const STACKS = [
+  "TYPESCRIPT",
+  "PYTHON",
+  "GO",
+  "RUST",
+  "REACT",
+  "KUBERNETES",
+  "AWS",
+  "ELIXIR",
+  "NODE.JS",
+  "TERRAFORM",
+  "POSTGRES",
+  "PYTORCH",
+];
+
+function MarqueeStrip({
+  items,
+  reverse = false,
+  speed = 40,
+}: {
+  items: string[];
+  reverse?: boolean;
+  speed?: number;
+}) {
+  const doubled = [...items, ...items];
+  return (
+    <div className="overflow-hidden border-y border-border/30 py-3.5">
+      <div
+        style={{
+          display: "flex",
+          width: "max-content",
+          animation: `${reverse ? "marquee-right" : "marquee-left"} ${speed}s linear infinite`,
+        }}
+      >
+        {doubled.map((item, i) => (
+          <span
+            key={i}
+            className="inline-flex shrink-0 items-center gap-5 px-3"
+          >
+            <span className="whitespace-nowrap font-mono text-[11px] tracking-[0.22em] text-muted-foreground/40">
+              {item}
+            </span>
+            <span className="text-[10px] text-muted-foreground/20">✦</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function ManifestoSection() {
+  return (
+    <section className="relative border-t border-border/60" aria-labelledby="manifesto-heading">
+      <style>{`
+        @keyframes marquee-left {
+          from { transform: translateX(0); }
+          to   { transform: translateX(-50%); }
+        }
+        @keyframes marquee-right {
+          from { transform: translateX(-50%); }
+          to   { transform: translateX(0); }
+        }
+      `}</style>
+
+      {/* Manifesto strip — scrolls left */}
+      <MarqueeStrip items={MANIFESTO} speed={38} />
+
+      {/* Center */}
+      <div className="px-4 py-24 text-center md:py-32">
+        <motion.div
+          initial={{ opacity: 0, y: 22 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+        >
+          <h2
+            id="manifesto-heading"
+            className="text-5xl font-bold tracking-tight text-foreground sm:text-6xl md:text-7xl lg:text-8xl"
+            style={{ lineHeight: 1.04 }}
+          >
+            Better jobs.
+            <br />
+            <span className="bg-gradient-to-r from-emerald-400 to-emerald-300 bg-clip-text text-transparent">
+              Zero noise.
+            </span>
+          </h2>
+
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.18, ease: "easeOut" }}
+            className="mx-auto mt-6 max-w-xs text-sm text-muted-foreground sm:max-w-sm sm:text-base"
+          >
+            Every role pulled directly from company ATS. No middlemen, no
+            duplicates — just the jobs that matter.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.55, delay: 0.32, ease: "easeOut" }}
+            className="mt-10 flex flex-wrap items-center justify-center gap-3"
+          >
+            <Link
+              href="/jobs"
+              className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-semibold text-background transition-all hover:opacity-90 active:scale-95"
+            >
+              Browse open roles
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/companies"
+              className="inline-flex items-center gap-2 rounded-full border border-border/50 px-6 py-3 text-sm font-medium text-muted-foreground transition-all hover:border-border hover:text-foreground"
+            >
+              View companies
+            </Link>
+          </motion.div>
+        </motion.div>
+      </div>
+
+      {/* Tech stack strip — scrolls right */}
+      <MarqueeStrip items={STACKS} reverse speed={50} />
+    </section>
+  );
+}
+</file>
+
+<file path="src/components/landing/tech-stack-section.tsx">
+"use client";
+
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { Code2 } from "lucide-react";
+
+const STACKS: { label: string; tags: string[] }[] = [
+  {
+    label: "Languages",
+    tags: ["Python", "TypeScript", "Go", "Java", "Rust", "C++", "Ruby", "Kotlin", "Swift", "Scala", "PHP", "Elixir"],
+  },
+  {
+    label: "Frontend",
+    tags: ["React", "Next.js", "Vue", "Angular", "Svelte", "Tailwind CSS", "GraphQL"],
+  },
+  {
+    label: "Backend",
+    tags: ["Node.js", "Django", "FastAPI", "Spring Boot", "Rails", "Laravel", "gRPC", "REST"],
+  },
+  {
+    label: "Infrastructure",
+    tags: ["AWS", "GCP", "Azure", "Kubernetes", "Docker", "Terraform", "CI/CD", "Linux"],
+  },
+  {
+    label: "Data & ML",
+    tags: ["PostgreSQL", "MongoDB", "Redis", "Kafka", "PyTorch", "TensorFlow", "Spark", "dbt"],
+  },
+];
+
+function StackTag({ tag, index }: { tag: string; index: number }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.92 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true, margin: "-20px" }}
+      transition={{ duration: 0.25, delay: Math.min(index * 0.02, 0.4) }}
+    >
+      <Link
+        href={`/jobs?q=${encodeURIComponent(tag)}`}
+        className="group inline-flex items-center rounded-lg border border-border/40 bg-card/50 px-3.5 py-2 text-sm font-medium text-muted-foreground backdrop-blur-sm transition-all duration-150 hover:border-emerald-500/35 hover:bg-emerald-500/8 hover:text-emerald-400"
+      >
+        {tag}
+      </Link>
+    </motion.div>
+  );
+}
+
+export function TechStackSection() {
+  return (
+    <section
+      className="relative border-t border-border/60 py-20 md:py-28"
+      aria-labelledby="techstack-heading"
+    >
+      <div className="mx-auto max-w-screen-2xl px-4 md:px-6">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.55, ease: "easeOut" }}
+          className="mb-12 flex flex-col items-start gap-3 sm:flex-row sm:items-end sm:justify-between"
+        >
+          <div>
+            <div className="mb-2 flex items-center gap-2.5">
+              <div className="flex h-7 w-7 items-center justify-center rounded-md border border-emerald-500/20 bg-emerald-500/10">
+                <Code2 className="h-3.5 w-3.5 text-emerald-400" aria-hidden="true" />
+              </div>
+              <span className="font-mono text-xs tracking-[0.18em] text-emerald-400/70 uppercase">
+                Browse by technology
+              </span>
+            </div>
+            <h2
+              id="techstack-heading"
+              className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl"
+            >
+              Find roles matching your stack.
+            </h2>
+          </div>
+          <Link
+            href="/jobs"
+            className="shrink-0 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Browse all jobs →
+          </Link>
+        </motion.div>
+
+        {/* Category groups */}
+        <div className="space-y-8">
+          {STACKS.map((group, gi) => (
+            <div key={group.label}>
+              <p className="mb-3 font-mono text-[11px] font-medium tracking-[0.16em] text-muted-foreground/45 uppercase">
+                {group.label}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {group.tags.map((tag, ti) => (
+                  <StackTag key={tag} tag={tag} index={gi * 12 + ti} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Bottom divider */}
+      <div
+        className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-border/60 to-transparent"
+        aria-hidden="true"
+      />
+    </section>
+  );
+}
+</file>
+
+<file path="src/lib/companies-static.ts">
+export interface StaticCompany {
+  id: number;
+  name: string;
+  source: string;
+  logo: string;
+}
+
+export const STATIC_COMPANIES: StaticCompany[] = [
+  { id: 1,  name: "Nice",                   source: "greenhouse", logo: "/logos/nice.png" },
+  { id: 2,  name: "RazorPay",               source: "greenhouse", logo: "/logos/razorpay.png" },
+  { id: 3,  name: "Stripe",                 source: "greenhouse", logo: "/logos/stripe.png" },
+  { id: 4,  name: "Toast",                  source: "greenhouse", logo: "/logos/toast.png" },
+  { id: 5,  name: "Rubrik",                 source: "greenhouse", logo: "/logos/rubrik.png" },
+  { id: 6,  name: "Databricks",             source: "greenhouse", logo: "/logos/databricks.png" },
+  { id: 7,  name: "Coinbase",               source: "greenhouse", logo: "/logos/coinbase.png" },
+  { id: 8,  name: "MongoDB",                source: "greenhouse", logo: "/logos/mongodb.png" },
+  { id: 9,  name: "Airbnb",                 source: "greenhouse", logo: "/logos/airbnb.png" },
+  { id: 10, name: "The Trade Desk",         source: "greenhouse", logo: "/logos/the-trade-desk.png" },
+  { id: 11, name: "Tower Research Capital", source: "greenhouse", logo: "/logos/tower-research-capital.png" },
+  { id: 12, name: "Hackerrank",             source: "greenhouse", logo: "/logos/hackerrank.png" },
+  { id: 13, name: "Cloudflare",             source: "greenhouse", logo: "/logos/cloudflare.png" },
+  { id: 14, name: "Diligent Corporation",   source: "greenhouse", logo: "/logos/diligent-corporation.png" },
+  { id: 15, name: "Altium",                 source: "greenhouse", logo: "/logos/altium.png" },
+  { id: 16, name: "Coursera",               source: "greenhouse", logo: "/logos/coursera.png" },
+  { id: 17, name: "Tekion",                 source: "greenhouse", logo: "/logos/tekion.png" },
+  { id: 18, name: "Flexport",               source: "greenhouse", logo: "/logos/flexport.png" },
+  { id: 19, name: "New Relic",              source: "greenhouse", logo: "/logos/new-relic.png" },
+  { id: 20, name: "CommerceIQ",             source: "greenhouse", logo: "/logos/commerceiq.png" },
+  { id: 22, name: "Yugabyte",               source: "greenhouse", logo: "/logos/yugabyte.png" },
+  { id: 23, name: "Postman",                source: "greenhouse", logo: "/logos/postman.png" },
+  { id: 24, name: "Rockstar Games",         source: "greenhouse", logo: "/logos/rockstar-games.png" },
+  { id: 25, name: "FamPay",                 source: "lever",      logo: "/logos/fampay.png" },
+  { id: 26, name: "Netomi",                 source: "lever",      logo: "/logos/netomi.png" },
+  { id: 27, name: "Mindtickle",             source: "lever",      logo: "/logos/mindtickle.png" },
+  { id: 28, name: "Paytm",                  source: "lever",      logo: "/logos/paytm.png" },
+  { id: 29, name: "Upstox",                 source: "lever",      logo: "/logos/upstox.png" },
+  { id: 30, name: "ION",                    source: "lever",      logo: "/logos/ion.png" },
+  { id: 31, name: "pattern",                source: "lever",      logo: "/logos/pattern.png" },
+  { id: 32, name: "SAFE",                   source: "lever",      logo: "/logos/safe.png" },
+  { id: 33, name: "Brillio",                source: "lever",      logo: "/logos/brillio.png" },
+  { id: 34, name: "Sprinto",                source: "lever",      logo: "/logos/sprinto.png" },
+  { id: 35, name: "Zeta",                   source: "lever",      logo: "/logos/zeta.png" },
+  { id: 36, name: "Skypoint",               source: "lever",      logo: "/logos/skypoint.png" },
+  { id: 37, name: "Dozee",                  source: "lever",      logo: "/logos/dozee.png" },
+  { id: 38, name: "CRED",                   source: "lever",      logo: "/logos/cred.png" },
+  { id: 39, name: "Slack",                  source: "workday",    logo: "/logos/slack.png" },
+  { id: 40, name: "Thomson Reuters",        source: "workday",    logo: "/logos/thomson-reuters.png" },
+  { id: 41, name: "Nvidia",                 source: "workday",    logo: "/logos/nvidia.png" },
+  { id: 42, name: "Adobe",                  source: "workday",    logo: "/logos/adobe.png" },
+  { id: 43, name: "Salesforce",             source: "workday",    logo: "/logos/salesforce.png" },
+  { id: 44, name: "Mastercard",             source: "workday",    logo: "/logos/mastercard.png" },
+  { id: 45, name: "HP",                     source: "workday",    logo: "/logos/hp.png" },
+  { id: 46, name: "Dell",                   source: "workday",    logo: "/logos/dell.png" },
+  { id: 47, name: "Walmart",                source: "workday",    logo: "/logos/walmart.png" },
+  { id: 48, name: "Target",                 source: "workday",    logo: "/logos/target.png" },
+  { id: 49, name: "FedEx",                  source: "workday",    logo: "/logos/fedex.png" },
+  { id: 50, name: "Philips",                source: "workday",    logo: "/logos/philips.png" },
+  { id: 51, name: "Netflix",                source: "workday",    logo: "/logos/netflix.png" },
+  { id: 52, name: "Autodesk",               source: "workday",    logo: "/logos/autodesk.png" },
+  { id: 53, name: "Morgan Stanley",         source: "eightfold",  logo: "/logos/morgan-stanley.jpeg" },
+  { id: 54, name: "PTC",                    source: "eightfold",  logo: "/logos/ptc.png" },
+  { id: 55, name: "Zebra",                  source: "eightfold",  logo: "/logos/zebra.jpg" },
+];
+
+/** Keyed by company name — drop-in replacement for company-logos.json imports */
+export const COMPANY_LOGOS: Record<string, string> = Object.fromEntries(
+  STATIC_COMPANIES.map((c) => [c.name, c.logo])
+);
+</file>
 
 <file path=".github/workflows/docker.yml">
 name: Build and Deploy to Cloud Run
@@ -3114,7 +4653,7 @@ import {
 import { fetchJobById as _fetchJobById } from "@/lib/api-server";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import companyLogos from "@/lib/company-logos.json";
+import { COMPANY_LOGOS as companyLogos } from "@/lib/companies-static";
 
 // Deduplicate gRPC calls between generateMetadata and the page component
 const fetchJobById = cache(_fetchJobById);
@@ -3197,7 +4736,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
   }
 
   const companyName = job.company?.name || "Company";
-  const logoUrl = (companyLogos as Record<string, string>)[companyName];
+  const logoUrl = companyLogos[companyName];
   const details = job.details || {};
   const postedAt = details.job_posted_at || "";
   const experience = details.experience_raw || formatExperience(details.experience_min, details.experience_max);
@@ -3806,6 +5345,12 @@ const PLACEHOLDERS = [
   "ML Engineer, PyTorch, Remote...",
 ];
 
+const STATS = [
+  { value: "50K+", label: "Engineers" },
+  { value: "100", label: "Companies" },
+  { value: "100%", label: "ATS Direct" },
+];
+
 export function Hero() {
   const [wordIndex, setWordIndex] = useState(0);
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
@@ -3849,6 +5394,22 @@ export function Hero() {
       />
 
       <div className="mx-auto max-w-screen-2xl px-4 pb-16 pt-24 text-center md:pb-24 md:pt-32">
+        {/* Live badge */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="mb-8 inline-flex items-center gap-2.5 rounded-full border border-emerald-500/25 bg-emerald-500/8 px-4 py-1.5"
+        >
+          <span className="relative flex h-2 w-2 shrink-0">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+          </span>
+          <span className="font-mono text-xs tracking-wide text-emerald-400">
+            Live · Direct from ATS · No recruiters · No spam
+          </span>
+        </motion.div>
+
         {/* Headline */}
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
@@ -3896,26 +5457,50 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
           className="mx-auto mt-10 max-w-xl"
         >
-          <div className="relative flex items-center rounded-xl border border-border/60 bg-secondary/80 shadow-2xl shadow-black/5 dark:shadow-black/40 transition-all focus-within:border-border focus-within:shadow-emerald-500/5">
+          <div
+            role="search"
+            className="relative flex items-center rounded-xl border border-border/60 bg-secondary/80 shadow-2xl shadow-black/5 dark:shadow-black/40 transition-all focus-within:border-border focus-within:shadow-emerald-500/5"
+          >
             <Search className="ml-4 h-5 w-5 shrink-0 text-muted-foreground" />
             <input
               ref={inputRef}
-              type="text"
+              type="search"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               placeholder={PLACEHOLDERS[placeholderIndex]}
+              aria-label="Search engineering jobs"
               className="h-14 flex-1 bg-transparent px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none sm:text-base"
             />
             <button
               onClick={handleSearch}
+              aria-label="Submit job search"
               className="mr-2 rounded-lg bg-foreground px-5 py-2 text-sm font-semibold text-background transition-all hover:opacity-90 active:scale-95"
             >
               Search
             </button>
           </div>
+        </motion.div>
+
+        {/* Stats row */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.65, ease: "easeOut" }}
+          className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-2"
+          aria-label="Platform statistics"
+        >
+          {STATS.map((stat, i) => (
+            <div key={stat.label} className="flex items-baseline gap-1.5">
+              {i > 0 && (
+                <span className="hidden text-border/60 sm:inline" aria-hidden="true">·</span>
+              )}
+              <span className="text-base font-bold text-foreground">{stat.value}</span>
+              <span className="text-sm text-muted-foreground">{stat.label}</span>
+            </div>
+          ))}
         </motion.div>
       </div>
     </section>
@@ -4183,8 +5768,11 @@ message GetRegionsResponse {
 import { Hero } from "@/components/landing/hero";
 import { JobTicker } from "@/components/landing/job-ticker";
 import { LandingJobFeed } from "@/components/landing/landing-job-feed";
-import { CTASection } from "@/components/landing/cta-section";
+// import { CTASection } from "@/components/landing/cta-section"; // not yet implemented — needs email backend
 import { Footer } from "@/components/landing/footer";
+import { FeaturesSection } from "@/components/landing/features-section";
+// import { TechStackSection } from "@/components/landing/tech-stack-section";
+import { ManifestoSection } from "@/components/landing/manifesto-section";
 
 export const dynamic = "force-dynamic";
 
@@ -4192,15 +5780,58 @@ export const metadata = {
   title: "Jobify — Find Your Next Engineering Role",
   description:
     "Direct from source ATS. No recruiters. No spam. Search thousands of engineering jobs by tech stack, location, and more.",
+  keywords: [
+    "find engineering jobs",
+    "software jobs no recruiter",
+    "remote developer jobs",
+    "ATS job board",
+    "tech jobs direct",
+    "engineering job search",
+  ],
+  openGraph: {
+    title: "Jobify — Find Your Next Engineering Role",
+    description: "Direct from source ATS. No recruiters. No spam. Search thousands of engineering jobs.",
+    url: "/",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Jobify — Find Your Next Engineering Role" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Jobify — Find Your Next Engineering Role",
+    description: "Direct from source ATS. No recruiters. No spam.",
+    images: ["/og-image.png"],
+  },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Jobify",
+  url: "https://jobify-portal-355605934376.asia-south1.run.app",
+  description: "Direct from source ATS engineering job board. No recruiters. No spam.",
+  potentialAction: {
+    "@type": "SearchAction",
+    target: {
+      "@type": "EntryPoint",
+      urlTemplate:
+        "https://jobify-portal-355605934376.asia-south1.run.app/jobs?q={search_term_string}",
+    },
+    "query-input": "required name=search_term_string",
+  },
 };
 
 export default function HomePage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Hero />
+      <FeaturesSection />
       <JobTicker />
       <LandingJobFeed />
-      <CTASection />
+      {/* <CTASection /> */}
+      <ManifestoSection />
       <Footer />
     </>
   );
@@ -4646,25 +6277,25 @@ export function Footer() {
       <div className="mx-auto flex max-w-screen-2xl flex-col items-center justify-between gap-4 px-4 py-8 sm:flex-row md:px-6">
         {/* Links */}
         <div className="flex gap-6 text-sm text-muted-foreground">
-          <Link href="#" className="transition-colors hover:text-foreground">
+          <Link href="/privacy" className="transition-colors hover:text-foreground">
             Privacy
           </Link>
-          <Link href="#" className="transition-colors hover:text-foreground">
+          <Link href="/terms" className="transition-colors hover:text-foreground">
             Terms
           </Link>
-          <Link href="#" className="transition-colors hover:text-foreground">
+          <Link href="/cookies" className="transition-colors hover:text-foreground">
             Cookies
           </Link>
         </div>
 
         {/* Social + Copyright */}
         <div className="flex items-center gap-4 text-muted-foreground">
-          <a href="#" className="transition-colors hover:text-foreground">
+          {/* <a href="#" className="transition-colors hover:text-foreground">
             <Twitter className="h-4 w-4" />
           </a>
           <a href="#" className="transition-colors hover:text-foreground">
             <Github className="h-4 w-4" />
-          </a>
+          </a> */}
           <span className="text-xs text-muted-foreground/80">
             © 2026 Jobify Inc. Built for builders.
           </span>
@@ -4678,9 +6309,9 @@ export function Footer() {
 <file path="src/components/landing/job-ticker.tsx">
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { fetchCompanies } from "@/app/actions/companies";
+import { STATIC_COMPANIES } from "@/lib/companies-static";
 
 interface TickerItem {
   id: number;
@@ -4698,6 +6329,12 @@ const COLORS = [
   "#14b8a6",
   "#f97316",
 ];
+
+const tickerItems: TickerItem[] = STATIC_COMPANIES.slice(0, 15).map((c, i) => ({
+  id: c.id,
+  company: c.name,
+  color: COLORS[i % COLORS.length],
+}));
 
 function TickerPill({ item }: { item: TickerItem }) {
   return (
@@ -4719,27 +6356,6 @@ export function JobTicker() {
   const positionRef = useRef(0);
   const isPausedRef = useRef(false);
 
-  const [tickerItems, setTickerItems] = useState<TickerItem[]>([]);
-
-  useEffect(() => {
-    async function loadCompanies() {
-      try {
-        const companies = await fetchCompanies();
-        // Get top 15 companies
-        const topCompanies = companies.slice(0, 15).map((c: any, i: number) => ({
-          id: c.id,
-          company: c.name,
-          color: COLORS[i % COLORS.length],
-        }));
-        setTickerItems(topCompanies);
-      } catch (err) {
-        console.error("Failed to load ticker companies", err);
-      }
-    }
-    loadCompanies();
-  }, []);
-
-  // Duplicate items for seamless infinite scroll
   const items = tickerItems.length > 0 ? [...tickerItems, ...tickerItems] : [];
 
   useEffect(() => {
@@ -4774,7 +6390,6 @@ export function JobTicker() {
 
   return (
     <section className="relative border-y border-border/60 bg-background py-5">
-      {/* Edge fades */}
       <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-background to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-background to-transparent" />
 
@@ -4850,65 +6465,6 @@ export function MobileFilterSheet({ savedFilters = [], maxFilters = 3 }: MobileF
       </SheetContent>
     </Sheet>
   );
-}
-</file>
-
-<file path="src/lib/company-logos.json">
-{
-  "Nice": "/logos/nice.png",
-  "RazorPay": "/logos/razorpay.png",
-  "Stripe": "/logos/stripe.png",
-  "Toast": "/logos/toast.png",
-  "Rubrik": "/logos/rubrik.png",
-  "Databricks": "/logos/databricks.png",
-  "Coinbase": "/logos/coinbase.png",
-  "MongoDB": "/logos/mongodb.png",
-  "Airbnb": "/logos/airbnb.png",
-  "The Trade Desk": "/logos/the-trade-desk.png",
-  "Tower Research Capital": "/logos/tower-research-capital.png",
-  "Hackerrank": "/logos/hackerrank.png",
-  "Cloudflare": "/logos/cloudflare.png",
-  "Diligent Corporation": "/logos/diligent-corporation.png",
-  "Altium": "/logos/altium.png",
-  "Coursera": "/logos/coursera.png",
-  "Tekion": "/logos/tekion.png",
-  "Flexport": "/logos/flexport.png",
-  "New Relic": "/logos/new-relic.png",
-  "CommerceIQ": "/logos/commerceiq.png",
-  "Yugabyte": "/logos/yugabyte.png",
-  "Postman": "/logos/postman.png",
-  "Rockstar Games": "/logos/rockstar-games.png",
-  "FamPay": "/logos/fampay.png",
-  "Netomi": "/logos/netomi.png",
-  "Mindtickle": "/logos/mindtickle.png",
-  "Paytm": "/logos/paytm.png",
-  "Upstox": "/logos/upstox.png",
-  "ION": "/logos/ion.png",
-  "pattern": "/logos/pattern.png",
-  "SAFE": "/logos/safe.png",
-  "Brillio": "/logos/brillio.png",
-  "Sprinto": "/logos/sprinto.png",
-  "Zeta": "/logos/zeta.png",
-  "Skypoint": "/logos/skypoint.png",
-  "Dozee": "/logos/dozee.png",
-  "CRED": "/logos/cred.png",
-  "Slack": "/logos/slack.png",
-  "Thomson Reuters": "/logos/thomson-reuters.png",
-  "Nvidia": "/logos/nvidia.png",
-  "Adobe": "/logos/adobe.png",
-  "Salesforce": "/logos/salesforce.png",
-  "Mastercard": "/logos/mastercard.png",
-  "HP": "/logos/hp.png",
-  "Dell": "/logos/dell.png",
-  "Walmart": "/logos/walmart.png",
-  "Target": "/logos/target.png",
-  "FedEx": "/logos/fedex.png",
-  "Philips": "/logos/philips.png",
-  "Netflix": "/logos/netflix.png",
-  "Autodesk": "/logos/autodesk.png",
-  "Morgan Stanley": "/logos/morgan-stanley.jpeg",
-  "PTC": "/logos/ptc.png",
-  "Zebra": "/logos/zebra.jpg"
 }
 </file>
 
@@ -5541,17 +7097,19 @@ export async function Navbar() {
             Jobs
           </Link>
           <Link
-            href="#"
+            href="/companies"
             className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
             Companies
           </Link>
+          {/* Salary Insights — not yet implemented
           <Link
             href="#"
             className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
             Salary Insights
           </Link>
+          */}
         </nav>
 
         {/* Actions */}
@@ -5574,7 +7132,7 @@ export async function Navbar() {
 <file path="src/components/search/job-card.tsx">
 import { FileText, ExternalLink, MapPin, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import companyLogos from "@/lib/company-logos.json";
+import { COMPANY_LOGOS as companyLogos } from "@/lib/companies-static";
 
 interface JobCardProps {
   job: any; // We'll type this fully later
@@ -5593,7 +7151,7 @@ export function JobCard({ job, index }: JobCardProps) {
   const tags: string[] = job.matched_tags || [];
 
   const companyName = job.company?.name;
-  const logoUrl = companyName ? (companyLogos as Record<string, string>)[companyName] : undefined;
+  const logoUrl = companyName ? companyLogos[companyName] : undefined;
 
   return (
     <div
@@ -6265,6 +7823,30 @@ export const metadata: Metadata = {
   title: "Jobify — Find Your Next Role",
   description:
     "Search thousands of engineering jobs. Filter by tech stack, location, remote status, and more.",
+  keywords: [
+    "engineering jobs",
+    "software developer jobs",
+    "remote tech jobs",
+    "ATS jobs",
+    "no recruiter jobs",
+    "software engineer jobs",
+    "developer job board",
+  ],
+  openGraph: {
+    type: "website",
+    siteName: "Jobify",
+    title: "Jobify — Find Your Next Role",
+    description:
+      "Search thousands of engineering jobs. Filter by tech stack, location, remote status, and more.",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Jobify" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Jobify — Find Your Next Role",
+    description: "Search thousands of engineering jobs. Filter by tech stack, location, remote status, and more.",
+    images: ["/og-image.png"],
+  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({
@@ -6559,7 +8141,7 @@ import {
   fetchRegions,
   fetchCities,
 } from "@/app/actions/locations";
-import { fetchCompanies } from "@/app/actions/companies";
+import { STATIC_COMPANIES } from "@/lib/companies-static";
 
 const TECH_TAGS = [
   "React",
@@ -6804,31 +8386,12 @@ function LocationFilter() {
 }
 
 /* ────────────────── Company Filter ────────────────── */
-let _companiesCache: { id: number | string; name: string }[] = [];
-let _companiesFetched = false;
-
 function CompanyFilter() {
   const [companyId, setCompanyId] = useQueryState("company_id", parseAsString.withDefault(""));
   const [isOpen, setIsOpen] = useState(true);
   const [openCombobox, setOpenCombobox] = useState(false);
-  const [companies, setCompanies] = useState<{ id: number | string; name: string }[]>(_companiesCache);
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (_companiesFetched) {
-      setCompanies(_companiesCache);
-      return;
-    }
-    setLoading(true);
-    fetchCompanies().then((data) => {
-      _companiesCache = data;
-      _companiesFetched = true;
-      setCompanies(data);
-      setLoading(false);
-    });
-  }, []);
-
-  const selectedCompany = companies.find((c) => String(c.id) === companyId);
+  const selectedCompany = STATIC_COMPANIES.find((c) => String(c.id) === companyId);
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -6852,11 +8415,7 @@ function CompanyFilter() {
                 aria-expanded={openCombobox}
                 className="w-full justify-between h-8 border-border/50 bg-secondary/30 text-xs text-muted-foreground hover:bg-secondary/50 font-normal"
               >
-                {loading
-                  ? "Loading..."
-                  : selectedCompany
-                  ? selectedCompany.name
-                  : "All companies"}
+                {selectedCompany ? selectedCompany.name : "All companies"}
                 <ChevronsUpDown className="ml-2 h-3 w-3 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
@@ -6882,7 +8441,7 @@ function CompanyFilter() {
                       />
                       All companies
                     </CommandItem>
-                    {companies.map((company) => (
+                    {STATIC_COMPANIES.map((company) => (
                       <CommandItem
                         key={company.id}
                         value={company.name}

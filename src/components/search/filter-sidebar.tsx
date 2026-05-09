@@ -38,7 +38,7 @@ import {
   fetchRegions,
   fetchCities,
 } from "@/app/actions/locations";
-import { fetchCompanies } from "@/app/actions/companies";
+import { STATIC_COMPANIES } from "@/lib/companies-static";
 
 const TECH_TAGS = [
   "React",
@@ -283,31 +283,12 @@ function LocationFilter() {
 }
 
 /* ────────────────── Company Filter ────────────────── */
-let _companiesCache: { id: number | string; name: string }[] = [];
-let _companiesFetched = false;
-
 function CompanyFilter() {
   const [companyId, setCompanyId] = useQueryState("company_id", parseAsString.withDefault(""));
   const [isOpen, setIsOpen] = useState(true);
   const [openCombobox, setOpenCombobox] = useState(false);
-  const [companies, setCompanies] = useState<{ id: number | string; name: string }[]>(_companiesCache);
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (_companiesFetched) {
-      setCompanies(_companiesCache);
-      return;
-    }
-    setLoading(true);
-    fetchCompanies().then((data) => {
-      _companiesCache = data;
-      _companiesFetched = true;
-      setCompanies(data);
-      setLoading(false);
-    });
-  }, []);
-
-  const selectedCompany = companies.find((c) => String(c.id) === companyId);
+  const selectedCompany = STATIC_COMPANIES.find((c) => String(c.id) === companyId);
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -331,11 +312,7 @@ function CompanyFilter() {
                 aria-expanded={openCombobox}
                 className="w-full justify-between h-8 border-border/50 bg-secondary/30 text-xs text-muted-foreground hover:bg-secondary/50 font-normal"
               >
-                {loading
-                  ? "Loading..."
-                  : selectedCompany
-                  ? selectedCompany.name
-                  : "All companies"}
+                {selectedCompany ? selectedCompany.name : "All companies"}
                 <ChevronsUpDown className="ml-2 h-3 w-3 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
@@ -361,7 +338,7 @@ function CompanyFilter() {
                       />
                       All companies
                     </CommandItem>
-                    {companies.map((company) => (
+                    {STATIC_COMPANIES.map((company) => (
                       <CommandItem
                         key={company.id}
                         value={company.name}

@@ -22,6 +22,12 @@ const PLACEHOLDERS = [
   "ML Engineer, PyTorch, Remote...",
 ];
 
+const STATS = [
+  { value: "50K+", label: "Engineers" },
+  { value: "100", label: "Companies" },
+  { value: "100%", label: "ATS Direct" },
+];
+
 export function Hero() {
   const [wordIndex, setWordIndex] = useState(0);
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
@@ -65,6 +71,22 @@ export function Hero() {
       />
 
       <div className="mx-auto max-w-screen-2xl px-4 pb-16 pt-24 text-center md:pb-24 md:pt-32">
+        {/* Live badge */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="mb-8 inline-flex items-center gap-2.5 rounded-full border border-emerald-500/25 bg-emerald-500/8 px-4 py-1.5"
+        >
+          <span className="relative flex h-2 w-2 shrink-0">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+          </span>
+          <span className="font-mono text-xs tracking-wide text-emerald-400">
+            Live · Direct from ATS · No recruiters · No spam
+          </span>
+        </motion.div>
+
         {/* Headline */}
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
@@ -112,26 +134,50 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
           className="mx-auto mt-10 max-w-xl"
         >
-          <div className="relative flex items-center rounded-xl border border-border/60 bg-secondary/80 shadow-2xl shadow-black/5 dark:shadow-black/40 transition-all focus-within:border-border focus-within:shadow-emerald-500/5">
+          <div
+            role="search"
+            className="relative flex items-center rounded-xl border border-border/60 bg-secondary/80 shadow-2xl shadow-black/5 dark:shadow-black/40 transition-all focus-within:border-border focus-within:shadow-emerald-500/5"
+          >
             <Search className="ml-4 h-5 w-5 shrink-0 text-muted-foreground" />
             <input
               ref={inputRef}
-              type="text"
+              type="search"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               placeholder={PLACEHOLDERS[placeholderIndex]}
+              aria-label="Search engineering jobs"
               className="h-14 flex-1 bg-transparent px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none sm:text-base"
             />
             <button
               onClick={handleSearch}
+              aria-label="Submit job search"
               className="mr-2 rounded-lg bg-foreground px-5 py-2 text-sm font-semibold text-background transition-all hover:opacity-90 active:scale-95"
             >
               Search
             </button>
           </div>
+        </motion.div>
+
+        {/* Stats row */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.65, ease: "easeOut" }}
+          className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-2"
+          aria-label="Platform statistics"
+        >
+          {STATS.map((stat, i) => (
+            <div key={stat.label} className="flex items-baseline gap-1.5">
+              {i > 0 && (
+                <span className="hidden text-border/60 sm:inline" aria-hidden="true">·</span>
+              )}
+              <span className="text-base font-bold text-foreground">{stat.value}</span>
+              <span className="text-sm text-muted-foreground">{stat.label}</span>
+            </div>
+          ))}
         </motion.div>
       </div>
     </section>
