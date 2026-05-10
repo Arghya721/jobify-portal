@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
 import { auth } from "@/auth";
 import { UserMenu } from "@/components/user-menu";
 import { ForceLogout } from "@/components/force-logout";
 import { BrandLogo } from "@/components/brand-logo";
+import { MobileMenu } from "@/components/navbar-mobile-menu";
 
 export async function Navbar() {
   const session = await auth();
@@ -54,18 +56,27 @@ export async function Navbar() {
           >
             Companies
           </Link>
-          {/* Salary Insights — not yet implemented
-          <Link
-            href="#"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Salary Insights
-          </Link>
-          */}
+          {session?.user && (
+            <Link
+              href="/filters"
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            >
+              Saved Filters
+            </Link>
+          )}
         </nav>
 
         {/* Actions */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          {session?.user && (
+            <Link
+              href="/settings/notifications"
+              aria-label="Notification settings"
+              className="hidden md:inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            >
+              <Bell className="h-4 w-4" />
+            </Link>
+          )}
           {session?.user ? (
             <UserMenu user={session.user} />
           ) : (
@@ -74,6 +85,7 @@ export async function Navbar() {
             </Link>
           )}
           <ModeToggle />
+          <MobileMenu isLoggedIn={!!session?.user} />
         </div>
       </div>
     </header>

@@ -130,6 +130,13 @@ export function ManifestoSection() {
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
+              href="/filters"
+              className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/8 px-6 py-3 text-sm font-medium text-emerald-400 transition-all hover:border-emerald-500/50 hover:bg-emerald-500/12 hover:text-emerald-300 active:scale-95"
+            >
+              Save your search
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
               href="/companies"
               className="inline-flex items-center gap-2 rounded-full border border-border/50 px-6 py-3 text-sm font-medium text-muted-foreground transition-all hover:border-border hover:text-foreground"
             >

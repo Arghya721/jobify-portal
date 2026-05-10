@@ -4,6 +4,7 @@ import { LandingJobFeed } from "@/components/landing/landing-job-feed";
 // import { CTASection } from "@/components/landing/cta-section"; // not yet implemented — needs email backend
 import { Footer } from "@/components/landing/footer";
 import { FeaturesSection } from "@/components/landing/features-section";
+import { LandingPowerStrip } from "@/components/landing/landing-power-strip";
 // import { TechStackSection } from "@/components/landing/tech-stack-section";
 import { ManifestoSection } from "@/components/landing/manifesto-section";
 
@@ -63,6 +64,7 @@ export default function HomePage() {
       <FeaturesSection />
       <JobTicker />
       <LandingJobFeed />
+      <LandingPowerStrip />
       {/* <CTASection /> */}
       <ManifestoSection />
       <Footer />

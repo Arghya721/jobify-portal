@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
-import { Database, SlidersHorizontal, Zap } from "lucide-react";
+import { Database, BookmarkCheck, Bell } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 interface Feature {
@@ -9,6 +11,8 @@ interface Feature {
   icon: LucideIcon;
   title: string;
   description: string;
+  href?: string;
+  cta?: string;
 }
 
 const FEATURES: Feature[] = [
@@ -21,17 +25,21 @@ const FEATURES: Feature[] = [
   },
   {
     index: "02",
-    icon: SlidersHorizontal,
-    title: "Stack-first filtering",
+    icon: BookmarkCheck,
+    title: "Saved Filters",
     description:
-      "Filter by language, framework, and remote status — not just job title keywords. Find the stack you actually want to work in.",
+      "Save up to 3 filter presets — stack, location, remote status. Restore your exact search in one click. No re-configuring every session.",
+    href: "/filters",
+    cta: "Try it",
   },
   {
     index: "03",
-    icon: Zap,
-    title: "Real-time feed",
+    icon: Bell,
+    title: "Smart Alerts",
     description:
-      "New roles land within minutes of posting. Set alerts, save searches, and never miss the window on a fresh opening.",
+      "Connect Telegram or Discord. Get notified the moment a matching role posts — before the window closes on a fresh opening.",
+    href: "/settings/notifications",
+    cta: "Set up alerts",
   },
 ];
 
@@ -101,6 +109,17 @@ export function FeaturesSection() {
                 <p className="text-sm leading-relaxed text-muted-foreground">
                   {feature.description}
                 </p>
+
+                {/* CTA link */}
+                {feature.href && feature.cta && (
+                  <Link
+                    href={feature.href}
+                    className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-emerald-400 transition-colors hover:text-emerald-300"
+                  >
+                    {feature.cta}
+                    <ArrowRight className="h-3 w-3" />
+                  </Link>
+                )}
 
                 {/* Bottom slide-in accent */}
                 <div
