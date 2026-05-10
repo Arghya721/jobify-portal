@@ -17,8 +17,8 @@ export async function Navbar() {
     return (
       <>
         <ForceLogout />
-        <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl">
-          <div className="mx-auto flex h-14 max-w-screen-2xl items-center justify-between px-4 md:px-6">
+        <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl" suppressHydrationWarning>
+          <div className="mx-auto flex h-14 max-w-screen-2xl items-center justify-between px-4 md:px-6" suppressHydrationWarning>
             <Link href="/" className="flex items-center gap-2">
               <BrandLogo className="h-8 w-8" priority />
               <span className="text-lg font-semibold tracking-tight text-foreground">
@@ -32,8 +32,8 @@ export async function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl">
-      <div className="mx-auto flex h-14 max-w-screen-2xl items-center justify-between px-4 md:px-6">
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl" suppressHydrationWarning>
+      <div className="mx-auto flex h-14 max-w-screen-2xl items-center justify-between px-4 md:px-6" suppressHydrationWarning>
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <BrandLogo className="h-8 w-8" priority />

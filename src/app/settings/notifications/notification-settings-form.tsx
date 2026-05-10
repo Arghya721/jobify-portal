@@ -129,7 +129,7 @@ export function NotificationSettingsForm({
       </div>
 
       <div className="flex justify-end pt-4">
-        <Button onClick={handleSave} disabled={isPending}>
+        <Button onClick={handleSave} disabled={isPending} className="w-full sm:w-auto">
           {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Save Notification Settings
         </Button>

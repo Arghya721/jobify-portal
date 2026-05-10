@@ -60,7 +60,7 @@ export default async function SessionsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl py-12 px-6">
+    <div className="mx-auto max-w-4xl py-8 px-4 md:py-12 md:px-6">
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight">Active Sessions</h1>
         <p className="text-muted-foreground mt-2">
@@ -80,30 +80,29 @@ export default async function SessionsPage() {
           const readableDevice = formatDeviceInfo(s.deviceInfo);
 
           return (
-            <div key={s.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 rounded-xl border border-border/50 bg-card shadow-sm hover:shadow-md transition-all">
-              <div className="flex items-center gap-4">
-                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                  <DeviceIcon className="h-6 w-6 text-primary" />
+            <div key={s.id} className="flex flex-col gap-4 p-5 rounded-xl border border-border/50 bg-card shadow-sm hover:shadow-md transition-all sm:flex-row sm:items-center sm:justify-between sm:p-6">
+              <div className="flex items-start gap-4 min-w-0">
+                <div className="h-11 w-11 shrink-0 rounded-full bg-primary/10 flex items-center justify-center">
+                  <DeviceIcon className="h-5 w-5 text-primary" />
                 </div>
-                <div>
-                  <h3 className="font-semibold text-lg flex items-center gap-2" title={s.deviceInfo}>
+                <div className="min-w-0">
+                  <h3 className="font-semibold text-base truncate" title={s.deviceInfo}>
                     {readableDevice}
                   </h3>
-                  
                   <div className="flex flex-col mt-1 text-sm text-muted-foreground gap-1">
-                    <span className="flex items-center gap-1.5">
-                      <MapPin className="h-3.5 w-3.5" />
-                      {s.location || "Unknown Location"} • {s.ipAddress || "Hidden IP"}
+                    <span className="flex items-start gap-1.5 min-w-0">
+                      <MapPin className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+                      <span className="break-all">{s.location || "Unknown Location"} · {s.ipAddress || "Hidden IP"}</span>
                     </span>
                     <span className="flex items-center gap-1.5">
-                      <Clock className="h-3.5 w-3.5" />
-                      Signed in: {createdAt} 
+                      <Clock className="h-3.5 w-3.5 shrink-0" />
+                      Signed in: {createdAt}
                     </span>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-4 sm:mt-0 flex flex-col items-end gap-2">
+              <div className="flex flex-row items-center justify-between gap-3 sm:flex-col sm:items-end sm:gap-2">
                 <span className="text-xs text-muted-foreground">
                   Last active: {lastUsed}
                 </span>

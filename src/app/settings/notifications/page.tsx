@@ -12,7 +12,7 @@ export default async function NotificationsPage() {
   const { settings, error } = await getNotificationSettingsAction();
 
   return (
-    <div className="mx-auto max-w-4xl py-12 px-6">
+    <div className="mx-auto max-w-4xl py-8 px-4 md:py-12 md:px-6">
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight">Notification Settings</h1>
         <p className="text-muted-foreground mt-2">
