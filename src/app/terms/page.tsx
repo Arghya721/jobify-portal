@@ -8,7 +8,7 @@ export const metadata = {
 };
 
 const LAST_UPDATED = "May 9, 2026";
-const CONTACT_EMAIL = "legal@jobify.dev";
+const CONTACT_EMAIL = "support@jobify.run";
 
 function Section({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
   return (
