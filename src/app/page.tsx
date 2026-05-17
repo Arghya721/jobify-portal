@@ -40,14 +40,14 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: "Jobify",
-  url: "https://jobify-portal-355605934376.asia-south1.run.app",
+  url: "https://jobify.run",
   description: "Direct from source ATS engineering job board. No recruiters. No spam.",
   potentialAction: {
     "@type": "SearchAction",
     target: {
       "@type": "EntryPoint",
       urlTemplate:
-        "https://jobify-portal-355605934376.asia-south1.run.app/jobs?q={search_term_string}",
+        "https://jobify.run/jobs?q={search_term_string}",
     },
     "query-input": "required name=search_term_string",
   },

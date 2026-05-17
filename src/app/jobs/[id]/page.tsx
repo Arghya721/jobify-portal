@@ -22,7 +22,7 @@ import { COMPANY_LOGOS as companyLogos } from "@/lib/companies-static";
 // Deduplicate gRPC calls between generateMetadata and the page component
 const fetchJobById = cache(_fetchJobById);
 
-const SITE_URL = process.env.AUTH_URL || "https://jobify-portal-355605934376.asia-south1.run.app";
+const SITE_URL = process.env.AUTH_URL || "https://jobify.run";
 
 type JobLocation = {
   city?: { name?: string };

@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 
 const BASE_URL =
   process.env.AUTH_URL ||
-  "https://jobify-portal-355605934376.asia-south1.run.app";
+  "https://jobify.run";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [

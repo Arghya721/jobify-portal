@@ -1330,7 +1330,7 @@ import { MetadataRoute } from "next";
 
 const BASE_URL =
   process.env.AUTH_URL ||
-  "https://jobify-portal-355605934376.asia-south1.run.app";
+  "https://jobify.run";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -1423,7 +1423,7 @@ import { MetadataRoute } from "next";
 
 const BASE_URL =
   process.env.AUTH_URL ||
-  "https://jobify-portal-355605934376.asia-south1.run.app";
+  "https://jobify.run";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
@@ -5581,7 +5581,7 @@ import { COMPANY_LOGOS as companyLogos } from "@/lib/companies-static";
 // Deduplicate gRPC calls between generateMetadata and the page component
 const fetchJobById = cache(_fetchJobById);
 
-const SITE_URL = process.env.AUTH_URL || "https://jobify-portal-355605934376.asia-south1.run.app";
+const SITE_URL = process.env.AUTH_URL || "https://jobify.run";
 
 type JobLocation = {
   city?: { name?: string };
@@ -7820,14 +7820,14 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: "Jobify",
-  url: "https://jobify-portal-355605934376.asia-south1.run.app",
+  url: "https://jobify.run",
   description: "Direct from source ATS engineering job board. No recruiters. No spam.",
   potentialAction: {
     "@type": "SearchAction",
     target: {
       "@type": "EntryPoint",
       urlTemplate:
-        "https://jobify-portal-355605934376.asia-south1.run.app/jobs?q={search_term_string}",
+        "https://jobify.run/jobs?q={search_term_string}",
     },
     "query-input": "required name=search_term_string",
   },
@@ -8190,7 +8190,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.AUTH_URL || "https://jobify-portal-355605934376.asia-south1.run.app"),
+  metadataBase: new URL(process.env.AUTH_URL || "https://jobify.run"),
   title: "Jobify — Find Your Next Role",
   description:
     "Search thousands of engineering jobs. Filter by tech stack, location, remote status, and more.",
