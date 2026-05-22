@@ -1,6 +1,8 @@
 import { MetadataRoute } from "next";
 import { fetchJobs } from "@/lib/api-server";
 
+export const dynamic = "force-dynamic";
+
 const BASE_URL = process.env.AUTH_URL || "https://jobify.run";
 const GRPC_PAGE_SIZE = 500;
 
