@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Navbar } from "@/components/navbar";
+import { NavbarScrollWrapper } from "@/components/navbar-scroll-wrapper";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ViewTransitionHandler } from "@/components/ui/transition-anchor";
 import "./globals.css";
@@ -73,8 +74,16 @@ export default function RootLayout({
         >
           <NuqsAdapter>
             <ViewTransitionHandler />
-            <Navbar />
-            <main>{children}</main>
+            {/* Persistent emerald atmosphere — fixed parallax layer behind all content */}
+            <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+              <div className="orb-a absolute -left-[15%] top-[2%] h-[700px] w-[700px] rounded-full bg-emerald-500/[0.08] blur-[140px]" />
+              <div className="orb-b absolute -right-[8%] top-[20%] h-[580px] w-[580px] rounded-full bg-emerald-400/[0.06] blur-[115px]" />
+              <div className="orb-c absolute left-[22%] top-[45%] h-[500px] w-[500px] rounded-full bg-emerald-600/[0.045] blur-[105px]" />
+              <div className="orb-d absolute -right-[10%] top-[63%] h-[640px] w-[640px] rounded-full bg-emerald-500/[0.065] blur-[130px]" />
+              <div className="orb-e absolute -left-[8%] top-[82%] h-[540px] w-[540px] rounded-full bg-emerald-400/[0.05] blur-[115px]" />
+            </div>
+            <NavbarScrollWrapper><Navbar /></NavbarScrollWrapper>
+            <main className="relative z-[1]">{children}</main>
           </NuqsAdapter>
         </ThemeProvider>
       </body>

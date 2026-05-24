@@ -74,18 +74,14 @@ export function JobTicker() {
   }, [items.length]);
 
   if (tickerItems.length === 0) {
-    return (
-      <section className="relative border-y border-border/60 bg-background py-5 h-[62px]" />
-    );
+    return <section className="relative py-5 h-[62px]" />;
   }
 
   return (
-    <section className="relative border-y border-border/60 bg-background py-5">
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-background to-transparent" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-background to-transparent" />
-
+    <section className="relative py-5">
       <div
         className="overflow-hidden"
+        style={{ maskImage: "linear-gradient(to right, transparent, black 96px, black calc(100% - 96px), transparent)" }}
         onMouseEnter={() => (isPausedRef.current = true)}
         onMouseLeave={() => (isPausedRef.current = false)}
       >

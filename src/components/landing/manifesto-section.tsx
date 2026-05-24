@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 const MANIFESTO = [
   "NO RECRUITERS",
@@ -43,7 +44,7 @@ function MarqueeStrip({
 }) {
   const doubled = [...items, ...items];
   return (
-    <div className="overflow-hidden border-y border-border/30 py-3.5">
+    <div className="overflow-hidden py-3.5">
       <div
         style={{
           display: "flex",
@@ -52,10 +53,7 @@ function MarqueeStrip({
         }}
       >
         {doubled.map((item, i) => (
-          <span
-            key={i}
-            className="inline-flex shrink-0 items-center gap-5 px-3"
-          >
+          <span key={i} className="inline-flex shrink-0 items-center gap-5 px-3">
             <span className="whitespace-nowrap font-mono text-[11px] tracking-[0.22em] text-muted-foreground/40">
               {item}
             </span>
@@ -68,8 +66,50 @@ function MarqueeStrip({
 }
 
 export function ManifestoSection() {
+  const headingRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let killed = false;
+
+    Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(
+      ([{ gsap }, { ScrollTrigger }]) => {
+        if (killed) return;
+        gsap.registerPlugin(ScrollTrigger);
+
+        const words = headingRef.current?.querySelectorAll<HTMLElement>(".gsap-word");
+        if (!words?.length) return;
+
+        gsap.fromTo(
+          words,
+          { opacity: 0.1, willChange: "opacity" },
+          {
+            opacity: 1,
+            stagger: 0.07,
+            ease: "none",
+            scrollTrigger: {
+              trigger: headingRef.current,
+              start: "top 80%",
+              end: "bottom 35%",
+              scrub: 1,
+            },
+          }
+        );
+      }
+    );
+
+    return () => {
+      killed = true;
+      import("gsap/ScrollTrigger").then(({ ScrollTrigger }) => {
+        ScrollTrigger.getAll().forEach((t) => t.kill());
+      });
+    };
+  }, []);
+
   return (
-    <section className="relative border-t border-border/60" aria-labelledby="manifesto-heading">
+    <section className="relative" aria-labelledby="manifesto-heading">
       <style>{`
         @keyframes marquee-left {
           from { transform: translateX(0); }
@@ -81,10 +121,8 @@ export function ManifestoSection() {
         }
       `}</style>
 
-      {/* Manifesto strip — scrolls left */}
       <MarqueeStrip items={MANIFESTO} speed={38} />
 
-      {/* Center */}
       <div className="px-4 py-24 text-center md:py-32">
         <motion.div
           initial={{ opacity: 0, y: 22 }}
@@ -92,15 +130,29 @@ export function ManifestoSection() {
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.7, ease: "easeOut" }}
         >
+          <p className="mb-6 font-mono text-xs tracking-[0.2em] text-emerald-400/70 uppercase">
+            The Jobify way
+          </p>
+
+          {/* GSAP word-scrub headline */}
           <h2
             id="manifesto-heading"
-            className="text-5xl font-bold tracking-tight text-foreground sm:text-6xl md:text-7xl lg:text-8xl"
+            ref={headingRef}
+            className="text-5xl font-bold tracking-tight text-foreground sm:text-6xl md:text-7xl"
             style={{ lineHeight: 1.04 }}
           >
-            Better jobs.
+            {"Better jobs.".split(" ").map((word, i) => (
+              <span key={`a-${i}`} className="gsap-word inline-block" style={{ marginRight: "0.25em" }}>
+                {word}
+              </span>
+            ))}
             <br />
-            <span className="bg-gradient-to-r from-emerald-400 to-emerald-300 bg-clip-text text-transparent">
-              Zero noise.
+            <span className="text-emerald-400">
+              {"Zero noise.".split(" ").map((word, i) => (
+                <span key={`b-${i}`} className="gsap-word inline-block" style={{ marginRight: i === 0 ? "0.25em" : 0 }}>
+                  {word}
+                </span>
+              ))}
             </span>
           </h2>
 
@@ -124,21 +176,21 @@ export function ManifestoSection() {
           >
             <Link
               href="/jobs"
-              className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-semibold text-background transition-all hover:opacity-90 active:scale-95"
+              className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-semibold text-background transition-[transform,opacity] duration-150 hover:opacity-90 active:scale-[0.97]"
             >
               Browse open roles
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               href="/filters"
-              className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/8 px-6 py-3 text-sm font-medium text-emerald-400 transition-all hover:border-emerald-500/50 hover:bg-emerald-500/12 hover:text-emerald-300 active:scale-95"
+              className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/8 px-6 py-3 text-sm font-medium text-emerald-400 transition-[transform,border-color,background-color,color] duration-150 hover:border-emerald-500/50 hover:bg-emerald-500/12 hover:text-emerald-300 active:scale-[0.97]"
             >
               Save your search
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               href="/companies"
-              className="inline-flex items-center gap-2 rounded-full border border-border/50 px-6 py-3 text-sm font-medium text-muted-foreground transition-all hover:border-border hover:text-foreground"
+              className="inline-flex items-center gap-2 rounded-full border border-border/50 px-6 py-3 text-sm font-medium text-muted-foreground transition-[transform,border-color,color] duration-150 hover:border-border hover:text-foreground active:scale-[0.97]"
             >
               View companies
             </Link>
@@ -146,7 +198,6 @@ export function ManifestoSection() {
         </motion.div>
       </div>
 
-      {/* Tech stack strip — scrolls right */}
       <MarqueeStrip items={STACKS} reverse speed={50} />
     </section>
   );

@@ -71,10 +71,10 @@ export function LandingJobFeedClient({ initialJobs }: { initialJobs: any[] }) {
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`rounded-full border px-4 py-1.5 text-sm font-medium transition-all ${
+              className={`rounded-full border px-4 py-1.5 text-sm font-medium transition-[border-color,background-color,color] duration-150 active:scale-[0.97] ${
                 activeCategory === cat
-                  ? "border-muted-foreground bg-secondary text-foreground"
-                  : "border-border text-muted-foreground hover:border-border/80 hover:bg-secondary/40 hover:text-foreground/80"
+                  ? "border-emerald-500/30 bg-emerald-500/8 text-emerald-400"
+                  : "border-border text-muted-foreground hover:border-border/80 hover:bg-secondary/40 hover:text-foreground"
               }`}
             >
               {cat}
@@ -125,7 +125,7 @@ export function LandingJobFeedClient({ initialJobs }: { initialJobs: any[] }) {
       <div className="mt-8 flex justify-center">
         <a
           href={activeCategory === "All Jobs" ? "/jobs" : `/jobs?tags=${activeCategory}`}
-          className="rounded-xl border border-border px-8 py-3 text-sm font-medium text-muted-foreground transition-all hover:border-border/80 hover:bg-secondary/60 hover:text-foreground"
+          className="rounded-full border border-border/50 px-8 py-3 text-sm font-medium text-muted-foreground transition-[border-color,background-color,color] duration-150 hover:border-border hover:bg-secondary/60 hover:text-foreground active:scale-[0.97]"
         >
           Explore All Opportunities
         </a>

@@ -31,12 +31,6 @@ export function LandingPowerStrip() {
       className="relative py-16 md:py-20"
       aria-labelledby="power-strip-heading"
     >
-      {/* Top divider */}
-      <div
-        className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border/60 to-transparent"
-        aria-hidden="true"
-      />
-
       <div className="mx-auto max-w-screen-2xl px-4 md:px-6">
         {/* Section header */}
         <motion.div
@@ -71,7 +65,7 @@ export function LandingPowerStrip() {
               >
                 <Link
                   href={feature.href}
-                  className="group flex h-full flex-col gap-4 rounded-2xl border border-border/40 bg-card/50 p-7 backdrop-blur-sm transition-all duration-300 hover:border-emerald-500/30 hover:bg-card/80 hover:shadow-lg hover:shadow-emerald-500/5"
+                  className="group flex h-full flex-col gap-4 rounded-2xl border border-border/40 bg-card/50 p-7 backdrop-blur-sm transition-[transform,border-color,background-color,box-shadow] duration-200 hover:border-emerald-500/30 hover:bg-card/80 hover:shadow-lg hover:shadow-emerald-500/5 active:scale-[0.99]"
                 >
                   {/* Header row */}
                   <div className="flex items-start justify-between gap-3">
@@ -105,11 +99,6 @@ export function LandingPowerStrip() {
         </div>
       </div>
 
-      {/* Bottom divider */}
-      <div
-        className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-border/60 to-transparent"
-        aria-hidden="true"
-      />
     </section>
   );
 }

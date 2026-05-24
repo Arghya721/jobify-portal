@@ -23,7 +23,7 @@ export function JobCard({ job, index }: JobCardProps) {
 
   return (
     <div
-      className="job-card-enter group relative rounded-xl border border-border/50 bg-card/50 p-5 transition-all duration-200 hover:border-border hover:bg-card/80 hover:shadow-lg hover:shadow-black/20"
+      className="job-card-enter group relative rounded-xl border border-border/50 bg-card/50 p-5 transition-[border-color,background-color,box-shadow,transform] duration-200 hover:border-border hover:bg-card/80 hover:shadow-lg hover:shadow-black/20 active:scale-[0.99]"
       style={{ animationDelay: `${index * 60}ms`, viewTransitionName: `job-card-${job.id}` as any }}
     >
       <a
@@ -104,7 +104,7 @@ export function JobCard({ job, index }: JobCardProps) {
             href={job.job_url || "#"}
             target="_blank"
             rel="noopener noreferrer"
-            className="pointer-events-auto relative z-30 mt-1 inline-flex items-center gap-1.5 rounded-lg border border-border/60 bg-secondary/30 px-3.5 py-1.5 text-xs font-medium text-muted-foreground transition-all hover:border-border hover:bg-secondary/60 hover:text-foreground"
+            className="pointer-events-auto relative z-30 mt-1 inline-flex items-center gap-1.5 rounded-lg border border-border/60 bg-secondary/30 px-3.5 py-1.5 text-xs font-medium text-muted-foreground transition-[transform,border-color,background-color,color] duration-150 hover:border-border hover:bg-secondary/60 hover:text-foreground active:scale-[0.97]"
           >
             View <ExternalLink className="h-3 w-3" />
           </a>
@@ -127,7 +127,7 @@ export function JobCard({ job, index }: JobCardProps) {
           href={job.job_url || "#"}
           target="_blank"
           rel="noopener noreferrer"
-          className="pointer-events-auto relative z-30 inline-flex items-center gap-1.5 rounded-lg border border-border/60 bg-secondary/30 px-3 py-1.5 text-xs font-medium text-muted-foreground transition-all hover:border-border hover:text-foreground"
+          className="pointer-events-auto relative z-30 inline-flex items-center gap-1.5 rounded-lg border border-border/60 bg-secondary/30 px-3 py-1.5 text-xs font-medium text-muted-foreground transition-[transform,border-color,background-color,color] duration-150 hover:border-border hover:text-foreground active:scale-[0.97]"
         >
           View <ExternalLink className="h-3 w-3" />
         </a>

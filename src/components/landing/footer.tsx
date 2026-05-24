@@ -3,8 +3,8 @@ import { BrandLogo } from "@/components/brand-logo";
 
 export function Footer() {
   return (
-    <footer className="border-t border-border/40 bg-background">
-      <div className="mx-auto flex max-w-screen-2xl flex-col items-center justify-between gap-4 px-4 py-8 sm:flex-row md:px-6">
+    <footer>
+      <div className="mx-auto flex max-w-screen-2xl flex-col items-center justify-between gap-4 px-4 pt-12 pb-10 sm:flex-row md:px-6">
         <Link href="/" className="flex items-center gap-2 text-sm font-semibold text-foreground">
           <BrandLogo className="h-7 w-7" />
           Jobify

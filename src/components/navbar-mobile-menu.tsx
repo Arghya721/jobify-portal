@@ -52,7 +52,7 @@ export function MobileMenu({ isLoggedIn }: MobileMenuProps) {
         </Button>
       </SheetTrigger>
 
-      <SheetContent side="left" className="w-72 p-0">
+      <SheetContent side="left" className="w-72 p-0" showCloseButton={false}>
         <SheetTitle className="sr-only">Navigation menu</SheetTitle>
 
         {/* Header */}
