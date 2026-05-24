@@ -84,7 +84,6 @@ export async function generateMetadata({ params }: JobDetailPageProps): Promise<
       card: "summary_large_image",
       title,
       description,
-      images: [`${SITE_URL}/og-image.png`],
     },
     robots: {
       index: true,
