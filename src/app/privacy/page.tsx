@@ -81,7 +81,7 @@ export default function PrivacyPage() {
             <ul className="ml-4 list-disc space-y-2">
               <li>
                 <span className="font-medium text-foreground">Account data</span> — your email
-                address and display name, provided via OAuth (Google or GitHub). We never see
+                address and display name, provided via OAuth (Google). We never see
                 or store your OAuth provider password.
               </li>
               <li>
@@ -134,9 +134,9 @@ export default function PrivacyPage() {
             <p>Jobify uses the following third-party services to operate. Each has its own privacy policy:</p>
             <ul className="ml-4 list-disc space-y-2">
               <li>
-                <span className="font-medium text-foreground">Google OAuth / GitHub OAuth</span> — used
+                <span className="font-medium text-foreground">Google OAuth</span> — used
                 for sign-in only. We receive your email and name; we do not receive access to your
-                Google Drive, email inbox, or GitHub repositories.
+                Google Drive, email inbox repositories.
               </li>
               <li>
                 <span className="font-medium text-foreground">Google Cloud Platform</span> — our
@@ -166,10 +166,10 @@ export default function PrivacyPage() {
                 <span className="font-medium text-foreground">Session tokens</span> — expire
                 automatically after 30 days of inactivity or on sign-out.
               </li>
-              <li>
+              {/* <li>
                 <span className="font-medium text-foreground">Notification credentials</span> — deleted
                 immediately when you disconnect Telegram or Discord in Settings.
-              </li>
+              </li> */}
               <li>
                 <span className="font-medium text-foreground">Server logs</span> — retained for up to
                 90 days for security and debugging, then purged automatically.
@@ -188,7 +188,7 @@ export default function PrivacyPage() {
               <li><span className="font-medium text-foreground">Deletion</span> — request that we delete your account and associated data.</li>
               <li><span className="font-medium text-foreground">Portability</span> — receive your data in a structured, machine-readable format.</li>
               <li><span className="font-medium text-foreground">Opt-out of notifications</span> — disable Telegram or Discord alerts at any time in Settings → Notifications.</li>
-              <li><span className="font-medium text-foreground">Withdraw consent</span> — delete your account at any time in Settings.</li>
+              {/* <li><span className="font-medium text-foreground">Withdraw consent</span> — delete your account at any time in Settings.</li> */}
             </ul>
             <p>
               To exercise any of these rights, email{" "}

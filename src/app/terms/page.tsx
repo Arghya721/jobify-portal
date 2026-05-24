@@ -106,7 +106,7 @@ export default function TermsPage() {
 
           <Section id="accounts" title="3. Your Account">
             <p>
-              Accounts are created via Google or GitHub OAuth. You are responsible for
+              Accounts are created via Google OAuth. You are responsible for
               maintaining the confidentiality of your session and for all activity that
               occurs under your account.
             </p>

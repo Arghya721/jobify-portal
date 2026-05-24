@@ -154,7 +154,7 @@ export default function CookiesPage() {
 
             <p className="mt-2">
               All cookies are set on the{" "}
-              <span className="font-mono text-foreground/80">jobify.dev</span> domain only.
+              <span className="font-mono text-foreground/80">jobify.run</span> domain only.
               None are accessible to third-party scripts.
             </p>
           </Section>
@@ -178,7 +178,7 @@ export default function CookiesPage() {
               own cookie policy. Jobify has no control over cookies set by external sites.
             </p>
             <p>
-              When you sign in via Google or GitHub OAuth, those providers may set their
+              When you sign in via Google OAuth, those providers may set their
               own cookies in the OAuth flow. Refer to{" "}
               <a
                 href="https://policies.google.com/privacy"
@@ -187,15 +187,6 @@ export default function CookiesPage() {
                 className="text-emerald-400 hover:underline"
               >
                 Google&apos;s Privacy Policy
-              </a>{" "}
-              and{" "}
-              <a
-                href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-emerald-400 hover:underline"
-              >
-                GitHub&apos;s Privacy Statement
               </a>{" "}
               for details.
             </p>
