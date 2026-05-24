@@ -18,7 +18,7 @@ export function BrandLogo({ className, priority = false }: BrandLogoProps) {
     >
       <Image
         src="/jobify-mark-light.png"
-        alt=""
+        alt="Jobify logo"
         fill
         sizes="40px"
         priority={priority}
@@ -26,7 +26,7 @@ export function BrandLogo({ className, priority = false }: BrandLogoProps) {
       />
       <Image
         src="/jobify-mark-dark.png"
-        alt=""
+        alt="Jobify logo"
         fill
         sizes="40px"
         priority={priority}
