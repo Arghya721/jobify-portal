@@ -5,6 +5,7 @@ import { Navbar } from "@/components/navbar";
 import { NavbarScrollWrapper } from "@/components/navbar-scroll-wrapper";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ViewTransitionHandler } from "@/components/ui/transition-anchor";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -86,6 +87,7 @@ export default function RootLayout({
             <main className="relative z-[1]">{children}</main>
           </NuqsAdapter>
         </ThemeProvider>
+        <GoogleAnalytics gaId="G-ZW94R7BR74" />
       </body>
     </html>
   );

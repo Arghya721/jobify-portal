@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import { sendGAEvent } from "@next/third-parties/google";
 import { useQueryState, parseAsArrayOf, parseAsString, parseAsBoolean, parseAsInteger } from "nuqs";
 import { ChevronDown, Search, X, Check, ChevronsUpDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -170,28 +171,25 @@ function LocationFilter() {
   }, [region, regionsList, country]);
 
   const handleCountryChange = (value: string) => {
+    sendGAEvent("event", "filter_location", { type: "country", value });
     if (value === "__clear__") {
-      setCountry(null);
-      setRegion(null);
-      setCity(null);
+      setCountry(null); setRegion(null); setCity(null);
     } else {
-      setCountry(value);
-      setRegion(null);
-      setCity(null);
+      setCountry(value); setRegion(null); setCity(null);
     }
   };
 
   const handleRegionChange = (value: string) => {
+    sendGAEvent("event", "filter_location", { type: "region", value });
     if (value === "__clear__") {
-      setRegion(null);
-      setCity(null);
+      setRegion(null); setCity(null);
     } else {
-      setRegion(value);
-      setCity(null);
+      setRegion(value); setCity(null);
     }
   };
 
   const handleCityChange = (value: string) => {
+    sendGAEvent("event", "filter_location", { type: "city", value });
     setCity(value === "__clear__" ? null : value);
   };
 
@@ -343,6 +341,7 @@ function CompanyFilter() {
                         key={company.id}
                         value={company.name}
                         onSelect={() => {
+                          sendGAEvent("event", "filter_company", { company: company.name });
                           setCompanyId(String(company.id));
                           setOpenCombobox(false);
                         }}
@@ -549,7 +548,7 @@ function SourceFilter() {
             <span className="flex items-center gap-3">
               <Checkbox
                 checked={sources.includes(src.label)}
-                onCheckedChange={() => toggle(src.label)}
+                onCheckedChange={() => { sendGAEvent("event", "filter_source", { source: src.label, checked: !sources.includes(src.label) }); toggle(src.label); }}
                 className="border-muted-foreground/50 data-[state=checked]:border-emerald-500 data-[state=checked]:bg-emerald-500"
               />
               {src.label}

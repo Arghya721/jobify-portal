@@ -12,6 +12,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchJobsAction } from "@/app/actions/jobs";
 import { cn } from "@/lib/utils";
+import { sendGAEvent } from "@next/third-parties/google";
 
 // Global flag to detect initial hydration pass.
 // Fast Refresh re-evaluates the module, resetting this to true,
@@ -267,7 +268,7 @@ export function JobFeed() {
               return (
                 <button
                   key={cat}
-                  onClick={() => setQ(cat === "All Jobs" ? null : cat)}
+                  onClick={() => { sendGAEvent("event", "category_filter", { category: cat }); setQ(cat === "All Jobs" ? null : cat); }}
                   className={`rounded-full border px-4 py-1.5 text-sm font-medium transition-all ${
                     isActive
                       ? "border-muted-foreground bg-secondary text-foreground"
@@ -282,7 +283,7 @@ export function JobFeed() {
 
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <span className="hidden sm:inline">Sort by:</span>
-            <Select value={sort} onValueChange={(v) => { setSort(v); }}>
+            <Select value={sort} onValueChange={(v) => { sendGAEvent("event", "sort_change", { value: v }); setSort(v); }}>
               <SelectTrigger className="h-8 w-[125px] border-border bg-secondary/50 text-xs">
                 <SelectValue />
               </SelectTrigger>

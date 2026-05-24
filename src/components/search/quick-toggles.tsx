@@ -2,6 +2,7 @@
 
 import { useQueryState, parseAsBoolean, parseAsString } from "nuqs";
 import { Globe } from "lucide-react";
+import { sendGAEvent } from "@next/third-parties/google";
 import {
   Select,
   SelectContent,
@@ -31,7 +32,7 @@ export function QuickToggles() {
     <div className="flex flex-wrap items-center gap-3">
       {/* Remote Only Toggle */}
       <button
-        onClick={() => setRemote(remote ? null : true)}
+        onClick={() => { sendGAEvent("event", "remote_toggle", { enabled: !remote }); setRemote(remote ? null : true); }}
         className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all duration-200 ${
           remote
             ? "border-emerald-500/50 bg-emerald-500/15 text-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.15)]"
@@ -45,7 +46,7 @@ export function QuickToggles() {
       {/* Date Posted Select */}
       <Select
         value={since || "any"}
-        onValueChange={(v) => setSince(v === "any" ? null : v)}
+        onValueChange={(v) => { sendGAEvent("event", "date_filter_change", { value: v }); setSince(v === "any" ? null : v); }}
       >
         <SelectTrigger className="w-[140px] rounded-full border-border bg-secondary/50 text-sm">
           <SelectValue placeholder="Any time" />

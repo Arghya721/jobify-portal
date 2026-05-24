@@ -5,6 +5,7 @@ import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion"
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { DotPattern } from "@/components/ui/dot-pattern";
+import { sendGAEvent } from "@next/third-parties/google";
 import { cn } from "@/lib/utils";
 
 const ROTATING_WORDS = [
@@ -54,6 +55,7 @@ export function Hero() {
   }, [isFocused]);
 
   const handleSearch = useCallback(() => {
+    sendGAEvent("event", "hero_search", { query: searchValue.trim() || "(empty)" });
     if (searchValue.trim()) {
       router.push(`/jobs?q=${encodeURIComponent(searchValue.trim())}`);
     } else {

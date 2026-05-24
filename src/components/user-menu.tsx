@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Bell } from "lucide-react";
+import { sendGAEvent } from "@next/third-parties/google";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -24,10 +25,7 @@ export function UserMenu({ user }: UserMenuProps) {
   const router = useRouter();
 
   const handleLogout = () => {
-    // Hard navigation to the logout route handler.
-    // Using window.location.href (not router.push) forces a full page reload,
-    // which clears the Next.js client-side router cache so /login is never
-    // served stale and won't redirect back to /jobs.
+    sendGAEvent("event", "logout");
     window.location.href = "/api/auth/logout";
   };
 
@@ -58,14 +56,14 @@ export function UserMenu({ user }: UserMenuProps) {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => router.push("/filters")} className="cursor-pointer">
+        <DropdownMenuItem onClick={() => { sendGAEvent("event", "nav_click", { destination: "saved_filters" }); router.push("/filters"); }} className="cursor-pointer">
           Saved Filters
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push("/settings/notifications")} className="cursor-pointer">
+        <DropdownMenuItem onClick={() => { sendGAEvent("event", "nav_click", { destination: "notification_settings" }); router.push("/settings/notifications"); }} className="cursor-pointer">
           <Bell className="mr-2 h-3.5 w-3.5" />
           Notification Settings
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push("/settings/sessions")} className="cursor-pointer">
+        <DropdownMenuItem onClick={() => { sendGAEvent("event", "nav_click", { destination: "active_sessions" }); router.push("/settings/sessions"); }} className="cursor-pointer">
           Active Sessions
         </DropdownMenuItem>
         <DropdownMenuSeparator />
