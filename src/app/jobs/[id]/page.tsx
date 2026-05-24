@@ -78,12 +78,13 @@ export async function generateMetadata({ params }: JobDetailPageProps): Promise<
       description,
       url: pageUrl,
       siteName: "Jobify",
-      images: [{ url: `${SITE_URL}/og-image.png`, width: 1200, height: 630, alt: "Jobify" }],
+      images: [{ url: `${SITE_URL}/jobify-mark-dark.png`, width: 512, height: 512, alt: "Jobify" }],
     },
     twitter: {
-      card: "summary_large_image",
+      card: "summary",
       title,
       description,
+      images: [`${SITE_URL}/jobify-mark-dark.png`],
     },
     robots: {
       index: true,
