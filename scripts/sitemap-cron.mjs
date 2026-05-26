@@ -11,9 +11,9 @@ if (!API_BASE || !SITE_URL) {
   console.error('Missing required env vars: API_BASE_URL, SITE_URL');
   process.exit(1);
 }
+
 const TARGET = 200;
 const PER_TAG = 10;
-const WARM_CONCURRENCY = 8;
 
 // Tech-weighted tag list — backend/cloud/data/frontend/mobile in priority order
 const TECH_TAGS = [
@@ -63,25 +63,6 @@ async function collectJobs(jobMap, since, perTag = PER_TAG) {
   }
 }
 
-async function warmUrl(url) {
-  try {
-    const res = await fetch(url, {
-      headers: { 'User-Agent': 'Jobify-SitemapWarmer/1.0' },
-      signal: AbortSignal.timeout(60000),
-    });
-    process.stdout.write(`  ${res.status} ${url}\n`);
-  } catch (e) {
-    process.stdout.write(`  ERR ${url}: ${e.message}\n`);
-  }
-}
-
-async function warmAll(jobs) {
-  const urls = jobs.map(j => `${SITE_URL}/jobs/${j.id}`);
-  for (let i = 0; i < urls.length; i += WARM_CONCURRENCY) {
-    await Promise.all(urls.slice(i, i + WARM_CONCURRENCY).map(warmUrl));
-  }
-}
-
 function buildXml(jobs) {
   const today = new Date().toISOString().split('T')[0];
   const entries = jobs.map(job => {
@@ -117,17 +98,10 @@ async function main() {
   const jobs = Array.from(jobMap.values()).slice(0, TARGET);
   console.log(`\nTotal: ${jobs.length} unique jobs`);
 
-  // Write sitemap
   const xml = buildXml(jobs);
   const outPath = join(__dirname, '..', 'public', 'sitemap-jobs.xml');
   writeFileSync(outPath, xml, 'utf8');
-  console.log(`\nSitemap → ${outPath}`);
-
-  // Warm cache
-  console.log(`\n=== Warming ${jobs.length} URLs (concurrency ${WARM_CONCURRENCY}) ===`);
-  await warmAll(jobs);
-
-  console.log('\nDone.');
+  console.log(`Sitemap → ${outPath}`);
 }
 
 main().catch(e => { console.error(e); process.exit(1); });
