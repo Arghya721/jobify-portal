@@ -31,7 +31,7 @@ async function fetchJobs(params) {
     else url.searchParams.set(k, String(v));
   }
 
-  const res = await fetch(url.toString(), { signal: AbortSignal.timeout(12000) });
+  const res = await fetch(url.toString(), { signal: AbortSignal.timeout(60000) });
   if (!res.ok) {
     console.warn(`  API ${res.status} for ?${url.searchParams}`);
     return [];
@@ -67,7 +67,7 @@ async function warmUrl(url) {
   try {
     const res = await fetch(url, {
       headers: { 'User-Agent': 'Jobify-SitemapWarmer/1.0' },
-      signal: AbortSignal.timeout(15000),
+      signal: AbortSignal.timeout(60000),
     });
     process.stdout.write(`  ${res.status} ${url}\n`);
   } catch (e) {
