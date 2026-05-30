@@ -1,6 +1,7 @@
 import { FileText, ExternalLink, MapPin, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { COMPANY_LOGOS as companyLogos } from "@/lib/companies-static";
+import { generateJobSlug } from "@/lib/utils";
 
 interface JobCardProps {
   job: any; // We'll type this fully later
@@ -27,7 +28,7 @@ export function JobCard({ job, index }: JobCardProps) {
       style={{ animationDelay: `${index * 60}ms`, viewTransitionName: `job-card-${job.id}` as any }}
     >
       <a
-        href={`/jobs/${job.id}`}
+        href={`/jobs/${generateJobSlug(job)}`}
         data-view-transition="true"
         className="absolute inset-0 z-10 rounded-xl"
         aria-label={`View details for ${job.title}`}

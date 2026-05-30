@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect, permanentRedirect } from "next/navigation";
 import { cache } from "react";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
@@ -18,6 +18,7 @@ import { fetchJobById as _fetchJobById } from "@/lib/api-server";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { COMPANY_LOGOS as companyLogos } from "@/lib/companies-static";
+import { extractIdFromSlug, generateJobSlug } from "@/lib/utils";
 
 // Deduplicate gRPC calls between generateMetadata and the page component
 const fetchJobById = cache(_fetchJobById);
@@ -32,12 +33,21 @@ type JobLocation = {
 };
 
 type JobDetailPageProps = {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 };
 
 export async function generateMetadata({ params }: JobDetailPageProps): Promise<Metadata> {
-  const { id } = await params;
-  const job = await fetchJobById(id);
+  const { slug } = await params;
+  const numericId = extractIdFromSlug(slug);
+
+  if (!numericId) {
+    return {
+      title: "Job Not Found | Jobify",
+      robots: { index: false, follow: false },
+    };
+  }
+
+  const job = await fetchJobById(numericId);
 
   if (!job || !job.id) {
     return {
@@ -53,7 +63,7 @@ export async function generateMetadata({ params }: JobDetailPageProps): Promise<
     ? rawDesc.slice(0, 152).trim() + "..."
     : rawDesc || `${job.title} position at ${companyName}. ${job.location_name || "Remote"}. Apply now on Jobify.`;
 
-  const pageUrl = `${SITE_URL}/jobs/${id}`;
+  const pageUrl = `${SITE_URL}/jobs/${generateJobSlug(job)}`;
   const isRemote = hasRemoteLocation(job.locations || []);
 
   const keywords = [
@@ -94,12 +104,24 @@ export async function generateMetadata({ params }: JobDetailPageProps): Promise<
 }
 
 export default async function JobDetailPage({ params }: JobDetailPageProps) {
-  const { id } = await params;
-  const job = await fetchJobById(id);
+  const { slug } = await params;
+  const numericId = extractIdFromSlug(slug);
 
-  if (!job || !job.id) {
-    notFound();
+  if (!numericId) notFound();
+
+  // Old numeric-only URL → 308 permanent redirect to canonical slug
+  if (/^\d+$/.test(slug)) {
+    const job = await fetchJobById(numericId);
+    if (!job || !job.id) notFound();
+    permanentRedirect(`/jobs/${generateJobSlug(job)}`);
   }
+
+  const job = await fetchJobById(numericId);
+  if (!job || !job.id) notFound();
+
+  // Slug mismatch → 307 redirect to canonical (prevents duplicate content)
+  const canonical = generateJobSlug(job);
+  if (slug !== canonical) redirect(`/jobs/${canonical}`);
 
   const companyName = job.company?.name || "Company";
   const logoUrl = companyLogos[companyName];
@@ -146,17 +168,17 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
       />
       <BackButton />
 
-      {/* Adding viewTransitionName to the main container wrapper to link it to the job card */}
-      <div 
+      {/* viewTransitionName links this container to the job card in the feed */}
+      <div
         className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] rounded-3xl"
-        style={{ viewTransitionName: `job-card-${id}` as any }}
+        style={{ viewTransitionName: `job-card-${numericId}` as any }}
       >
         <main className="min-w-0 space-y-6">
           {/* Hero Section */}
           <section className="relative overflow-hidden rounded-2xl border border-border/40 bg-card/60 p-6 md:p-8 transition-all duration-300 hover:shadow-lg hover:shadow-black/5 hover:border-border/60">
             {/* Subtle background gradient */}
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-50" style={{ pointerEvents: "none" }} />
-            
+
             <div className="relative flex flex-col gap-6 sm:flex-row sm:items-start">
               <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-secondary/80 text-muted-foreground shadow-sm ring-1 ring-border/50">
                 {logoUrl ? (
@@ -224,9 +246,9 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
 
         <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
           <section className="rounded-2xl border border-border/40 bg-card/60 p-6 shadow-sm transition-all duration-300 hover:shadow-md hover:border-border/60">
-            <Button 
-              asChild 
-              className="w-full text-base font-semibold h-12 shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary/30" 
+            <Button
+              asChild
+              className="w-full text-base font-semibold h-12 shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary/30"
               disabled={!job.job_url}
               size="lg"
             >
@@ -279,7 +301,6 @@ function DetailRow({ icon, label, value }: { icon: ReactNode; label: string; val
   );
 }
 
-// Simple icon for job description since lucide's FileText was not imported inside the component initially, but I imported it
 function FileTextIcon(props: any) {
   return (
     <svg

@@ -259,7 +259,7 @@ export function JobFeed() {
       {/* Header with Categories and Sort */}
       <div className="flex flex-col gap-5 pb-2">
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2" suppressHydrationWarning>
             {CATEGORIES.map((cat) => {
               // Prevent hydration mismatches by defaulting to 'All Jobs' on first render
               const isActive = isMounted 
