@@ -99,27 +99,12 @@ export async function deleteResumeUploadAction(
   }
 }
 
-// ─────────────────── Get download URL ───────────────────
+// ─────────────────── Get download URL (proxy through API) ───────────────────
 
 export async function getResumeDownloadUrlAction(
   id: number
 ): Promise<{ url: string | null; error: string | null }> {
-  try {
-    const token = await getToken();
-    const res = await fetch(`${API_BASE}/api/v1/resume/uploads/${id}/download`, {
-      headers: { Authorization: `Bearer ${token}` },
-      cache: "no-store",
-    });
-
-    if (res.status === 401) redirect("/api/auth/logout");
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-    const data = await res.json();
-    return { url: data.url, error: null };
-  } catch (e: any) {
-    if (isRedirectError(e)) throw e;
-    return { url: null, error: e.message };
-  }
+  return { url: `/api/resume/download/${id}`, error: null };
 }
 
 // ─────────────────── Types ───────────────────
