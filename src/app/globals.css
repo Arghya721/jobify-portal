@@ -204,6 +204,11 @@
   }
 }
 
+@keyframes ai-shimmer {
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
 /* ─── View Transitions ──────────────────────────────────────────────────── */
 
 /* Root page cross-fade */

@@ -88,7 +88,7 @@ export default async function RootLayout({
           <NuqsAdapter>
             <ViewTransitionHandler />
             {/* Persistent emerald atmosphere — fixed parallax layer behind all content */}
-            <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+            <div aria-hidden="true" suppressHydrationWarning className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
               <div className="orb-a absolute -left-[15%] top-[2%] h-[700px] w-[700px] rounded-full bg-emerald-500/[0.08] blur-[140px]" />
               <div className="orb-b absolute -right-[8%] top-[20%] h-[580px] w-[580px] rounded-full bg-emerald-400/[0.06] blur-[115px]" />
               <div className="orb-c absolute left-[22%] top-[45%] h-[500px] w-[500px] rounded-full bg-emerald-600/[0.045] blur-[105px]" />
