@@ -64,6 +64,14 @@ export async function Navbar() {
               Saved Filters
             </Link>
           )}
+          {session?.user && (
+            <Link
+              href="/resume"
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            >
+              Resume
+            </Link>
+          )}
         </nav>
 
         {/* Actions */}

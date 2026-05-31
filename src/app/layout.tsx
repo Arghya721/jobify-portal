@@ -6,6 +6,9 @@ import { NavbarScrollWrapper } from "@/components/navbar-scroll-wrapper";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ViewTransitionHandler } from "@/components/ui/transition-anchor";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { auth } from "@/auth";
+import { getResumeUploadsAction } from "@/app/actions/resume";
+import { ResumeNotificationWatcher } from "@/components/resume/resume-notification-watcher";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -56,11 +59,20 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
+  let activeUploads: any[] = [];
+  if (session?.user) {
+    const { uploads } = await getResumeUploadsAction();
+    activeUploads = uploads.filter(
+      (u) => u.status === "pending" || u.status === "processing"
+    );
+  }
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -84,6 +96,9 @@ export default function RootLayout({
               <div className="orb-e absolute -left-[8%] top-[82%] h-[540px] w-[540px] rounded-full bg-emerald-400/[0.05] blur-[115px]" />
             </div>
             <NavbarScrollWrapper><Navbar /></NavbarScrollWrapper>
+            {session?.user && activeUploads.length > 0 && (
+              <ResumeNotificationWatcher initialUploads={activeUploads} />
+            )}
             <main className="relative z-[1]">{children}</main>
           </NuqsAdapter>
         </ThemeProvider>

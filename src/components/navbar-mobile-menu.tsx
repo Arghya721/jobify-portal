@@ -11,6 +11,7 @@ import {
   Bell,
   ShieldCheck,
   LogIn,
+  FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,6 +33,7 @@ const PUBLIC_LINKS = [
 
 const AUTH_LINKS = [
   { href: "/filters", label: "Saved Filters", icon: BookmarkCheck },
+  { href: "/resume", label: "Resume Analyser", icon: FileText },
   { href: "/settings/notifications", label: "Notification Settings", icon: Bell },
   { href: "/settings/sessions", label: "Active Sessions", icon: ShieldCheck },
 ];
