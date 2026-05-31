@@ -52,6 +52,8 @@ export function AnalysisProgress({ uploadId, onComplete, onFailed }: AnalysisPro
           setJobsQuery(payload.jobs_query);
           setStatus("done");
           onComplete(uploadId, payload.jobs_query);
+          // auto-redirect after brief success flash
+          setTimeout(() => router.push(buildJobsUrl(payload.jobs_query)), 1800);
         } else if (payload.status === "failed") {
           clearInterval(stepTimerRef.current!);
           setFailError(payload.error ?? "Analysis failed. Please try again.");
@@ -102,24 +104,20 @@ export function AnalysisProgress({ uploadId, onComplete, onFailed }: AnalysisPro
 
   if (status === "done" && jobsQuery) {
     return (
-      <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-5 space-y-4">
+      <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-5 space-y-3">
         <div className="flex items-center gap-2">
           <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
           <p className="text-sm font-medium text-emerald-400">Resume analysed!</p>
         </div>
         <p className="text-xs text-muted-foreground">
-          AI identified <span className="text-foreground font-medium">{jobsQuery.q}</span> with skills{" "}
+          Found <span className="text-foreground font-medium">{jobsQuery.q}</span> roles matching{" "}
           <span className="text-foreground font-medium">
             {(jobsQuery.description_tags ?? []).join(", ")}
-          </span>.
+          </span>. Redirecting to jobs…
         </p>
-        <Button
-          size="sm"
-          onClick={() => router.push(buildJobsUrl(jobsQuery))}
-          className="w-full bg-emerald-600 hover:bg-emerald-500 text-white"
-        >
-          Search Matching Jobs →
-        </Button>
+        <div className="h-1 w-full rounded-full bg-secondary overflow-hidden">
+          <div className="h-full bg-emerald-500 animate-[progress_1.8s_linear_forwards]" style={{ width: "0%" }} />
+        </div>
       </div>
     );
   }

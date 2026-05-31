@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { Database, BookmarkCheck, Bell, ArrowRight } from "lucide-react";
+import { Database, BookmarkCheck, Bell, ArrowRight, FileText } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 interface Feature {
@@ -39,6 +39,15 @@ const FEATURES: Feature[] = [
       "Connect Telegram or Discord. Get notified the moment a matching role posts — before the window closes on a fresh opening.",
     href: "/settings/notifications",
     cta: "Set up alerts",
+  },
+  {
+    index: "04",
+    icon: FileText,
+    title: "Resume Analyser",
+    description:
+      "Upload your resume and AI extracts your role, skills, and location — then auto-fills the job search filters instantly. No manual input.",
+    href: "/resume",
+    cta: "Try it",
   },
 ];
 
@@ -123,7 +132,7 @@ export function FeaturesSection() {
         </motion.div>
 
         {/* Feature cards with 3D tilt */}
-        <div className="grid gap-5 md:grid-cols-3" style={{ perspective: "1200px" }}>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4" style={{ perspective: "1200px" }}>
           {FEATURES.map((feature, i) => {
             const Icon = feature.icon;
             return (

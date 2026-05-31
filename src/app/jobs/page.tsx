@@ -5,6 +5,7 @@ import { FilterSidebar } from "@/components/search/filter-sidebar";
 import { MobileFilterSheet } from "@/components/search/mobile-filter-sheet";
 import { JobFeed } from "@/components/search/job-feed";
 import { getSavedFiltersAction } from "@/app/actions/saved-filters";
+import { getResumeUploadsAction, JobsQuery } from "@/app/actions/resume";
 
 export const metadata = {
   title: "Search Jobs — Jobify",
@@ -18,6 +19,11 @@ export default async function JobsPage() {
   // Gracefully falls back to empty array for unauthenticated users.
   // We pass `false` so a revoked session (401) fails silently rather than redirecting to logout.
   const { filters: savedFilters } = await getSavedFiltersAction(false);
+
+  // Latest completed resume query — null if none or not logged in
+  const { uploads } = await getResumeUploadsAction();
+  const resumeJobsQuery: JobsQuery | null =
+    uploads.find((u) => u.status === "completed")?.jobs_query ?? null;
 
   return (
     <div className="mx-auto max-w-screen-2xl px-4 py-8 md:px-6">
@@ -38,7 +44,7 @@ export default async function JobsPage() {
       {/* Quick Toggles + Mobile Filters */}
       <div className="mb-6 flex items-center gap-3">
         <Suspense fallback={null}>
-          <QuickToggles />
+          <QuickToggles resumeJobsQuery={resumeJobsQuery} />
         </Suspense>
         <Suspense fallback={null}>
           <MobileFilterSheet savedFilters={savedFilters} maxFilters={MAX_FILTERS} />
