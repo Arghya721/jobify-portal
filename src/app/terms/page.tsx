@@ -7,7 +7,7 @@ export const metadata = {
   robots: { index: true, follow: true },
 };
 
-const LAST_UPDATED = "May 9, 2026";
+const LAST_UPDATED = "May 31, 2026";
 const CONTACT_EMAIL = "support@jobify.run";
 
 function Section({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
@@ -25,6 +25,7 @@ const NAV_ITEMS = [
   { id: "accounts",          label: "Your account" },
   { id: "acceptable-use",    label: "Acceptable use" },
   { id: "job-listings",      label: "Job listings" },
+  { id: "resume-analyser",   label: "Resume Analyser" },
   { id: "intellectual-prop", label: "Intellectual property" },
   { id: "disclaimers",       label: "Disclaimers" },
   { id: "liability",         label: "Limitation of liability" },
@@ -91,16 +92,20 @@ export default function TermsPage() {
 
           <Section id="description" title="2. The Service">
             <p>
-              Jobify is a read-only engineering job aggregator. We index job listings
-              directly from company applicant tracking systems (ATS) including Greenhouse,
-              Lever, Workday, and Eightfold. We do not accept job applications, host
-              résumés, or facilitate hiring in any way.
+              Jobify is an engineering job aggregator with AI-powered search assistance. We
+              index job listings directly from company applicant tracking systems (ATS)
+              including Greenhouse, Lever, Workday, and Eightfold. We do not accept job
+              applications or facilitate hiring in any way.
             </p>
             <p>
               All job listings on Jobify are sourced from publicly accessible ATS pages.
               Clicking &ldquo;View&rdquo; on any listing redirects you to the employer&apos;s
               own application page. Your relationship with that employer is entirely separate
               from your relationship with Jobify.
+            </p>
+            <p>
+              Authenticated users may access additional features including saved filters,
+              smart alerts, and the AI Resume Analyser described in Section 6.
             </p>
           </Section>
 
@@ -164,7 +169,67 @@ export default function TermsPage() {
             </p>
           </Section>
 
-          <Section id="intellectual-prop" title="6. Intellectual Property">
+          <Section id="resume-analyser" title="6. Resume Analyser — Data Use & Retention">
+            <p>
+              Jobify offers an AI-powered Resume Analyser feature (&ldquo;Resume Analyser&rdquo;)
+              that allows authenticated users to upload a résumé (PDF or plain text) and receive
+              automatically generated job search filter suggestions based on its contents.
+            </p>
+            <p className="font-medium text-foreground">
+              By uploading a résumé you explicitly agree to the following:
+            </p>
+            <ul className="ml-4 list-disc space-y-2">
+              <li>
+                <span className="font-medium text-foreground">Retention.</span>{" "}
+                Uploaded résumé files are stored on Google Cloud Storage and are{" "}
+                <span className="font-medium text-foreground">not automatically deleted</span>{" "}
+                after processing. Files are retained indefinitely unless you manually delete
+                the upload from your account or request deletion by contacting us.
+              </li>
+              <li>
+                <span className="font-medium text-foreground">Training use.</span>{" "}
+                By uploading a résumé, you grant Jobify a non-exclusive, royalty-free,
+                worldwide licence to use the contents of your résumé — including extracted
+                text, skills, job titles, and experience — to train, fine-tune, evaluate,
+                and improve Jobify&apos;s AI models and related services.
+              </li>
+              <li>
+                <span className="font-medium text-foreground">Anonymisation.</span>{" "}
+                Where feasible, personally identifiable information (name, email, phone number)
+                will be stripped before résumé content is used in training datasets. However,
+                we do not guarantee complete anonymisation and you should not upload résumés
+                that contain information you are not willing to share with us.
+              </li>
+              <li>
+                <span className="font-medium text-foreground">Slot limit.</span>{" "}
+                Each account may store up to 3 résumé uploads at any time. Deleting an upload
+                removes it from your account view and frees the slot, but the underlying file
+                may be retained for training purposes as described above.
+              </li>
+              <li>
+                <span className="font-medium text-foreground">No employment guarantee.</span>{" "}
+                The AI-generated job search filters are suggestions only. Jobify makes no
+                representation that these filters will produce accurate, complete, or relevant
+                job matches.
+              </li>
+            </ul>
+            <p>
+              If you wish to request deletion of your résumé data from our training datasets,
+              contact us at{" "}
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-emerald-400 hover:underline">
+                {CONTACT_EMAIL}
+              </a>
+              . We will honour deletion requests where technically feasible, but cannot
+              guarantee removal from models that have already been trained.
+            </p>
+            <p>
+              Do not upload résumés belonging to third parties without their explicit consent.
+              Uploading a third party&apos;s résumé without consent is a violation of these
+              Terms and may constitute a violation of applicable privacy law.
+            </p>
+          </Section>
+
+          <Section id="intellectual-prop" title="8. Intellectual Property">
             <p>
               The Jobify name, logo, UI design, and source code are the property of Jobify
               and are protected by applicable intellectual property law. You may not copy,
@@ -176,7 +241,7 @@ export default function TermsPage() {
             </p>
           </Section>
 
-          <Section id="disclaimers" title="7. Disclaimers">
+          <Section id="disclaimers" title="9. Disclaimers">
             <p>
               The Service is provided <span className="font-medium text-foreground">&ldquo;as is&rdquo;</span> and{" "}
               <span className="font-medium text-foreground">&ldquo;as available&rdquo;</span> without
@@ -191,7 +256,7 @@ export default function TermsPage() {
             </p>
           </Section>
 
-          <Section id="liability" title="8. Limitation of Liability">
+          <Section id="liability" title="10. Limitation of Liability">
             <p>
               To the fullest extent permitted by law, Jobify and its affiliates, officers,
               employees, and agents shall not be liable for any indirect, incidental, special,
@@ -210,7 +275,7 @@ export default function TermsPage() {
             </p>
           </Section>
 
-          <Section id="termination" title="9. Termination">
+          <Section id="termination" title="11. Termination">
             <p>
               Either party may terminate the relationship at any time. You may delete your
               account in Settings. We may suspend or terminate your access immediately,
@@ -224,7 +289,7 @@ export default function TermsPage() {
             </p>
           </Section>
 
-          <Section id="changes" title="10. Changes to Terms">
+          <Section id="changes" title="12. Changes to Terms">
             <p>
               We may update these Terms at any time. Material changes will be indicated by
               updating the &ldquo;Last updated&rdquo; date at the top of this page. Continued
@@ -237,7 +302,7 @@ export default function TermsPage() {
             </p>
           </Section>
 
-          <Section id="governing-law" title="11. Governing Law">
+          <Section id="governing-law" title="13. Governing Law">
             <p>
               These Terms are governed by and construed in accordance with the laws of India,
               without regard to conflict of law provisions. Any disputes arising under these
@@ -249,7 +314,7 @@ export default function TermsPage() {
             </p>
           </Section>
 
-          <Section id="contact" title="12. Contact">
+          <Section id="contact" title="14. Contact">
             <p>For questions about these Terms:</p>
             <p>
               Email:{" "}
