@@ -21,7 +21,7 @@ const COLORS = [
   "#f97316",
 ];
 
-const tickerItems: TickerItem[] = STATIC_COMPANIES.slice(0, 15).map((c, i) => ({
+const tickerItems: TickerItem[] = STATIC_COMPANIES.map((c, i) => ({
   id: c.id,
   company: c.name,
   color: COLORS[i % COLORS.length],

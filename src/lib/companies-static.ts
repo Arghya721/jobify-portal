@@ -60,6 +60,20 @@ export const STATIC_COMPANIES: StaticCompany[] = [
   { id: 53, name: "Morgan Stanley",         source: "eightfold",  logo: "/logos/morgan-stanley.jpeg" },
   { id: 54, name: "PTC",                    source: "eightfold",  logo: "/logos/ptc.png" },
   { id: 55, name: "Zebra",                  source: "eightfold",  logo: "/logos/zebra.jpg" },
+  { id: 56, name: "Dropbox",               source: "greenhouse", logo: "/logos/dropbox.svg" },
+  { id: 57, name: "Pinterest",             source: "greenhouse", logo: "/logos/pinterest.png" },
+  { id: 58, name: "Robinhood",             source: "greenhouse", logo: "/logos/robinhood.svg" },
+  { id: 59, name: "Figma",                 source: "greenhouse", logo: "/logos/figma.svg" },
+  { id: 60, name: "Discord",               source: "greenhouse", logo: "/logos/discord.svg" },
+  { id: 61, name: "Duolingo",              source: "greenhouse", logo: "/logos/duolingo.svg" },
+  { id: 62, name: "Gusto",                 source: "greenhouse", logo: "/logos/gusto.svg" },
+  { id: 63, name: "Cockroach Labs",        source: "greenhouse", logo: "/logos/cockroach-labs.svg" },
+  { id: 64, name: "Vercel",                source: "greenhouse", logo: "/logos/vercel.svg" },
+  { id: 65, name: "Anduril",               source: "greenhouse", logo: "/logos/anduril.svg" },
+  { id: 66, name: "Mercury",               source: "greenhouse", logo: "/logos/mercury.png" },
+  { id: 67, name: "Navan",                 source: "greenhouse", logo: "/logos/navan.png" },
+  { id: 68, name: "Webflow",               source: "greenhouse", logo: "/logos/webflow.svg" },
+  { id: 69, name: "Samsara",               source: "greenhouse", logo: "/logos/samsara.svg" },
 ];
 
 /** Keyed by company name — drop-in replacement for company-logos.json imports */
