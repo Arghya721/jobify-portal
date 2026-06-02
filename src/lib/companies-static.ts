@@ -74,6 +74,18 @@ export const STATIC_COMPANIES: StaticCompany[] = [
   { id: 67, name: "Navan",                 source: "greenhouse", logo: "/logos/navan.png" },
   { id: 68, name: "Webflow",               source: "greenhouse", logo: "/logos/webflow.svg" },
   { id: 69, name: "Samsara",               source: "greenhouse", logo: "/logos/samsara.svg" },
+  { id: 70, name: "Brex",                  source: "greenhouse", logo: "/logos/brex.svg" },
+  { id: 71, name: "Scale AI",              source: "greenhouse", logo: "/logos/scale-ai.svg" },
+  { id: 72, name: "Reddit",                source: "greenhouse", logo: "/logos/reddit.svg" },
+  { id: 73, name: "Glean",                 source: "greenhouse", logo: "/logos/glean.svg" },
+  { id: 74, name: "Lyft",                  source: "greenhouse", logo: "/logos/lyft.svg" },
+  { id: 75, name: "Carta",                 source: "greenhouse",      logo: "/logos/carta.png" },
+  { id: 76, name: "Airtable",              source: "greenhouse",      logo: "/logos/airtable.png" },
+  { id: 77, name: "Intercom",              source: "greenhouse",      logo: "/logos/intercom.svg" },
+  { id: 78, name: "Netlify",               source: "greenhouse",      logo: "/logos/netlify.svg" },
+  { id: 79, name: "Amplitude",             source: "greenhouse",      logo: "/logos/amplitude.png" },
+  { id: 80, name: "Contentful",            source: "greenhouse",      logo: "/logos/contentful.png" },
+  { id: 81, name: "PagerDuty",             source: "greenhouse",      logo: "/logos/pagerduty.svg" },
 ];
 
 /** Keyed by company name — drop-in replacement for company-logos.json imports */
