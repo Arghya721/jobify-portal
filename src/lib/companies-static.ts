@@ -93,8 +93,8 @@ export const STATIC_COMPANIES: StaticCompany[] = [
   { id: 86, name: "Palo Alto Networks",    source: "workday",    logo: "/logos/palo-alto-networks.svg" },
   { id: 87, name: "CrowdStrike",           source: "workday",    logo: "/logos/crowdstrike.svg" },
   { id: 88, name: "Accenture",             source: "workday",    logo: "/logos/accenture.svg" },
-  { id: 89, name: "Genpact",               source: "eightfold",  logo: "/logos/genpact.png" },
-  { id: 90, name: "Micron",                source: "eightfold",  logo: "/logos/micron.svg" },
+  { id: 89, name: "Genpact",               source: "workday",  logo: "/logos/genpact.png" },
+  { id: 90, name: "Micron",                source: "workday",  logo: "/logos/micron.svg" },
 ];
 
 /** Keyed by company name — drop-in replacement for company-logos.json imports */
