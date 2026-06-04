@@ -12,6 +12,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchJobsAction } from "@/app/actions/jobs";
 import { cn } from "@/lib/utils";
+import { STATIC_COMPANIES } from "@/lib/companies-static";
 import { sendGAEvent } from "@next/third-parties/google";
 
 // Global flag to detect initial hydration pass.
@@ -251,7 +252,7 @@ export function JobFeed() {
   const searchLabel = q
     ? `for '${q}'`
     : companyId
-    ? `at company ${companyId}`
+    ? `at ${STATIC_COMPANIES.find(c => c.id === parseInt(companyId))?.name ?? `company ${companyId}`}`
     : "";
 
   return (
