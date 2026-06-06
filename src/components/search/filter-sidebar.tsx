@@ -109,48 +109,80 @@ function LocationCombobox({
   onOpenChange: (v: boolean) => void;
   onSelect: (item: OptionItem) => void;
 }) {
+  const handleNativeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const item = items.find((i) => i.name === e.target.value);
+    if (item) onSelect(item);
+  };
+
   return (
-    <Popover open={open} onOpenChange={onOpenChange}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="h-8 w-full justify-between border-border/50 bg-secondary/30 text-xs font-normal text-muted-foreground hover:bg-secondary/50"
-        >
-          {loading ? "Loading…" : (value || placeholder)}
-          <ChevronsUpDown className="ml-2 h-3 w-3 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[220px] border-border bg-popover p-0">
-        <Command>
-          <CommandInput placeholder={searchPlaceholder} className="h-8 text-xs" />
-          <CommandList className="max-h-[220px]">
-            <CommandEmpty className="py-4 text-center text-xs text-muted-foreground">
-              No results found.
-            </CommandEmpty>
-            <CommandGroup>
-              {items.map((item) => (
-                <CommandItem
-                  key={item.iso2 ?? item.code ?? item.id}
-                  value={item.name}
-                  onSelect={() => onSelect(item)}
-                  className="text-xs"
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 h-3.5 w-3.5",
-                      value === item.name ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  {item.name}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+    <>
+      {/*
+       * Native <select> on mobile (< lg).
+       * Avoids the Radix aria-modal + separate Portal issue on iOS Safari
+       * where the Sheet's aria-modal blocks touch interactions on Popover portals.
+       */}
+      <select
+        className="lg:hidden h-8 w-full rounded-md border border-border/50 bg-secondary/30 px-2 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-emerald-500/20 disabled:opacity-50"
+        defaultValue=""
+        onChange={handleNativeChange}
+        disabled={loading}
+        aria-label={placeholder}
+      >
+        <option value="" disabled>
+          {loading ? "Loading…" : placeholder}
+        </option>
+        {items.map((item) => (
+          <option key={item.iso2 ?? item.code ?? item.id} value={item.name}>
+            {item.name}
+          </option>
+        ))}
+      </select>
+
+      {/* Searchable combobox on desktop (≥ lg, where the inline sidebar is rendered) */}
+      <div className="hidden lg:block">
+        <Popover open={open} onOpenChange={onOpenChange}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={open}
+              className="h-8 w-full justify-between border-border/50 bg-secondary/30 text-xs font-normal text-muted-foreground hover:bg-secondary/50"
+            >
+              {loading ? "Loading…" : (value || placeholder)}
+              <ChevronsUpDown className="ml-2 h-3 w-3 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[220px] border-border bg-popover p-0">
+            <Command>
+              <CommandInput placeholder={searchPlaceholder} className="h-8 text-xs" />
+              <CommandList className="max-h-[220px]">
+                <CommandEmpty className="py-4 text-center text-xs text-muted-foreground">
+                  No results found.
+                </CommandEmpty>
+                <CommandGroup>
+                  {items.map((item) => (
+                    <CommandItem
+                      key={item.iso2 ?? item.code ?? item.id}
+                      value={item.name}
+                      onSelect={() => onSelect(item)}
+                      className="text-xs"
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-3.5 w-3.5",
+                          value === item.name ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                      {item.name}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+      </div>
+    </>
   );
 }
 
