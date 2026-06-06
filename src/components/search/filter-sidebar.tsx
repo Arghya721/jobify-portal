@@ -109,36 +109,79 @@ function LocationCombobox({
   onOpenChange: (v: boolean) => void;
   onSelect: (item: OptionItem) => void;
 }) {
-  const handleNativeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const item = items.find((i) => i.name === e.target.value);
-    if (item) onSelect(item);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileSearch, setMobileSearch] = useState("");
+
+  const mobileFiltered = mobileSearch
+    ? items.filter((i) => i.name.toLowerCase().includes(mobileSearch.toLowerCase()))
+    : items;
+
+  const handleMobileSelect = (item: OptionItem) => {
+    onSelect(item);
+    setMobileOpen(false);
+    setMobileSearch("");
   };
 
   return (
     <>
       {/*
-       * Native <select> on mobile (< lg).
-       * Avoids the Radix aria-modal + separate Portal issue on iOS Safari
-       * where the Sheet's aria-modal blocks touch interactions on Popover portals.
+       * Inline (no Portal) combobox for mobile (< lg).
+       * Renders inside the Sheet's DOM subtree so aria-modal on iOS Safari
+       * does not block touch events or scroll within the list.
        */}
-      <select
-        className="lg:hidden h-8 w-full rounded-md border border-border/50 bg-secondary/30 px-2 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-emerald-500/20 disabled:opacity-50"
-        defaultValue=""
-        onChange={handleNativeChange}
-        disabled={loading}
-        aria-label={placeholder}
-      >
-        <option value="" disabled>
-          {loading ? "Loading…" : placeholder}
-        </option>
-        {items.map((item) => (
-          <option key={item.iso2 ?? item.code ?? item.id} value={item.name}>
-            {item.name}
-          </option>
-        ))}
-      </select>
+      <div className="lg:hidden">
+        <button
+          type="button"
+          onClick={() => setMobileOpen((v) => !v)}
+          disabled={loading}
+          className="flex h-8 w-full items-center justify-between rounded-md border border-border/50 bg-secondary/30 px-2 text-xs text-muted-foreground disabled:opacity-50"
+        >
+          <span>{loading ? "Loading…" : placeholder}</span>
+          <ChevronDown className={`h-3 w-3 shrink-0 opacity-50 transition-transform duration-150 ${mobileOpen ? "rotate-180" : ""}`} />
+        </button>
 
-      {/* Searchable combobox on desktop (≥ lg, where the inline sidebar is rendered) */}
+        {mobileOpen && (
+          <div className="mt-1 overflow-hidden rounded-md border border-border bg-popover shadow-md">
+            {/* Search input */}
+            <div className="flex items-center border-b border-border px-2">
+              <Search className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+              <input
+                autoFocus
+                type="text"
+                value={mobileSearch}
+                onChange={(e) => setMobileSearch(e.target.value)}
+                placeholder={searchPlaceholder}
+                className="h-8 flex-1 bg-transparent px-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none"
+              />
+              {mobileSearch && (
+                <button onClick={() => setMobileSearch("")} className="p-0.5 text-muted-foreground hover:text-foreground">
+                  <X className="h-3 w-3" />
+                </button>
+              )}
+            </div>
+
+            {/* Scrollable list — inline in Sheet DOM, no Portal */}
+            <div className="max-h-[200px] overflow-y-auto overscroll-contain">
+              {mobileFiltered.length === 0 ? (
+                <p className="py-4 text-center text-xs text-muted-foreground">No results found.</p>
+              ) : (
+                mobileFiltered.map((item) => (
+                  <button
+                    key={item.iso2 ?? item.code ?? item.id}
+                    type="button"
+                    onClick={() => handleMobileSelect(item)}
+                    className="flex w-full items-center px-3 py-2 text-xs text-foreground hover:bg-accent active:bg-accent/70"
+                  >
+                    {item.name}
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Searchable Popover combobox on desktop (≥ lg, inline sidebar — no Sheet/aria-modal) */}
       <div className="hidden lg:block">
         <Popover open={open} onOpenChange={onOpenChange}>
           <PopoverTrigger asChild>
