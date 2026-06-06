@@ -50,12 +50,12 @@ export function JobCard({ job, index }: JobCardProps) {
         {/* Content */}
         <div className="min-w-0 flex-1">
           {/* Title Row */}
-          <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-[15px] font-semibold text-foreground group-hover:text-foreground transition-colors">
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+            <h3 className="min-w-0 break-words text-[15px] font-semibold text-foreground transition-colors group-hover:text-foreground">
               {job.title}
             </h3>
             {isRemote && (
-              <Badge className="rounded-md bg-emerald-500/15 text-[10px] font-bold uppercase tracking-wider text-emerald-400 border-0 px-2 py-0.5 hover:bg-emerald-500/20">
+              <Badge className="shrink-0 rounded-md border-0 bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-400 hover:bg-emerald-500/20">
                 Remote
               </Badge>
             )}

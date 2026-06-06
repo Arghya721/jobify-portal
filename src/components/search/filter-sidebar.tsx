@@ -23,13 +23,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
@@ -97,6 +90,70 @@ let _countriesFetched = false;
 const _regionsCache = new Map<string, OptionItem[]>();
 const _citiesCache = new Map<string, OptionItem[]>();
 
+function LocationCombobox({
+  items,
+  value,
+  placeholder,
+  searchPlaceholder,
+  loading,
+  open,
+  onOpenChange,
+  onSelect,
+}: {
+  items: OptionItem[];
+  value: string;
+  placeholder: string;
+  searchPlaceholder: string;
+  loading: boolean;
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
+  onSelect: (item: OptionItem) => void;
+}) {
+  return (
+    <Popover open={open} onOpenChange={onOpenChange}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className="h-8 w-full justify-between border-border/50 bg-secondary/30 text-xs font-normal text-muted-foreground hover:bg-secondary/50"
+        >
+          {loading ? "Loading…" : (value || placeholder)}
+          <ChevronsUpDown className="ml-2 h-3 w-3 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-[220px] border-border bg-popover p-0">
+        <Command>
+          <CommandInput placeholder={searchPlaceholder} className="h-8 text-xs" />
+          <CommandList className="max-h-[220px]">
+            <CommandEmpty className="py-4 text-center text-xs text-muted-foreground">
+              No results found.
+            </CommandEmpty>
+            <CommandGroup>
+              {items.map((item) => (
+                <CommandItem
+                  key={item.iso2 ?? item.code ?? item.id}
+                  value={item.name}
+                  onSelect={() => onSelect(item)}
+                  className="text-xs"
+                >
+                  <Check
+                    className={cn(
+                      "mr-2 h-3.5 w-3.5",
+                      value === item.name ? "opacity-100" : "opacity-0"
+                    )}
+                  />
+                  {item.name}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 function LocationFilter() {
   const [country, setCountry] = useQueryState("country", parseAsString.withDefault(""));
   const [region, setRegion] = useQueryState("region", parseAsString.withDefault(""));
@@ -104,7 +161,7 @@ function LocationFilter() {
   const [isOpen, setIsOpen] = useState(true);
 
   const [countriesList, setCountriesList] = useState<OptionItem[]>(_countriesCache);
-  const [regionsList, setRegionsList] = useState<OptionItem[]>(() => 
+  const [regionsList, setRegionsList] = useState<OptionItem[]>(() =>
     country ? (_regionsCache.get(country) || []) : []
   );
   const [citiesList, setCitiesList] = useState<OptionItem[]>(() => {
@@ -115,12 +172,18 @@ function LocationFilter() {
   const [loadingRegions, setLoadingRegions] = useState(false);
   const [loadingCities, setLoadingCities] = useState(false);
 
+  const [countryOpen, setCountryOpen] = useState(false);
+  const [regionOpen, setRegionOpen] = useState(false);
+  const [cityOpen, setCityOpen] = useState(false);
+
+  // Derive display name from ISO2 code stored in URL
+  const selectedCountryName = countriesList.find(
+    (c) => (c.iso2 || String(c.id)) === country
+  )?.name ?? country;
+
   // Fetch countries on mount (only if not cached)
   useEffect(() => {
-    if (_countriesFetched) {
-      setCountriesList(_countriesCache);
-      return;
-    }
+    if (_countriesFetched) { setCountriesList(_countriesCache); return; }
     setLoadingCountries(true);
     fetchCountries().then((data) => {
       _countriesCache = (data || []) as OptionItem[];
@@ -132,14 +195,8 @@ function LocationFilter() {
 
   // Fetch regions when country changes (only if not cached)
   useEffect(() => {
-    if (!country) {
-      setRegionsList([]);
-      return;
-    }
-    if (_regionsCache.has(country)) {
-      setRegionsList(_regionsCache.get(country)!);
-      return;
-    }
+    if (!country) { setRegionsList([]); return; }
+    if (_regionsCache.has(country)) { setRegionsList(_regionsCache.get(country)!); return; }
     setLoadingRegions(true);
     fetchRegions(country).then((data) => {
       _regionsCache.set(country, data);
@@ -150,15 +207,9 @@ function LocationFilter() {
 
   // Fetch cities when region changes (only if not cached)
   useEffect(() => {
-    if (!region) {
-      setCitiesList([]);
-      return;
-    }
+    if (!region) { setCitiesList([]); return; }
     const cacheKey = `${country}:${region}`;
-    if (_citiesCache.has(cacheKey)) {
-      setCitiesList(_citiesCache.get(cacheKey)!);
-      return;
-    }
+    if (_citiesCache.has(cacheKey)) { setCitiesList(_citiesCache.get(cacheKey)!); return; }
     const selectedRegion = regionsList.find((r) => r.name === region);
     if (selectedRegion) {
       setLoadingCities(true);
@@ -170,32 +221,34 @@ function LocationFilter() {
     }
   }, [region, regionsList, country]);
 
-  const handleCountryChange = (value: string) => {
+  const handleCountrySelect = (item: OptionItem) => {
+    const value = item.iso2 || String(item.id);
     sendGAEvent("event", "filter_location", { type: "country", value });
-    if (value === "__clear__") {
-      setCountry(null); setRegion(null); setCity(null);
-    } else {
-      setCountry(value); setRegion(null); setCity(null);
-    }
+    setCountry(value); setRegion(null); setCity(null);
+    setCountryOpen(false);
   };
 
-  const handleRegionChange = (value: string) => {
-    sendGAEvent("event", "filter_location", { type: "region", value });
-    if (value === "__clear__") {
-      setRegion(null); setCity(null);
-    } else {
-      setRegion(value); setCity(null);
-    }
+  const handleRegionSelect = (item: OptionItem) => {
+    sendGAEvent("event", "filter_location", { type: "region", value: item.name });
+    setRegion(item.name); setCity(null);
+    setRegionOpen(false);
   };
 
-  const handleCityChange = (value: string) => {
-    sendGAEvent("event", "filter_location", { type: "city", value });
-    setCity(value === "__clear__" ? null : value);
+  const handleCitySelect = (item: OptionItem) => {
+    sendGAEvent("event", "filter_location", { type: "city", value: item.name });
+    setCity(item.name);
+    setCityOpen(false);
   };
+
+  const clearCountry = () => { setCountry(null); setRegion(null); setCity(null); };
+  const clearRegion = () => { setRegion(null); setCity(null); };
+  const clearCity = () => setCity(null);
+
+  const hasAny = !!(country || region || city);
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <CollapsibleTrigger className="flex w-full items-center justify-between py-2 text-sm font-semibold text-foreground hover:text-white transition-colors">
+      <CollapsibleTrigger className="flex w-full items-center justify-between py-2 text-sm font-semibold text-foreground transition-colors hover:text-white">
         <span className="flex items-center gap-2">
           <span className="text-base">📍</span> Location
         </span>
@@ -205,75 +258,115 @@ function LocationFilter() {
           }`}
         />
       </CollapsibleTrigger>
-      <CollapsibleContent className="pt-2 space-y-3">
-        {/* Country */}
-        <div>
-          <label className="mb-1 block text-[11px] font-medium uppercase tracking-wider text-muted-foreground/70">
-            Country
-          </label>
-          <Select value={country || "__none__"} onValueChange={handleCountryChange}>
-            <SelectTrigger className="h-8 w-full border-border/50 bg-secondary/30 text-xs">
-              <SelectValue placeholder={loadingCountries ? "Loading..." : "All countries"} />
-            </SelectTrigger>
-            <SelectContent className="bg-popover border-border max-h-[240px]">
-              <SelectItem value="__clear__" className="text-muted-foreground">
-                All countries
-              </SelectItem>
-              {countriesList.map((c) => (
-                <SelectItem key={c.iso2 || c.id} value={c.iso2 || String(c.id)}>
-                  {c.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+      <CollapsibleContent className="space-y-3 pt-2">
 
-        {/* Region — shown only when a country is selected */}
-        {country && (
+        {/* Selected location chips */}
+        {hasAny && (
+          <div className="flex flex-wrap gap-1.5">
+            {country && (
+              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/15 px-2.5 py-0.5 text-xs font-medium text-emerald-400 transition-colors hover:bg-emerald-500/25">
+                🌍 {selectedCountryName}
+                <button
+                  onClick={clearCountry}
+                  className="ml-0.5 rounded-full p-0.5 transition-colors hover:bg-emerald-500/30"
+                  aria-label="Remove country filter"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </span>
+            )}
+            {region && (
+              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/15 px-2.5 py-0.5 text-xs font-medium text-emerald-400 transition-colors hover:bg-emerald-500/25">
+                📌 {region}
+                <button
+                  onClick={clearRegion}
+                  className="ml-0.5 rounded-full p-0.5 transition-colors hover:bg-emerald-500/30"
+                  aria-label="Remove region filter"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </span>
+            )}
+            {city && (
+              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/15 px-2.5 py-0.5 text-xs font-medium text-emerald-400 transition-colors hover:bg-emerald-500/25">
+                🏙️ {city}
+                <button
+                  onClick={clearCity}
+                  className="ml-0.5 rounded-full p-0.5 transition-colors hover:bg-emerald-500/30"
+                  aria-label="Remove city filter"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Country combobox — hidden once selected */}
+        {!country && (
+          <div>
+            <label className="mb-1 block text-[11px] font-medium uppercase tracking-wider text-muted-foreground/70">
+              Country
+            </label>
+            <LocationCombobox
+              items={countriesList}
+              value=""
+              placeholder="Search country…"
+              searchPlaceholder="Search country…"
+              loading={loadingCountries}
+              open={countryOpen}
+              onOpenChange={setCountryOpen}
+              onSelect={handleCountrySelect}
+            />
+          </div>
+        )}
+
+        {/* Region combobox — shown once country is selected and region not yet chosen */}
+        {country && !region && (
           <div>
             <label className="mb-1 block text-[11px] font-medium uppercase tracking-wider text-muted-foreground/70">
               Region / State
             </label>
-            <Select value={region || "__none__"} onValueChange={handleRegionChange}>
-              <SelectTrigger className="h-8 w-full border-border/50 bg-secondary/30 text-xs">
-                <SelectValue placeholder={loadingRegions ? "Loading..." : "All regions"} />
-              </SelectTrigger>
-              <SelectContent className="bg-popover border-border max-h-[240px]">
-                <SelectItem value="__clear__" className="text-muted-foreground">
-                  All regions
-                </SelectItem>
-                {regionsList.map((r) => (
-                  <SelectItem key={r.code || r.id} value={r.name}>
-                    {r.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <LocationCombobox
+              items={regionsList}
+              value=""
+              placeholder="Search region…"
+              searchPlaceholder="Search region…"
+              loading={loadingRegions}
+              open={regionOpen}
+              onOpenChange={setRegionOpen}
+              onSelect={handleRegionSelect}
+            />
           </div>
         )}
 
-        {/* City — shown only when a region is selected */}
-        {region && (
+        {/* City combobox — shown once region is selected and city not yet chosen */}
+        {region && !city && (
           <div>
             <label className="mb-1 block text-[11px] font-medium uppercase tracking-wider text-muted-foreground/70">
               City
             </label>
-            <Select value={city || "__none__"} onValueChange={handleCityChange}>
-              <SelectTrigger className="h-8 w-full border-border/50 bg-secondary/30 text-xs">
-                <SelectValue placeholder={loadingCities ? "Loading..." : "All cities"} />
-              </SelectTrigger>
-              <SelectContent className="bg-popover border-border max-h-[240px]">
-                <SelectItem value="__clear__" className="text-muted-foreground">
-                  All cities
-                </SelectItem>
-                {citiesList.map((c) => (
-                  <SelectItem key={c.id} value={c.name}>
-                    {c.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <LocationCombobox
+              items={citiesList}
+              value=""
+              placeholder="Search city…"
+              searchPlaceholder="Search city…"
+              loading={loadingCities}
+              open={cityOpen}
+              onOpenChange={setCityOpen}
+              onSelect={handleCitySelect}
+            />
           </div>
+        )}
+
+        {/* Clear all shortcut */}
+        {hasAny && (
+          <button
+            onClick={clearCountry}
+            className="text-[11px] text-muted-foreground/60 transition-colors hover:text-muted-foreground"
+          >
+            Clear location filters
+          </button>
         )}
       </CollapsibleContent>
     </Collapsible>

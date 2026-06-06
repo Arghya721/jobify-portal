@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, ArrowRight } from "lucide-react";
+import { Search, ArrowRight, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import type { StaticCompany } from "@/lib/companies-static";
 
@@ -43,7 +43,7 @@ function CompanyCard({ company, index }: { company: StaticCompany; index: number
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: Math.min(index * 0.03, 0.5), ease: "easeOut" }}
+      transition={{ duration: 0.25, delay: Math.min(index * 0.02, 0.2), ease: "easeOut" }}
     >
       <Link
         href={`/jobs?company_id=${company.id}`}
@@ -84,6 +84,14 @@ function CompanyCard({ company, index }: { company: StaticCompany; index: number
 
 export function CompanyGrid({ companies }: CompanyGridProps) {
   const [query, setQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+
+  useEffect(() => {
+    if (!query) { setIsSearching(false); return; }
+    setIsSearching(true);
+    const t = setTimeout(() => setIsSearching(false), 250);
+    return () => clearTimeout(t);
+  }, [query]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -108,7 +116,11 @@ export function CompanyGrid({ companies }: CompanyGridProps) {
     <div>
       {/* Search input */}
       <div className="relative mb-8 max-w-md">
-        <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        {isSearching ? (
+          <Loader2 className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-emerald-400" />
+        ) : (
+          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        )}
         <input
           type="search"
           value={query}

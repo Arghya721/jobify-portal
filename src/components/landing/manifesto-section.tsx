@@ -125,9 +125,9 @@ export function ManifestoSection() {
 
       <div className="px-4 py-24 text-center md:py-32">
         <motion.div
-          initial={{ opacity: 0, y: 22 }}
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
+          viewport={{ once: true, margin: "120px" }}
           transition={{ duration: 0.7, ease: "easeOut" }}
         >
           <p className="mb-6 font-mono text-xs tracking-[0.2em] text-emerald-400/70 uppercase">

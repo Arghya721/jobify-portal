@@ -36,8 +36,7 @@ export function Hero() {
     target: sectionRef,
     offset: ["start start", "end start"],
   });
-  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.92], [1, 0]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -74,7 +73,7 @@ export function Hero() {
 
       {/* Parallax content wrapper */}
       <motion.div
-        style={{ y: contentY, opacity: contentOpacity }}
+        style={{ opacity: contentOpacity }}
         className="mx-auto max-w-screen-2xl px-4 pb-16 pt-24 text-center md:pb-24 md:pt-32"
       >
         {/* Live badge */}
@@ -102,14 +101,14 @@ export function Hero() {
         >
           Find your next
           <br />
-          <span className="relative inline-block h-[1.2em] overflow-hidden align-bottom">
+          <span className="relative inline-block h-[1.2em] overflow-hidden align-bottom" style={{ contain: "paint" }}>
             <AnimatePresence mode="wait">
               <motion.span
                 key={wordIndex}
-                initial={{ y: 40, opacity: 0, filter: "blur(4px)" }}
-                animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
-                exit={{ y: -40, opacity: 0, filter: "blur(4px)" }}
-                transition={{ duration: 0.5, ease: "easeInOut" }}
+                initial={{ y: 40, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -40, opacity: 0 }}
+                transition={{ duration: 0.45, ease: "easeInOut" }}
                 className="inline-block text-emerald-400"
               >
                 {ROTATING_WORDS[wordIndex]}
