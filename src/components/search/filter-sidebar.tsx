@@ -453,8 +453,14 @@ function CompanyFilter() {
   const [companyId, setCompanyId] = useQueryState("company_id", parseAsString.withDefault(""));
   const [isOpen, setIsOpen] = useState(true);
   const [openCombobox, setOpenCombobox] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileSearch, setMobileSearch] = useState("");
 
   const selectedCompany = STATIC_COMPANIES.find((c) => String(c.id) === companyId);
+
+  const mobileFiltered = mobileSearch
+    ? STATIC_COMPANIES.filter((c) => c.name.toLowerCase().includes(mobileSearch.toLowerCase()))
+    : STATIC_COMPANIES;
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -470,65 +476,120 @@ function CompanyFilter() {
       </CollapsibleTrigger>
       <CollapsibleContent className="pt-2 space-y-3">
         <div>
-          <Popover open={openCombobox} onOpenChange={setOpenCombobox}>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                role="combobox"
-                aria-expanded={openCombobox}
-                className="w-full justify-between h-8 border-border/50 bg-secondary/30 text-xs text-muted-foreground hover:bg-secondary/50 font-normal"
-              >
-                {selectedCompany ? selectedCompany.name : "All companies"}
-                <ChevronsUpDown className="ml-2 h-3 w-3 shrink-0 opacity-50" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[100%] p-0 bg-popover border-border">
-              <Command>
-                <CommandInput placeholder="Search company..." className="h-9 text-xs" />
-                <CommandList className="max-h-[220px]">
-                  <CommandEmpty className="py-6 text-center text-xs">No company found.</CommandEmpty>
-                  <CommandGroup>
-                    <CommandItem
-                      value="__clear__"
-                      onSelect={() => {
-                        setCompanyId(null);
-                        setOpenCombobox(false);
-                      }}
-                      className="text-xs text-muted-foreground"
+          {/* Mobile: inline search+list — no Portal, avoids aria-modal scroll block */}
+          <div className="lg:hidden">
+            <button
+              type="button"
+              onClick={() => setMobileOpen((v) => !v)}
+              className="flex h-8 w-full items-center justify-between rounded-md border border-border/50 bg-secondary/30 px-2 text-xs text-muted-foreground"
+            >
+              <span className="truncate">{selectedCompany ? selectedCompany.name : "All companies"}</span>
+              <ChevronDown className={`ml-1 h-3 w-3 shrink-0 opacity-50 transition-transform duration-150 ${mobileOpen ? "rotate-180" : ""}`} />
+            </button>
+
+            {mobileOpen && (
+              <div className="mt-1 overflow-hidden rounded-md border border-border bg-popover shadow-md">
+                <div className="flex items-center border-b border-border px-2">
+                  <Search className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                  <input
+                    autoFocus
+                    type="text"
+                    value={mobileSearch}
+                    onChange={(e) => setMobileSearch(e.target.value)}
+                    placeholder="Search company…"
+                    className="h-8 flex-1 bg-transparent px-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none"
+                  />
+                  {mobileSearch && (
+                    <button onClick={() => setMobileSearch("")} className="p-0.5 text-muted-foreground hover:text-foreground">
+                      <X className="h-3 w-3" />
+                    </button>
+                  )}
+                </div>
+                <div className="max-h-[200px] overflow-y-auto overscroll-contain">
+                  {!mobileSearch && (
+                    <button
+                      type="button"
+                      onClick={() => { setCompanyId(null); setMobileOpen(false); setMobileSearch(""); }}
+                      className="flex w-full items-center gap-2 px-3 py-2 text-xs text-muted-foreground hover:bg-accent active:bg-accent/70"
                     >
-                      <Check
-                        className={cn(
-                          "mr-2 h-4 w-4",
-                          companyId === "" ? "opacity-100" : "opacity-0"
-                        )}
-                      />
+                      <Check className={cn("h-3.5 w-3.5 shrink-0", !companyId ? "opacity-100" : "opacity-0")} />
                       All companies
-                    </CommandItem>
-                    {STATIC_COMPANIES.map((company) => (
-                      <CommandItem
+                    </button>
+                  )}
+                  {mobileFiltered.length === 0 ? (
+                    <p className="py-4 text-center text-xs text-muted-foreground">No company found.</p>
+                  ) : (
+                    mobileFiltered.map((company) => (
+                      <button
                         key={company.id}
-                        value={company.name}
-                        onSelect={() => {
+                        type="button"
+                        onClick={() => {
                           sendGAEvent("event", "filter_company", { company: company.name });
                           setCompanyId(String(company.id));
-                          setOpenCombobox(false);
+                          setMobileOpen(false);
+                          setMobileSearch("");
                         }}
-                        className="text-xs"
+                        className="flex w-full items-center gap-2 px-3 py-2 text-xs text-foreground hover:bg-accent active:bg-accent/70"
                       >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            companyId === String(company.id) ? "opacity-100" : "opacity-0"
-                          )}
-                        />
+                        <Check className={cn("h-3.5 w-3.5 shrink-0", companyId === String(company.id) ? "opacity-100" : "opacity-0")} />
                         {company.name}
+                      </button>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Desktop: Popover combobox (≥ lg, no Sheet/aria-modal) */}
+          <div className="hidden lg:block">
+            <Popover open={openCombobox} onOpenChange={setOpenCombobox}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={openCombobox}
+                  className="w-full justify-between h-8 border-border/50 bg-secondary/30 text-xs text-muted-foreground hover:bg-secondary/50 font-normal"
+                >
+                  {selectedCompany ? selectedCompany.name : "All companies"}
+                  <ChevronsUpDown className="ml-2 h-3 w-3 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[100%] p-0 bg-popover border-border">
+                <Command>
+                  <CommandInput placeholder="Search company..." className="h-9 text-xs" />
+                  <CommandList className="max-h-[220px]">
+                    <CommandEmpty className="py-6 text-center text-xs">No company found.</CommandEmpty>
+                    <CommandGroup>
+                      <CommandItem
+                        value="__clear__"
+                        onSelect={() => { setCompanyId(null); setOpenCombobox(false); }}
+                        className="text-xs text-muted-foreground"
+                      >
+                        <Check className={cn("mr-2 h-4 w-4", companyId === "" ? "opacity-100" : "opacity-0")} />
+                        All companies
                       </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-            </PopoverContent>
-          </Popover>
+                      {STATIC_COMPANIES.map((company) => (
+                        <CommandItem
+                          key={company.id}
+                          value={company.name}
+                          onSelect={() => {
+                            sendGAEvent("event", "filter_company", { company: company.name });
+                            setCompanyId(String(company.id));
+                            setOpenCombobox(false);
+                          }}
+                          className="text-xs"
+                        >
+                          <Check className={cn("mr-2 h-4 w-4", companyId === String(company.id) ? "opacity-100" : "opacity-0")} />
+                          {company.name}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
+          </div>
         </div>
       </CollapsibleContent>
     </Collapsible>
