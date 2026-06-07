@@ -7,7 +7,7 @@ export const metadata = {
   robots: { index: true, follow: true },
 };
 
-const LAST_UPDATED = "May 9, 2026";
+const LAST_UPDATED = "June 8, 2026";
 const CONTACT_EMAIL = "privacy@jobify.run";
 
 function Section({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
@@ -104,8 +104,17 @@ export default function PrivacyPage() {
                 <span className="font-medium text-foreground">Technical data</span> — IP address,
                 browser type, device info, and server logs collected automatically on each request.
               </li>
+              <li>
+                <span className="font-medium text-foreground">Résumé files</span> — if you use the
+                Resume Analyser, your uploaded PDF or plain-text résumé is stored on Google Cloud
+                Storage. See{" "}
+                <a href="/terms#resume-analyser" className="text-emerald-400 hover:underline">
+                  Terms §6
+                </a>{" "}
+                for full retention and training-use details.
+              </li>
             </ul>
-            <p>We do not collect résumés, cover letters, salary history, or any sensitive personal information.</p>
+            <p>We do not collect cover letters, salary history, or other sensitive personal information. Résumé files are collected only if you choose to use the Resume Analyser feature.</p>
           </Section>
 
           <Section id="how-we-use" title="2. How we use it">
@@ -125,7 +134,7 @@ export default function PrivacyPage() {
               <li>We do not sell your personal data to any third party.</li>
               <li>We do not share your profile, search history, or contact details with employers or recruiters.</li>
               <li>We do not run advertising tracking or third-party ad pixels on any page.</li>
-              <li>We do not use your data to train AI or machine learning models.</li>
+              <li>We do not use your account data, search history, or usage data to train AI or machine learning models. Résumé files uploaded to the Resume Analyser may be used for model training as described in{" "}<a href="/terms#resume-analyser" className="text-emerald-400 hover:underline">Terms §6</a>.</li>
               <li>We do not send marketing emails — the only emails we send are authentication-related (e.g. sign-in links).</li>
             </ul>
           </Section>
@@ -136,7 +145,7 @@ export default function PrivacyPage() {
               <li>
                 <span className="font-medium text-foreground">Google OAuth</span> — used
                 for sign-in only. We receive your email and name; we do not receive access to your
-                Google Drive, email inbox repositories.
+                Google Drive or email inbox.
               </li>
               <li>
                 <span className="font-medium text-foreground">Google Cloud Platform</span> — our
@@ -166,10 +175,19 @@ export default function PrivacyPage() {
                 <span className="font-medium text-foreground">Session tokens</span> — expire
                 automatically after 30 days of inactivity or on sign-out.
               </li>
-              {/* <li>
+              <li>
                 <span className="font-medium text-foreground">Notification credentials</span> — deleted
                 immediately when you disconnect Telegram or Discord in Settings.
-              </li> */}
+              </li>
+              <li>
+                <span className="font-medium text-foreground">Résumé files</span> — retained
+                indefinitely unless you manually delete the upload from your account or request
+                deletion. See{" "}
+                <a href="/terms#resume-analyser" className="text-emerald-400 hover:underline">
+                  Terms §6
+                </a>{" "}
+                for details on training-data retention.
+              </li>
               <li>
                 <span className="font-medium text-foreground">Server logs</span> — retained for up to
                 90 days for security and debugging, then purged automatically.
@@ -188,7 +206,11 @@ export default function PrivacyPage() {
               <li><span className="font-medium text-foreground">Deletion</span> — request that we delete your account and associated data.</li>
               <li><span className="font-medium text-foreground">Portability</span> — receive your data in a structured, machine-readable format.</li>
               <li><span className="font-medium text-foreground">Opt-out of notifications</span> — disable Telegram or Discord alerts at any time in Settings → Notifications.</li>
-              {/* <li><span className="font-medium text-foreground">Withdraw consent</span> — delete your account at any time in Settings.</li> */}
+              <li><span className="font-medium text-foreground">Withdraw consent</span> — request account deletion at any time by emailing{" "}
+                <a href={`mailto:${CONTACT_EMAIL}`} className="text-emerald-400 hover:underline">
+                  {CONTACT_EMAIL}
+                </a>.
+              </li>
             </ul>
             <p>
               To exercise any of these rights, email{" "}

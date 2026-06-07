@@ -123,7 +123,12 @@ export default function TermsPage() {
                 </a>{" "}
                 if you suspect unauthorised access.
               </li>
-              <li>You may delete your account at any time in Settings. Deletion is permanent.</li>
+              <li>To delete your account, contact us at{" "}
+                <a href={`mailto:${CONTACT_EMAIL}`} className="text-emerald-400 hover:underline">
+                  {CONTACT_EMAIL}
+                </a>
+                . Account deletion is permanent and cannot be undone.
+              </li>
             </ul>
             <p>
               We reserve the right to suspend or terminate accounts that violate these terms,
@@ -229,7 +234,7 @@ export default function TermsPage() {
             </p>
           </Section>
 
-          <Section id="intellectual-prop" title="8. Intellectual Property">
+          <Section id="intellectual-prop" title="7. Intellectual Property">
             <p>
               The Jobify name, logo, UI design, and source code are the property of Jobify
               and are protected by applicable intellectual property law. You may not copy,
@@ -241,7 +246,7 @@ export default function TermsPage() {
             </p>
           </Section>
 
-          <Section id="disclaimers" title="9. Disclaimers">
+          <Section id="disclaimers" title="8. Disclaimers">
             <p>
               The Service is provided <span className="font-medium text-foreground">&ldquo;as is&rdquo;</span> and{" "}
               <span className="font-medium text-foreground">&ldquo;as available&rdquo;</span> without
@@ -256,7 +261,7 @@ export default function TermsPage() {
             </p>
           </Section>
 
-          <Section id="liability" title="10. Limitation of Liability">
+          <Section id="liability" title="9. Limitation of Liability">
             <p>
               To the fullest extent permitted by law, Jobify and its affiliates, officers,
               employees, and agents shall not be liable for any indirect, incidental, special,
@@ -275,10 +280,14 @@ export default function TermsPage() {
             </p>
           </Section>
 
-          <Section id="termination" title="11. Termination">
+          <Section id="termination" title="10. Termination">
             <p>
-              Either party may terminate the relationship at any time. You may delete your
-              account in Settings. We may suspend or terminate your access immediately,
+              Either party may terminate the relationship at any time. You may request account
+              deletion by emailing us at{" "}
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-emerald-400 hover:underline">
+                {CONTACT_EMAIL}
+              </a>
+              . We may suspend or terminate your access immediately,
               without notice, if we believe you have violated these Terms or if we discontinue
               the Service.
             </p>
@@ -289,7 +298,7 @@ export default function TermsPage() {
             </p>
           </Section>
 
-          <Section id="changes" title="12. Changes to Terms">
+          <Section id="changes" title="11. Changes to Terms">
             <p>
               We may update these Terms at any time. Material changes will be indicated by
               updating the &ldquo;Last updated&rdquo; date at the top of this page. Continued
@@ -302,7 +311,7 @@ export default function TermsPage() {
             </p>
           </Section>
 
-          <Section id="governing-law" title="13. Governing Law">
+          <Section id="governing-law" title="12. Governing Law">
             <p>
               These Terms are governed by and construed in accordance with the laws of India,
               without regard to conflict of law provisions. Any disputes arising under these
@@ -314,7 +323,7 @@ export default function TermsPage() {
             </p>
           </Section>
 
-          <Section id="contact" title="14. Contact">
+          <Section id="contact" title="13. Contact">
             <p>For questions about these Terms:</p>
             <p>
               Email:{" "}
