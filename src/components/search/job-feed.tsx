@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef, useMemo, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import { SearchX } from "lucide-react";
 import { useQueryState, parseAsString, parseAsBoolean, parseAsArrayOf, parseAsInteger } from "nuqs";
 import {
   Select,
@@ -51,6 +53,7 @@ const CATEGORIES = [
 ];
 
 export function JobFeed() {
+  const router = useRouter();
   const [q, setQ] = useQueryState("q", parseAsString.withDefault(""));
   const [companyId] = useQueryState("company_id", parseAsString.withDefault(""));
   const [remote] = useQueryState("remote", parseAsBoolean.withDefault(false));
@@ -361,23 +364,47 @@ export function JobFeed() {
         {jobNodes}
 
         {!isLoading && jobNodes.length === 0 && (
-          <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border/60 py-16 text-center">
-            <p className="text-lg font-medium text-muted-foreground">
-              No jobs found
+          <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border/60 px-4 py-16 text-center">
+            <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg border border-border/60 bg-secondary/50">
+              <SearchX className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+            </div>
+            <p className="text-lg font-medium text-foreground">
+              No jobs match these filters
             </p>
-            <p className="mt-1 text-sm text-muted-foreground/60">
-              Try adjusting your filters or search query.
+            <p className="mt-1 max-w-xs text-sm text-muted-foreground/70">
+              Try a broader search term, or clear everything and start fresh.
             </p>
+            <button
+              onClick={() => router.push("/jobs")}
+              className="mt-6 inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/8 px-5 py-2 text-sm font-medium text-emerald-400 transition-[transform,border-color,background-color] duration-150 hover:border-emerald-500/50 hover:bg-emerald-500/12 active:scale-[0.97]"
+            >
+              Clear all filters
+            </button>
           </div>
         )}
       </div>
 
       {/* Infinite Scroll Loader */}
       {hasMore && !isLoading && (
-        <div ref={loaderRef} className="flex justify-center py-8">
-          {isLoadMorePending && (
-            <div className="h-6 w-6 animate-spin rounded-full border-2 border-muted-foreground border-t-foreground" />
-          )}
+        <div ref={loaderRef} className="space-y-3 py-2" aria-busy={isLoadMorePending}>
+          {isLoadMorePending &&
+            Array.from({ length: 2 }).map((_, i) => (
+              <div
+                key={i}
+                className="rounded-xl border border-border/50 bg-card/50 p-5"
+              >
+                <div className="flex items-start gap-4">
+                  <Skeleton className="h-11 w-11 rounded-lg bg-secondary/80" />
+                  <div className="min-w-0 flex-1">
+                    <Skeleton className="h-5 w-[40%] bg-secondary/80" />
+                    <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+                      <Skeleton className="h-4 w-[20%] bg-secondary/80" />
+                      <Skeleton className="h-4 w-[25%] bg-secondary/80" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
         </div>
       )}
     </div>

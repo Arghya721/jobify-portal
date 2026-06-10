@@ -24,7 +24,7 @@ export function JobCard({ job, index }: JobCardProps) {
 
   return (
     <div
-      className="job-card-enter group relative rounded-xl border border-border/50 bg-card/50 p-5 transition-[border-color,background-color,box-shadow,transform] duration-200 hover:border-border hover:bg-card/80 hover:shadow-lg hover:shadow-black/20 active:scale-[0.99]"
+      className="job-card-enter group relative rounded-xl border border-border/50 bg-card/50 p-5 transition-[border-color,background-color,box-shadow,transform] duration-200 hover:border-border hover:bg-card/80 hover:shadow-lg hover:shadow-black/5 active:scale-[0.99] dark:hover:shadow-black/20"
       style={{ animationDelay: `${index * 60}ms`, viewTransitionName: `job-card-${job.id}` as any }}
     >
       <a

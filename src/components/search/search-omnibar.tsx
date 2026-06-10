@@ -3,14 +3,7 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 import { Search } from "lucide-react";
 import { useQueryState, parseAsString } from "nuqs";
-
-const COMPANY_SUGGESTIONS = [
-  { id: "1", name: "Google", logo: "G" },
-  { id: "2", name: "Meta", logo: "M" },
-  { id: "3", name: "Netflix", logo: "N" },
-  { id: "4", name: "Vercel", logo: "V" },
-  { id: "5", name: "Stripe", logo: "S" },
-];
+import { STATIC_COMPANIES } from "@/lib/companies-static";
 import {
   Command,
   CommandEmpty,
@@ -83,8 +76,8 @@ export function SearchOmnibar() {
     [setQ, setCompanyId]
   );
 
-  const filteredCompanies = COMPANY_SUGGESTIONS.filter((c) =>
-    c.name.toLowerCase().includes(localValue.toLowerCase())
+  const filteredCompanies = STATIC_COMPANIES.filter((c) =>
+    c.name.toLowerCase().includes(localValue.trim().toLowerCase())
   );
 
   return (
@@ -115,12 +108,18 @@ export function SearchOmnibar() {
                     <CommandItem
                       key={company.id}
                       onSelect={() =>
-                        handleSelectCompany(company.id, company.name)
+                        handleSelectCompany(String(company.id), company.name)
                       }
                       className="cursor-pointer gap-3 px-4 py-2.5"
                     >
-                      <div className="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-500/10 text-xs font-semibold text-emerald-400">
-                        {company.name.charAt(0)}
+                      <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-md bg-secondary/80">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={company.logo}
+                          alt=""
+                          aria-hidden="true"
+                          className="h-full w-full object-contain p-0.5"
+                        />
                       </div>
                       <span className="text-sm">{company.name}</span>
                       <span className="ml-auto text-xs text-muted-foreground">

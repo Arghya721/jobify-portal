@@ -30,7 +30,7 @@ export default async function JobsPage() {
       {/* Page Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-          Find Your Next Role
+          Find your next role
         </h1>
       </div>
 

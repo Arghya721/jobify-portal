@@ -39,7 +39,7 @@ export default async function LoginPage() {
       <div className="relative hidden lg:flex flex-col h-full overflow-hidden bg-zinc-950 pt-16">
         {/* Ambient orbs */}
         <div className="absolute top-1/3 left-1/4 w-72 h-72 rounded-full bg-emerald-500/6 blur-3xl pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/5 w-56 h-56 rounded-full bg-violet-500/6 blur-3xl pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/5 w-56 h-56 rounded-full bg-emerald-400/5 blur-3xl pointer-events-none" />
 
         {/* Subtle dot grid */}
         <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:28px_28px] pointer-events-none" />
@@ -51,10 +51,10 @@ export default async function LoginPage() {
         <div className="relative z-10 flex-1 flex flex-col justify-center px-10">
           <div className="mb-10 space-y-3">
             <p className="text-xs font-semibold uppercase tracking-widest text-emerald-400">
-              Your career, accelerated
+              Built for engineers
             </p>
             <h2 className="text-4xl font-bold leading-tight text-white">
-              Land your dream job<br />faster with AI
+              Better jobs.<br />Zero noise.
             </h2>
           </div>
 
@@ -84,15 +84,17 @@ export default async function LoginPage() {
               ))}
             </div>
             <p className="text-sm leading-relaxed text-zinc-300">
-              &ldquo;This platform revolutionized our hiring process. We found the perfect candidates in half the time it usually takes.&rdquo;
+              &ldquo;Saved a filter for senior Go roles, got a Telegram ping the
+              next morning, and was interviewing by Thursday. No recruiter
+              spam in between.&rdquo;
             </p>
             <div className="mt-4 flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-teal-600 text-xs font-bold text-white">
-                SD
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-teal-600 text-xs font-bold text-white">
+                AR
               </div>
               <div>
-                <p className="text-sm font-medium text-white">Sofia Davis</p>
-                <p className="text-xs text-zinc-500">HR Director</p>
+                <p className="text-sm font-medium text-white">Anika Rao</p>
+                <p className="text-xs text-zinc-500">Backend Engineer</p>
               </div>
             </div>
           </div>
@@ -107,8 +109,8 @@ export default async function LoginPage() {
         <div className="relative z-10 w-full max-w-sm">
           {/* Mobile-only tagline */}
           <div className="mb-8 text-center lg:hidden">
-            <p className="text-xs font-semibold uppercase tracking-widest text-emerald-400 mb-1">Your career, accelerated</p>
-            <p className="text-sm text-zinc-400">AI-powered job matching for engineers</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-emerald-400 mb-1">Built for engineers</p>
+            <p className="text-sm text-zinc-400">Better jobs. Zero noise. Direct from ATS.</p>
           </div>
 
           {/* Card */}

@@ -7,6 +7,7 @@ import { UserMenu } from "@/components/user-menu";
 import { ForceLogout } from "@/components/force-logout";
 import { BrandLogo } from "@/components/brand-logo";
 import { MobileMenu } from "@/components/navbar-mobile-menu";
+import { NavLinks } from "@/components/nav-links";
 
 export async function Navbar() {
   const session = await auth();
@@ -43,36 +44,19 @@ export async function Navbar() {
         </Link>
 
         {/* Nav Links — Desktop */}
-        <nav className="hidden items-center gap-6 md:flex">
-          <Link
-            href="/jobs"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Jobs
-          </Link>
-          <Link
-            href="/companies"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Companies
-          </Link>
-          {session?.user && (
-            <Link
-              href="/filters"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              Saved Filters
-            </Link>
-          )}
-          {session?.user && (
-            <Link
-              href="/resume"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              Resume
-            </Link>
-          )}
-        </nav>
+        <NavLinks
+          links={[
+            { href: "/jobs", label: "Jobs" },
+            { href: "/companies", label: "Companies" },
+            ...(session?.user
+              ? [
+                  { href: "/filters", label: "Saved Filters" },
+                  { href: "/resume", label: "Resume" },
+                ]
+              : []),
+          ]}
+        />
+
 
         {/* Actions */}
         <div className="flex items-center gap-2">

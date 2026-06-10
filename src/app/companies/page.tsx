@@ -33,7 +33,7 @@ export default function CompaniesPage() {
           </span>
         </div>
         <h1 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-          Browse Companies
+          Browse companies
         </h1>
         <p className="mt-2 text-muted-foreground">
           All sourced directly from company ATS — no middlemen, no spam.

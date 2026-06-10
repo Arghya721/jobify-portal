@@ -7,36 +7,31 @@ import { STATIC_COMPANIES } from "@/lib/companies-static";
 interface TickerItem {
   id: number;
   company: string;
-  color: string;
+  logo: string;
 }
 
-const COLORS = [
-  "#f59e0b",
-  "#22c55e",
-  "#ef4444",
-  "#a855f7",
-  "#3b82f6",
-  "#ec4899",
-  "#14b8a6",
-  "#f97316",
-];
-
-const tickerItems: TickerItem[] = STATIC_COMPANIES.map((c, i) => ({
+const tickerItems: TickerItem[] = STATIC_COMPANIES.map((c) => ({
   id: c.id,
   company: c.name,
-  color: COLORS[i % COLORS.length],
+  logo: c.logo,
 }));
 
 function TickerPill({ item }: { item: TickerItem }) {
   return (
     <Link
       href={`/jobs?company_id=${item.id}`}
-      className="inline-flex shrink-0 items-center gap-3 rounded-full border border-border/80 bg-secondary/80 px-4 py-2.5 text-sm transition-colors hover:border-border hover:bg-secondary"
+      className="inline-flex shrink-0 items-center gap-2.5 rounded-full border border-border/80 bg-secondary/80 py-2 pl-2.5 pr-4 text-sm transition-colors hover:border-emerald-500/30 hover:bg-secondary"
     >
-      <span
-        className="h-2 w-2 rounded-full"
-        style={{ backgroundColor: item.color }}
-      />
+      <span className="flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-full bg-background/60">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={item.logo}
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          className="h-full w-full object-contain p-0.5"
+        />
+      </span>
       <span className="font-medium text-foreground">{item.company}</span>
     </Link>
   );

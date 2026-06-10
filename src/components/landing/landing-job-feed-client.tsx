@@ -4,6 +4,13 @@ import { useState, useEffect, useCallback } from "react";
 import { JobCard } from "@/components/search/job-card";
 import { fetchJobsAction } from "@/app/actions/jobs";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const CATEGORIES = [
   "All Jobs",
@@ -17,16 +24,17 @@ const CATEGORIES = [
 
 export function LandingJobFeedClient({ initialJobs }: { initialJobs: any[] }) {
   const [activeCategory, setActiveCategory] = useState("All Jobs");
+  const [sort, setSort] = useState<"desc" | "asc">("desc");
   // fetchedNodes holds pre-rendered JSX from fetchJobsAction
   const [fetchedNodes, setFetchedNodes] = useState<any[] | null>(null);
   const [isLoading, setIsLoading] = useState(initialJobs.length === 0);
 
-  const fetchByCategory = useCallback(async (category: string) => {
+  const fetchByCategory = useCallback(async (category: string, sortOrder: string) => {
     setIsLoading(true);
 
     const params: Record<string, any> = {
       limit: 10,
-      sort: "desc",
+      sort: sortOrder,
       is_active: true,
     };
 
@@ -47,15 +55,15 @@ export function LandingJobFeedClient({ initialJobs }: { initialJobs: any[] }) {
   }, []);
 
   useEffect(() => {
-    // If we have initial jobs (e.g., from server), just use them
-    if (activeCategory === "All Jobs" && initialJobs.length > 0) {
+    // Server-rendered jobs already match the default view — reuse them
+    if (activeCategory === "All Jobs" && sort === "desc" && initialJobs.length > 0) {
       setFetchedNodes(null);
       return;
     }
-    
+
     // Otherwise, fetch jobs from the client (for both mounting and category changes)
-    fetchByCategory(activeCategory);
-  }, [activeCategory, initialJobs.length, fetchByCategory]);
+    fetchByCategory(activeCategory, sort);
+  }, [activeCategory, sort, initialJobs.length, fetchByCategory]);
 
   // Determine what to render
   const useInitial = fetchedNodes === null && initialJobs.length > 0;
@@ -83,11 +91,16 @@ export function LandingJobFeedClient({ initialJobs }: { initialJobs: any[] }) {
         </div>
 
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <span>Sort by:</span>
-          <select className="cursor-pointer rounded-lg border border-border bg-card px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-border/50">
-            <option>Newest First</option>
-            <option>Oldest First</option>
-          </select>
+          <span className="hidden sm:inline">Sort by:</span>
+          <Select value={sort} onValueChange={(v) => setSort(v as "desc" | "asc")}>
+            <SelectTrigger className="h-8 w-[125px] border-border bg-secondary/50 text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="bg-popover border-border">
+              <SelectItem value="desc">Newest First</SelectItem>
+              <SelectItem value="asc">Oldest First</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
@@ -127,7 +140,7 @@ export function LandingJobFeedClient({ initialJobs }: { initialJobs: any[] }) {
           href={activeCategory === "All Jobs" ? "/jobs" : `/jobs?tags=${activeCategory}`}
           className="rounded-full border border-border/50 px-8 py-3 text-sm font-medium text-muted-foreground transition-[border-color,background-color,color] duration-150 hover:border-border hover:bg-secondary/60 hover:text-foreground active:scale-[0.97]"
         >
-          Explore All Opportunities
+          Browse all open roles
         </a>
       </div>
     </>
