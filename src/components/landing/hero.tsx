@@ -220,7 +220,7 @@ export function Hero() {
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               placeholder={PLACEHOLDERS[placeholderIndex]}
               aria-label="Search engineering jobs"
-              className="h-16 flex-1 bg-transparent px-3.5 text-sm text-foreground placeholder:text-muted-foreground/70 focus:outline-none sm:text-base"
+              className="h-16 min-w-0 flex-1 bg-transparent px-3.5 text-sm text-foreground placeholder:text-muted-foreground/70 focus:outline-none sm:text-base"
             />
             <kbd
               aria-hidden="true"
@@ -228,11 +228,11 @@ export function Hero() {
             >
               /
             </kbd>
-            <Magnetic strength={0.25} className="mr-2.5">
+            <Magnetic strength={0.25} className="mr-2.5 shrink-0">
               <button
                 onClick={handleSearch}
                 aria-label="Submit job search"
-                className="rounded-xl bg-foreground px-6 py-2.5 text-sm font-semibold text-background transition-[transform,opacity] duration-150 hover:opacity-90 active:scale-[0.97]"
+                className="rounded-xl bg-foreground px-4 py-2.5 text-sm font-semibold text-background transition-[transform,opacity] duration-150 hover:opacity-90 active:scale-[0.97] sm:px-6"
               >
                 Search
               </button>
