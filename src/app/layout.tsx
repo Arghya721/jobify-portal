@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Navbar } from "@/components/navbar";
 import { NavbarScrollWrapper } from "@/components/navbar-scroll-wrapper";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ViewTransitionHandler } from "@/components/ui/transition-anchor";
+import { SpotlightDelegate } from "@/components/motion/spotlight-delegate";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { auth } from "@/auth";
 import { getResumeUploadsAction } from "@/app/actions/resume";
@@ -19,6 +20,13 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-display-serif",
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
@@ -76,7 +84,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans`}
+        className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} antialiased font-sans`}
         suppressHydrationWarning
       >
         <ThemeProvider
@@ -87,6 +95,7 @@ export default async function RootLayout({
         >
           <NuqsAdapter>
             <ViewTransitionHandler />
+            <SpotlightDelegate />
             {/* Persistent emerald atmosphere — fixed parallax layer behind all content */}
             <div aria-hidden="true" suppressHydrationWarning className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
               <div className="orb-a absolute -left-[15%] top-[2%] h-[700px] w-[700px] rounded-full bg-emerald-500/[0.08] blur-[140px]" />
@@ -95,6 +104,8 @@ export default async function RootLayout({
               <div className="orb-d absolute -right-[10%] top-[63%] h-[640px] w-[640px] rounded-full bg-emerald-500/[0.065] blur-[130px]" />
               <div className="orb-e absolute -left-[8%] top-[82%] h-[540px] w-[540px] rounded-full bg-emerald-400/[0.05] blur-[115px]" />
             </div>
+            {/* Film grain over everything — texture without weight */}
+            <div aria-hidden="true" className="noise-overlay" />
             <NavbarScrollWrapper><Navbar /></NavbarScrollWrapper>
             {session?.user && activeUploads.length > 0 && (
               <ResumeNotificationWatcher initialUploads={activeUploads} />

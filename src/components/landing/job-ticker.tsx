@@ -20,7 +20,7 @@ function TickerPill({ item }: { item: TickerItem }) {
   return (
     <Link
       href={`/jobs?company_id=${item.id}`}
-      className="inline-flex shrink-0 items-center gap-2.5 rounded-full border border-border/80 bg-secondary/80 py-2 pl-2.5 pr-4 text-sm transition-colors hover:border-emerald-500/30 hover:bg-secondary"
+      className="inline-flex shrink-0 items-center gap-2.5 rounded-full border border-border/80 bg-secondary/80 py-2 pl-2.5 pr-4 text-sm transition-[border-color,background-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-emerald-500/30 hover:bg-secondary hover:shadow-md hover:shadow-emerald-500/5"
     >
       <span className="flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-full bg-background/60">
         {/* eslint-disable-next-line @next/next/no-img-element */}

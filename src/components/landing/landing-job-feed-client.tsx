@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { motion } from "framer-motion";
 import { JobCard } from "@/components/search/job-card";
 import { fetchJobsAction } from "@/app/actions/jobs";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -79,13 +80,21 @@ export function LandingJobFeedClient({ initialJobs }: { initialJobs: any[] }) {
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`rounded-full border px-4 py-1.5 text-sm font-medium transition-[border-color,background-color,color] duration-150 active:scale-[0.97] ${
+              className={`relative rounded-full border px-4 py-1.5 text-sm font-medium transition-[border-color,color] duration-200 active:scale-[0.97] ${
                 activeCategory === cat
-                  ? "border-emerald-500/30 bg-emerald-500/8 text-emerald-400"
-                  : "border-border text-muted-foreground hover:border-border/80 hover:bg-secondary/40 hover:text-foreground"
+                  ? "border-emerald-500/30 text-emerald-400"
+                  : "border-border text-muted-foreground hover:border-border/80 hover:text-foreground"
               }`}
             >
-              {cat}
+              {activeCategory === cat && (
+                <motion.span
+                  layoutId="category-pill"
+                  transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                  className="absolute inset-0 rounded-full bg-emerald-500/8"
+                  aria-hidden="true"
+                />
+              )}
+              <span className="relative">{cat}</span>
             </button>
           ))}
         </div>
