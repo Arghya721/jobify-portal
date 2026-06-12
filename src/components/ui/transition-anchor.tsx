@@ -101,6 +101,9 @@ export function ViewTransitionHandler() {
 
         activeTransition.current = transition;
 
+        // Prevent unhandled promise rejections on ready state if aborted
+        transition.ready.catch(() => {});
+
         // Clean up the ref once the transition completes (success or abort)
         transition.finished.then(() => {
           activeTransition.current = null;

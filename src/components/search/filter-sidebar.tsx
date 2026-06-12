@@ -235,14 +235,12 @@ function LocationFilter() {
   const [city, setCity] = useQueryState("city", parseAsString.withDefault(""));
   const [isOpen, setIsOpen] = useState(true);
 
-  const [countriesList, setCountriesList] = useState<OptionItem[]>(_countriesCache);
-  const [regionsList, setRegionsList] = useState<OptionItem[]>(() =>
-    country ? (_regionsCache.get(country) || []) : []
-  );
-  const [citiesList, setCitiesList] = useState<OptionItem[]>(() => {
-    if (!region || !country) return [];
-    return _citiesCache.get(`${country}:${region}`) || [];
-  });
+  // Always start empty — module-level caches are populated client-side only and
+  // would differ from the server-rendered empty state, causing hydration errors.
+  // The useEffects below already restore from cache (or fetch) after mount.
+  const [countriesList, setCountriesList] = useState<OptionItem[]>([]);
+  const [regionsList, setRegionsList] = useState<OptionItem[]>([]);
+  const [citiesList, setCitiesList] = useState<OptionItem[]>([]);
   const [loadingCountries, setLoadingCountries] = useState(false);
   const [loadingRegions, setLoadingRegions] = useState(false);
   const [loadingCities, setLoadingCities] = useState(false);

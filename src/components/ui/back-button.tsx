@@ -27,12 +27,15 @@ export function BackButton({ fallback = "/jobs", className }: { fallback?: strin
     }
 
     try {
-      document.startViewTransition(() =>
+      const transition = document.startViewTransition(() =>
         new Promise<void>((resolve) => {
           viewTransitionResolver.current = resolve;
           navigate();
         })
       );
+      // Prevent unhandled promise rejections on abort (which trigger Next.js error overlays)
+      transition.ready.catch(() => {});
+      transition.finished.catch(() => {});
     } catch {
       // Another transition still animating — navigate without animation
       navigate();

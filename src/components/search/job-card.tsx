@@ -41,6 +41,8 @@ export function JobCard({ job, index }: JobCardProps) {
               src={logoUrl}
               alt={`${companyName} logo`}
               className="h-full w-full object-cover p-1"
+              loading="lazy"
+              decoding="async"
             />
           ) : (
             <FileText className="h-5 w-5" />

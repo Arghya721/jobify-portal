@@ -89,95 +89,180 @@ export function JobFeed() {
 
   useEffect(() => setIsMounted(true), []);
 
-  // Restore scroll position immediately on back-navigation, before first paint.
-  // The browser's native restoration can lag ~2s behind (it waits for the page
-  // to be tall enough) and animates under `scroll-behavior: smooth`; the cached
-  // nodes are already in the DOM here, so we can jump straight to the spot.
-  useLayoutEffect(() => {
-    if (isCacheValid && feedCache!.scrollY > 0) {
-      window.scrollTo({ top: feedCache!.scrollY, behavior: "instant" });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const scrollYRef = useRef(0);
   const savedScrollRef = useRef<number | null>(null);
   const isFirstRun = useRef(true);
   const prevFilterKey = useRef(filterKey);
   const stateRef = useRef<FeedCache>({ nodes: [], page: 1, scrollY: 0, filterKey: "", totalCount: 0, lastFetchCount: 0, seenIds: [] });
+  // Blocks IntersectionObserver from triggering load-more during the 800 ms
+  // after back-nav scroll restoration. Without this, the observer can fire
+  // immediately (loader is in the restored viewport), call a Server Action,
+  // and Next.js's router-cache flush resets scroll to 0 before we can correct.
+  const [scrollJustRestored, setScrollJustRestored] = useState(false);
+
+  // Disable the browser's native scroll restoration for the lifetime of this
+  // component. Without this, the browser competes with our manual scrollTo and
+  // can override it 1-2 frames later, causing a visible jump on back-navigation.
+  useLayoutEffect(() => {
+    history.scrollRestoration = "manual";
+    return () => { history.scrollRestoration = "auto"; };
+  }, []);
+
+  // Restore scroll position resiliently on mount (back-navigation)
+  useEffect(() => {
+    if (!isCacheValid || !feedCache || feedCache.scrollY <= 0) return;
+    const targetY = feedCache.scrollY;
+    
+    // Set state to block IntersectionObserver during restoration
+    setScrollJustRestored(true);
+    const tid = setTimeout(() => {
+      setScrollJustRestored(false);
+    }, 1200);
+
+    let isCancelled = false;
+    let attempts = 0;
+    const maxAttempts = 80; // ~1.3 seconds at 60fps
+    
+    const restoreScroll = () => {
+      if (isCancelled) return;
+      
+      const currentY = window.scrollY;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      
+      if (maxScroll >= targetY) {
+        if (Math.abs(currentY - targetY) > 2) {
+          window.scrollTo({ top: targetY, behavior: "instant" });
+        }
+        // Keep checking for a few frames to ensure it stays locked (fights late Next.js resets)
+        if (Math.abs(window.scrollY - targetY) <= 2) {
+          attempts++;
+          if (attempts > 15) {
+            return;
+          }
+        }
+      } else {
+        // Page hasn't reached full height yet; scroll to max available height for now
+        if (maxScroll > 0 && Math.abs(currentY - maxScroll) > 2) {
+          window.scrollTo({ top: maxScroll, behavior: "instant" });
+        }
+      }
+      
+      attempts++;
+      if (attempts < maxAttempts) {
+        requestAnimationFrame(restoreScroll);
+      }
+    };
+    
+    // Start restoration loop
+    restoreScroll();
+    
+    // Cancel automatic restore if user manually scrolls away (non-zero scroll)
+    let lastScrollY = window.scrollY;
+    const handleUserScroll = () => {
+      const currentY = window.scrollY;
+      if (
+        currentY !== 0 && 
+        Math.abs(currentY - targetY) > 15 && 
+        Math.abs(currentY - lastScrollY) > 5
+      ) {
+        isCancelled = true;
+      }
+      lastScrollY = currentY;
+    };
+    
+    window.addEventListener("scroll", handleUserScroll, { passive: true });
+    
+    return () => {
+      isCancelled = true;
+      clearTimeout(tid);
+      window.removeEventListener("scroll", handleUserScroll);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Fetch jobs from server action
   const fetchJobs = useCallback(async (isLoadMore = false) => {
-    if (!isLoadMore) {
-      setIsLoading(true);
-      pageRef.current = 1;
-    } else {
-      savedScrollRef.current = window.scrollY;
-    }
-    
-    const currentPage = isLoadMore ? pageRef.current + 1 : 1;
-
-    // Conditionally build params so we don't send Next.js "$undefined" string payloads
-    const params: Record<string, any> = {
-      sort,
-      limit: PAGE_SIZE,
-      page: currentPage,
-    };
-
-    if (q) params.q = q;
-    if (companyId) params.company_id = parseInt(companyId);
-    if (remote) params.remote = remote;
-    if (country) params.country = country;
-    if (region) params.region = region;
-    if (city) params.city = city;
-    if (tags.length > 0) params.description_tags = tags;
-    if (sources.length > 0) params.source = sources[0];
-    if (!showClosed) {
-      params.is_active = true;
-    } else {
-      params.is_active = false;
-    }
-    if (since && since !== "any") {
-      const keyToDays: Record<string, number> = { "1d": 1, "7d": 7, "30d": 30 };
-      const days = keyToDays[since];
-      if (days) {
-        const d = new Date();
-        d.setDate(d.getDate() - days);
-        params.since = d.toISOString();
+    try {
+      if (!isLoadMore) {
+        setIsLoading(true);
+        pageRef.current = 1;
+      } else {
+        // Prefer window.scrollY; fall back to the tracked ref in case Next.js's
+        // router-cache flush already reset the scroll before this line runs.
+        savedScrollRef.current = window.scrollY > 0 ? window.scrollY : scrollYRef.current;
       }
-    }
+      
+      const currentPage = isLoadMore ? pageRef.current + 1 : 1;
 
-    if (expMin != null) params.experience_min = expMin;
-    if (expMax != null) params.experience_max = expMax;
+      // Conditionally build params so we don't send Next.js "$undefined" string payloads
+      const params: Record<string, any> = {
+        sort,
+        limit: PAGE_SIZE,
+        page: currentPage,
+      };
 
-    const response = await fetchJobsAction(params);
-    
-    if (isLoadMore) {
-      // Filter out any jobs we've already rendered to prevent duplicate
-      // viewTransitionName values (which cause InvalidStateError).
-      const newUi: any[] = [];
-      const newIds: number[] = response.jobIds || [];
-      for (let i = 0; i < response.ui.length; i++) {
-        const id = newIds[i];
-        if (id != null && seenJobIds.current.has(id)) continue;
-        if (id != null) seenJobIds.current.add(id);
-        newUi.push(response.ui[i]);
+      if (q) params.q = q;
+      if (companyId) params.company_id = parseInt(companyId);
+      if (remote) params.remote = remote;
+      if (country) params.country = country;
+      if (region) params.region = region;
+      if (city) params.city = city;
+      if (tags.length > 0) params.description_tags = tags;
+      if (sources.length > 0) params.source = sources[0];
+      if (!showClosed) {
+        params.is_active = true;
+      } else {
+        params.is_active = false;
+      }
+      if (since && since !== "any") {
+        const keyToDays: Record<string, number> = { "1d": 1, "7d": 7, "30d": 30 };
+        const days = keyToDays[since];
+        if (days) {
+          const d = new Date();
+          d.setDate(d.getDate() - days);
+          params.since = d.toISOString();
+        }
       }
 
-      setJobNodes(prev => [...prev, ...newUi]);
-      setTotalCount(prev => prev + newUi.length);
-      pageRef.current = currentPage;
+      if (expMin != null) params.experience_min = expMin;
+      if (expMax != null) params.experience_max = expMax;
+
+      const response = await fetchJobsAction(params);
+      
+      if (isLoadMore) {
+        // Filter out any jobs we've already rendered to prevent duplicate
+        // viewTransitionName values (which cause InvalidStateError).
+        const newUi: any[] = [];
+        const newIds: number[] = response.jobIds || [];
+        for (let i = 0; i < response.ui.length; i++) {
+          const id = newIds[i];
+          // Skip items without a stable ID — they can't be deduplicated and
+          // would create duplicate React keys if the API returns them on multiple pages.
+          if (id == null || seenJobIds.current.has(id)) continue;
+          seenJobIds.current.add(id);
+          newUi.push(response.ui[i]);
+        }
+
+        setJobNodes(prev => [...prev, ...newUi]);
+        setTotalCount(prev => prev + newUi.length);
+        pageRef.current = currentPage;
+        setIsLoadMorePending(false);
+        isFetchingMore.current = false;
+      } else {
+        // Reset seen IDs for fresh loads
+        seenJobIds.current = new Set(response.jobIds || []);
+        setJobNodes(response.ui);
+        setTotalCount(response.count);
+        setIsLoading(false);
+      }
+      setLastFetchCount(response.count);
+    } catch (err) {
+      console.error("Error fetching jobs:", err);
+      savedScrollRef.current = null;
       setIsLoadMorePending(false);
       isFetchingMore.current = false;
-    } else {
-      // Reset seen IDs for fresh loads
-      seenJobIds.current = new Set(response.jobIds || []);
-      setJobNodes(response.ui);
-      setTotalCount(response.count);
       setIsLoading(false);
     }
-    setLastFetchCount(response.count);
-
   }, [q, companyId, remote, country, region, city, tags, sources, showClosed, sort, since, expMin, expMax]);
 
   // Fetch jobs on filter change (if not restored from cache)
@@ -202,7 +287,7 @@ export function JobFeed() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasMore && !isLoading && !isFetchingMore.current) {
+        if (entries[0].isIntersecting && hasMore && !isLoading && !isFetchingMore.current && !scrollJustRestored) {
           isFetchingMore.current = true;
           setIsLoadMorePending(true);
           fetchJobs(true);
@@ -218,15 +303,28 @@ export function JobFeed() {
     }
 
     return () => observer.disconnect();
-    // jobNodes must be a dependency: IntersectionObserver only fires on
+    // jobNodes and scrollJustRestored must be dependencies: IntersectionObserver only fires on
     // visibility *crossings*, so if the loader is still in view when a page
-    // finishes loading, it would never fire again. Recreating the observer
-    // after each append makes observe() re-report the current intersection.
-  }, [hasMore, isLoading, fetchJobs, jobNodes]);
+    // finishes loading or scroll restoration completes, it would never fire again.
+    // Recreating the observer after these events makes observe() re-report the current intersection.
+  }, [hasMore, isLoading, fetchJobs, jobNodes, scrollJustRestored]);
 
-  // Track scroll position so we can restore it after back-navigation
+  // Track scroll position and prevent programmatic scroll resets during fetches
   useEffect(() => {
-    const onScroll = () => { scrollYRef.current = window.scrollY; };
+    const onScroll = () => {
+      const y = window.scrollY;
+      
+      // If a programmatic reset to 0 happens while we have a saved scroll position,
+      // restore it immediately instead of waiting for the fetch to complete.
+      if (y < 50 && savedScrollRef.current !== null && savedScrollRef.current >= 150) {
+        window.scrollTo({ top: savedScrollRef.current, behavior: "instant" });
+        return;
+      }
+      
+      if (y > 0 || scrollYRef.current < 150) {
+        scrollYRef.current = y;
+      }
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -240,23 +338,26 @@ export function JobFeed() {
     savedScrollRef.current = null;
     if (targetY < 150) return;
 
-    // behavior:"instant" bypasses the global `html { scroll-behavior: smooth }`,
-    // otherwise the correction itself animates from the top (the visible "jump").
+    // Only correct a Next.js router-cache flush (scrollY resets to ~0).
+    // Don't interfere with intentional user scrolling (which moves away from
+    // targetY but does NOT go back to 0). Stop watching after the first fix
+    // so we never fight the user across multiple scroll events.
+    let tid: any;
+
     const restore = () => {
-      if (window.scrollY < targetY - 150) {
+      if (window.scrollY < 50) {
         window.scrollTo({ top: targetY, behavior: "instant" });
+        window.removeEventListener("scroll", restore);
+        clearTimeout(tid);
       }
     };
 
-    // The router-cache scroll reset lands at an unpredictable time after the
-    // server action resolves, so watch scroll events for a short window and
-    // re-pin immediately instead of checking at two fixed moments.
     restore();
     const rafId = requestAnimationFrame(restore);
     window.addEventListener("scroll", restore, { passive: true });
-    const tid = window.setTimeout(() => {
+    tid = window.setTimeout(() => {
       window.removeEventListener("scroll", restore);
-    }, 600);
+    }, 800);
 
     return () => {
       cancelAnimationFrame(rafId);
@@ -272,7 +373,17 @@ export function JobFeed() {
 
   // Save to module cache on unmount (back-navigation will restore it)
   useEffect(() => {
-    return () => { feedCache = { ...stateRef.current }; };
+    return () => {
+      // Only overwrite scrollY in the cache if the ref is non-zero,
+      // or if there was no previous cache. This prevents Strict Mode's
+      // double-effect mount/unmount from overwriting a valid cache scroll with 0.
+      const savedScroll = scrollYRef.current > 0 
+        ? scrollYRef.current 
+        : (feedCache ? feedCache.scrollY : 0);
+        
+      stateRef.current.scrollY = savedScroll;
+      feedCache = { ...stateRef.current };
+    };
   }, []);
 
   const searchLabel = q
