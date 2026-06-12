@@ -42,6 +42,55 @@ let feedCache: FeedCache | null = null;
 
 const PAGE_SIZE = 10;
 
+function getUrlFilterKey(): string {
+  if (typeof window === "undefined") return "";
+  
+  const searchParams = new URLSearchParams(window.location.search);
+  
+  const q = searchParams.get("q") || "";
+  const companyId = searchParams.get("company_id") || "";
+  const remote = searchParams.get("remote") === "true";
+  const country = searchParams.get("country") || "";
+  const region = searchParams.get("region") || "";
+  const city = searchParams.get("city") || "";
+  
+  const getArrayParam = (key: string) => {
+    const values = searchParams.getAll(key);
+    if (values.length === 1 && values[0] !== "") {
+      // nuqs parses comma-separated lists
+      return values[0].split(",");
+    }
+    return values.filter(Boolean);
+  };
+  
+  const tags = getArrayParam("tags");
+  const sources = getArrayParam("source");
+  const showClosed = searchParams.get("show_closed") === "true";
+  const sort = searchParams.get("sort") || "desc";
+  const since = searchParams.get("since") || "";
+  
+  const expMinStr = searchParams.get("exp_min");
+  const expMin = expMinStr ? parseInt(expMinStr) : null;
+  const expMaxStr = searchParams.get("exp_max");
+  const expMax = expMaxStr ? parseInt(expMaxStr) : null;
+
+  return [
+    q,
+    companyId,
+    String(remote),
+    country,
+    region,
+    city,
+    JSON.stringify(tags),
+    JSON.stringify(sources),
+    String(showClosed),
+    sort,
+    since,
+    String(expMin),
+    String(expMax)
+  ].join("|");
+}
+
 const CATEGORIES = [
   "All Jobs",
   "Frontend",
@@ -73,7 +122,7 @@ export function JobFeed() {
     [q, companyId, remote, country, region, city, tags, sources, showClosed, sort, since, expMin, expMax]
   );
 
-  const isCacheValid = !isInitialHydration && feedCache && feedCache.filterKey === filterKey;
+  const isCacheValid = !isInitialHydration && feedCache && (feedCache.filterKey === filterKey || (typeof window !== "undefined" && feedCache.filterKey === getUrlFilterKey()));
 
   const [jobNodes, setJobNodes] = useState<any[]>(() => isCacheValid ? feedCache!.nodes : []);
   const [totalCount, setTotalCount] = useState(() => isCacheValid ? feedCache!.totalCount : 0);
@@ -92,7 +141,7 @@ export function JobFeed() {
   const scrollYRef = useRef(0);
   const savedScrollRef = useRef<number | null>(null);
   const isFirstRun = useRef(true);
-  const prevFilterKey = useRef(filterKey);
+  const prevFilterKey = useRef(typeof window !== "undefined" ? getUrlFilterKey() : filterKey);
   const stateRef = useRef<FeedCache>({ nodes: [], page: 1, scrollY: 0, filterKey: "", totalCount: 0, lastFetchCount: 0, seenIds: [] });
   // Blocks IntersectionObserver from triggering load-more during the 800 ms
   // after back-nav scroll restoration. Without this, the observer can fire

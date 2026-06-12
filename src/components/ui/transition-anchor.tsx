@@ -18,6 +18,13 @@ export function ViewTransitionHandler() {
   const [, startTransition] = useTransition();
   const activeTransition = useRef<ViewTransition | null>(null);
 
+  // Disable browser native scroll restoration globally for the application
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      history.scrollRestoration = "manual";
+    }
+  }, []);
+
   // Resolve any pending transition (from link clicks or BackButton) when pathname changes
   useEffect(() => {
     if (viewTransitionResolver.current) {
