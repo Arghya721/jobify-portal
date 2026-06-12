@@ -26,6 +26,33 @@ export function ViewTransitionHandler() {
     }
   }, [pathname]);
 
+  // Next.js restores the previous scroll position on back/forward navigation.
+  // `data-scroll-behavior="smooth"` only opts its push scroll-to-top out of
+  // `html { scroll-behavior: smooth }`, not popstate restoration — so without
+  // this the restore animates visibly. Force instant scrolling for a short
+  // window around every popstate.
+  useEffect(() => {
+    let tid: number | undefined;
+    const onPopState = () => {
+      const html = document.documentElement;
+      html.style.scrollBehavior = "auto";
+      window.clearTimeout(tid);
+      // Chrome defers native scroll restoration until the swapped-in page is
+      // tall enough — observed up to ~2s after popstate — so keep the window
+      // generous. Native user gestures ignore scroll-behavior, so this is
+      // invisible unless a programmatic scroll happens in the window.
+      tid = window.setTimeout(() => {
+        html.style.scrollBehavior = "";
+      }, 3000);
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => {
+      window.removeEventListener("popstate", onPopState);
+      window.clearTimeout(tid);
+      document.documentElement.style.scrollBehavior = "";
+    };
+  }, []);
+
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       // Ignore modified clicks

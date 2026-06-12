@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef, useMemo, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useState, useCallback, useRef, useMemo, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { SearchX } from "lucide-react";
 import { useQueryState, parseAsString, parseAsBoolean, parseAsArrayOf, parseAsInteger } from "nuqs";
@@ -88,6 +88,17 @@ export function JobFeed() {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => setIsMounted(true), []);
+
+  // Restore scroll position immediately on back-navigation, before first paint.
+  // The browser's native restoration can lag ~2s behind (it waits for the page
+  // to be tall enough) and animates under `scroll-behavior: smooth`; the cached
+  // nodes are already in the DOM here, so we can jump straight to the spot.
+  useLayoutEffect(() => {
+    if (isCacheValid && feedCache!.scrollY > 0) {
+      window.scrollTo({ top: feedCache!.scrollY, behavior: "instant" });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const scrollYRef = useRef(0);
   const savedScrollRef = useRef<number | null>(null);
@@ -197,7 +208,8 @@ export function JobFeed() {
           fetchJobs(true);
         }
       },
-      { threshold: 0.1 }
+      // rootMargin starts the fetch before the user reaches the exact bottom.
+      { threshold: 0, rootMargin: "400px 0px" }
     );
 
     const currentLoader = loaderRef.current;
@@ -205,12 +217,12 @@ export function JobFeed() {
       observer.observe(currentLoader);
     }
 
-    return () => {
-      if (currentLoader) {
-        observer.unobserve(currentLoader);
-      }
-    };
-  }, [hasMore, isLoading, fetchJobs]);
+    return () => observer.disconnect();
+    // jobNodes must be a dependency: IntersectionObserver only fires on
+    // visibility *crossings*, so if the loader is still in view when a page
+    // finishes loading, it would never fire again. Recreating the observer
+    // after each append makes observe() re-report the current intersection.
+  }, [hasMore, isLoading, fetchJobs, jobNodes]);
 
   // Track scroll position so we can restore it after back-navigation
   useEffect(() => {
@@ -226,19 +238,30 @@ export function JobFeed() {
     if (savedScrollRef.current === null) return;
     const targetY = savedScrollRef.current;
     savedScrollRef.current = null;
+    if (targetY < 150) return;
 
-    const rafId = requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        if (window.scrollY < targetY - 50) window.scrollTo(0, targetY);
-      });
-    });
+    // behavior:"instant" bypasses the global `html { scroll-behavior: smooth }`,
+    // otherwise the correction itself animates from the top (the visible "jump").
+    const restore = () => {
+      if (window.scrollY < targetY - 150) {
+        window.scrollTo({ top: targetY, behavior: "instant" });
+      }
+    };
+
+    // The router-cache scroll reset lands at an unpredictable time after the
+    // server action resolves, so watch scroll events for a short window and
+    // re-pin immediately instead of checking at two fixed moments.
+    restore();
+    const rafId = requestAnimationFrame(restore);
+    window.addEventListener("scroll", restore, { passive: true });
     const tid = window.setTimeout(() => {
-      if (window.scrollY < targetY - 50) window.scrollTo(0, targetY);
-    }, 300);
+      window.removeEventListener("scroll", restore);
+    }, 600);
 
     return () => {
       cancelAnimationFrame(rafId);
       clearTimeout(tid);
+      window.removeEventListener("scroll", restore);
     };
   }, [jobNodes]);
 
