@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useState, useCallback, useRef, useMemo, type ReactNode } from "react";
+import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { SearchX } from "lucide-react";
+import { SearchX, ChevronLeft, ChevronRight } from "lucide-react";
 import { useQueryState, parseAsString, parseAsBoolean, parseAsArrayOf, parseAsInteger } from "nuqs";
 import {
   Select,
@@ -17,79 +17,19 @@ import { cn } from "@/lib/utils";
 import { STATIC_COMPANIES } from "@/lib/companies-static";
 import { sendGAEvent } from "@next/third-parties/google";
 
-// Global flag to detect initial hydration pass.
-// Fast Refresh re-evaluates the module, resetting this to true,
-// preventing hydration mismatches in development.
-let isInitialHydration = true;
-if (typeof window !== "undefined") {
-  setTimeout(() => {
-    isInitialHydration = false;
-  }, 0);
-}
-
-interface FeedCache {
-  nodes: ReactNode[];
-  page: number;
-  scrollY: number;
-  filterKey: string;
-  totalCount: number;
-  lastFetchCount: number;
-  seenIds: number[];
-}
-
-// Module-level — survives SPA navigations within the same session
-let feedCache: FeedCache | null = null;
-
 const PAGE_SIZE = 10;
 
-function getUrlFilterKey(): string {
-  if (typeof window === "undefined") return "";
-  
-  const searchParams = new URLSearchParams(window.location.search);
-  
-  const q = searchParams.get("q") || "";
-  const companyId = searchParams.get("company_id") || "";
-  const remote = searchParams.get("remote") === "true";
-  const country = searchParams.get("country") || "";
-  const region = searchParams.get("region") || "";
-  const city = searchParams.get("city") || "";
-  
-  const getArrayParam = (key: string) => {
-    const values = searchParams.getAll(key);
-    if (values.length === 1 && values[0] !== "") {
-      // nuqs parses comma-separated lists
-      return values[0].split(",");
-    }
-    return values.filter(Boolean);
-  };
-  
-  const tags = getArrayParam("tags");
-  const sources = getArrayParam("source");
-  const showClosed = searchParams.get("show_closed") === "true";
-  const sort = searchParams.get("sort") || "desc";
-  const since = searchParams.get("since") || "";
-  
-  const expMinStr = searchParams.get("exp_min");
-  const expMin = expMinStr ? parseInt(expMinStr) : null;
-  const expMaxStr = searchParams.get("exp_max");
-  const expMax = expMaxStr ? parseInt(expMaxStr) : null;
-
-  return [
-    q,
-    companyId,
-    String(remote),
-    country,
-    region,
-    city,
-    JSON.stringify(tags),
-    JSON.stringify(sources),
-    String(showClosed),
-    sort,
-    since,
-    String(expMin),
-    String(expMax)
-  ].join("|");
+interface FeedCache {
+  filterKey: string;
+  page: number;
+  scrollY: number;
+  nodes: any[];
+  pageCount: number;
 }
+
+// Module-level — survives SPA navigation (e.g. job detail → back) so we can
+// restore the exact page + scroll position without a refetch.
+let feedCache: FeedCache | null = null;
 
 const CATEGORIES = [
   "All Jobs",
@@ -116,138 +56,49 @@ export function JobFeed() {
   const [since] = useQueryState("since", parseAsString.withDefault(""));
   const [expMin] = useQueryState("exp_min", parseAsInteger);
   const [expMax] = useQueryState("exp_max", parseAsInteger);
+  const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
 
   const filterKey = useMemo(
     () => [q, companyId, String(remote), country, region, city, JSON.stringify(tags), JSON.stringify(sources), String(showClosed), sort, since, String(expMin), String(expMax)].join("|"),
     [q, companyId, remote, country, region, city, tags, sources, showClosed, sort, since, expMin, expMax]
   );
 
-  const isCacheValid = !isInitialHydration && feedCache && (feedCache.filterKey === filterKey || (typeof window !== "undefined" && feedCache.filterKey === getUrlFilterKey()));
+  // Capture cache validity exactly once (mount). Valid only if the cached
+  // filters + page match the current URL state.
+  const cacheHit = useRef<boolean | null>(null);
+  if (cacheHit.current === null) {
+    cacheHit.current = !!(feedCache && feedCache.filterKey === filterKey && feedCache.page === page);
+  }
+  const restoreTarget = useRef(cacheHit.current ? feedCache!.scrollY : 0);
 
-  const [jobNodes, setJobNodes] = useState<any[]>(() => isCacheValid ? feedCache!.nodes : []);
-  const [totalCount, setTotalCount] = useState(() => isCacheValid ? feedCache!.totalCount : 0);
-  const [lastFetchCount, setLastFetchCount] = useState(() => isCacheValid ? feedCache!.lastFetchCount : 0);
-  const pageRef = useRef(isCacheValid ? feedCache!.page : 1);
-  const restoredCount = useRef(isCacheValid ? feedCache!.nodes.length : 0);
-  const loaderRef = useRef<HTMLDivElement>(null);
-  const [isLoadMorePending, setIsLoadMorePending] = useState(false);
-  const isFetchingMore = useRef(false);
-  const seenJobIds = useRef<Set<number>>(new Set(isCacheValid ? feedCache!.seenIds : []));
-  const [isLoading, setIsLoading] = useState(!isCacheValid);
+  const [jobNodes, setJobNodes] = useState<any[]>(() => cacheHit.current ? feedCache!.nodes : []);
+  const [pageCount, setPageCount] = useState(() => cacheHit.current ? feedCache!.pageCount : 0);
+  const [isLoading, setIsLoading] = useState(!cacheHit.current);
   const [isMounted, setIsMounted] = useState(false);
+  // Cards restored from cache (back-nav) must NOT replay the enter animation,
+  // otherwise they appear to fade out/in. Cleared on the first real fetch.
+  const [suppressEnter, setSuppressEnter] = useState(cacheHit.current);
 
   useEffect(() => setIsMounted(true), []);
 
+  // Guards so a filter change (which resets page → 1) doesn't also fetch the
+  // stale page number in the same tick.
+  const prevFilterKey = useRef(filterKey);
+  const pendingReset = useRef(false);
+  // Identifies the data currently held. Pre-seeded on a cache hit so the exact
+  // restored page+filter never triggers a refetch (which would flash the list).
+  const loadedKey = useRef<string | null>(cacheHit.current ? `${filterKey}__${page}` : null);
   const scrollYRef = useRef(0);
-  const savedScrollRef = useRef<number | null>(null);
-  const isFirstRun = useRef(true);
-  const prevFilterKey = useRef(typeof window !== "undefined" ? getUrlFilterKey() : filterKey);
-  const stateRef = useRef<FeedCache>({ nodes: [], page: 1, scrollY: 0, filterKey: "", totalCount: 0, lastFetchCount: 0, seenIds: [] });
-  // Blocks IntersectionObserver from triggering load-more during the 800 ms
-  // after back-nav scroll restoration. Without this, the observer can fire
-  // immediately (loader is in the restored viewport), call a Server Action,
-  // and Next.js's router-cache flush resets scroll to 0 before we can correct.
-  const [scrollJustRestored, setScrollJustRestored] = useState(false);
+  const stateRef = useRef<FeedCache>({ filterKey, page, scrollY: 0, nodes: [], pageCount: 0 });
 
-  // Disable the browser's native scroll restoration for the lifetime of this
-  // component. Without this, the browser competes with our manual scrollTo and
-  // can override it 1-2 frames later, causing a visible jump on back-navigation.
-  useLayoutEffect(() => {
-    history.scrollRestoration = "manual";
-    return () => { history.scrollRestoration = "auto"; };
-  }, []);
-
-  // Restore scroll position resiliently on mount (back-navigation)
-  useEffect(() => {
-    if (!isCacheValid || !feedCache || feedCache.scrollY <= 0) return;
-    const targetY = feedCache.scrollY;
-    
-    // Set state to block IntersectionObserver during restoration
-    setScrollJustRestored(true);
-    const tid = setTimeout(() => {
-      setScrollJustRestored(false);
-    }, 1200);
-
-    let isCancelled = false;
-    let attempts = 0;
-    const maxAttempts = 80; // ~1.3 seconds at 60fps
-    
-    const restoreScroll = () => {
-      if (isCancelled) return;
-      
-      const currentY = window.scrollY;
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      
-      if (maxScroll >= targetY) {
-        if (Math.abs(currentY - targetY) > 2) {
-          window.scrollTo({ top: targetY, behavior: "instant" });
-        }
-        // Keep checking for a few frames to ensure it stays locked (fights late Next.js resets)
-        if (Math.abs(window.scrollY - targetY) <= 2) {
-          attempts++;
-          if (attempts > 15) {
-            return;
-          }
-        }
-      } else {
-        // Page hasn't reached full height yet; scroll to max available height for now
-        if (maxScroll > 0 && Math.abs(currentY - maxScroll) > 2) {
-          window.scrollTo({ top: maxScroll, behavior: "instant" });
-        }
-      }
-      
-      attempts++;
-      if (attempts < maxAttempts) {
-        requestAnimationFrame(restoreScroll);
-      }
-    };
-    
-    // Start restoration loop
-    restoreScroll();
-    
-    // Cancel automatic restore if user manually scrolls away (non-zero scroll)
-    let lastScrollY = window.scrollY;
-    const handleUserScroll = () => {
-      const currentY = window.scrollY;
-      if (
-        currentY !== 0 && 
-        Math.abs(currentY - targetY) > 15 && 
-        Math.abs(currentY - lastScrollY) > 5
-      ) {
-        isCancelled = true;
-      }
-      lastScrollY = currentY;
-    };
-    
-    window.addEventListener("scroll", handleUserScroll, { passive: true });
-    
-    return () => {
-      isCancelled = true;
-      clearTimeout(tid);
-      window.removeEventListener("scroll", handleUserScroll);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Fetch jobs from server action
-  const fetchJobs = useCallback(async (isLoadMore = false) => {
+  const fetchJobs = useCallback(async (targetPage: number) => {
+    setSuppressEnter(false);
+    setIsLoading(true);
     try {
-      if (!isLoadMore) {
-        setIsLoading(true);
-        pageRef.current = 1;
-      } else {
-        // Prefer window.scrollY; fall back to the tracked ref in case Next.js's
-        // router-cache flush already reset the scroll before this line runs.
-        savedScrollRef.current = window.scrollY > 0 ? window.scrollY : scrollYRef.current;
-      }
-      
-      const currentPage = isLoadMore ? pageRef.current + 1 : 1;
-
-      // Conditionally build params so we don't send Next.js "$undefined" string payloads
       const params: Record<string, any> = {
         sort,
         limit: PAGE_SIZE,
-        page: currentPage,
+        page: targetPage,
       };
 
       if (q) params.q = q;
@@ -258,11 +109,7 @@ export function JobFeed() {
       if (city) params.city = city;
       if (tags.length > 0) params.description_tags = tags;
       if (sources.length > 0) params.source = sources[0];
-      if (!showClosed) {
-        params.is_active = true;
-      } else {
-        params.is_active = false;
-      }
+      params.is_active = !showClosed;
       if (since && since !== "any") {
         const keyToDays: Record<string, number> = { "1d": 1, "7d": 7, "30d": 30 };
         const days = keyToDays[since];
@@ -272,174 +119,103 @@ export function JobFeed() {
           params.since = d.toISOString();
         }
       }
-
       if (expMin != null) params.experience_min = expMin;
       if (expMax != null) params.experience_max = expMax;
 
       const response = await fetchJobsAction(params);
-      
-      if (isLoadMore) {
-        // Filter out any jobs we've already rendered to prevent duplicate
-        // viewTransitionName values (which cause InvalidStateError).
-        const newUi: any[] = [];
-        const newIds: number[] = response.jobIds || [];
-        for (let i = 0; i < response.ui.length; i++) {
-          const id = newIds[i];
-          // Skip items without a stable ID — they can't be deduplicated and
-          // would create duplicate React keys if the API returns them on multiple pages.
-          if (id == null || seenJobIds.current.has(id)) continue;
-          seenJobIds.current.add(id);
-          newUi.push(response.ui[i]);
-        }
-
-        setJobNodes(prev => [...prev, ...newUi]);
-        setTotalCount(prev => prev + newUi.length);
-        pageRef.current = currentPage;
-        setIsLoadMorePending(false);
-        isFetchingMore.current = false;
-      } else {
-        // Reset seen IDs for fresh loads
-        seenJobIds.current = new Set(response.jobIds || []);
-        setJobNodes(response.ui);
-        setTotalCount(response.count);
-        setIsLoading(false);
-      }
-      setLastFetchCount(response.count);
+      setJobNodes(response.ui);
+      setPageCount(response.count);
     } catch (err) {
       console.error("Error fetching jobs:", err);
-      savedScrollRef.current = null;
-      setIsLoadMorePending(false);
-      isFetchingMore.current = false;
+      setJobNodes([]);
+      setPageCount(0);
+    } finally {
       setIsLoading(false);
     }
   }, [q, companyId, remote, country, region, city, tags, sources, showClosed, sort, since, expMin, expMax]);
 
-  // Fetch jobs on filter change (if not restored from cache)
+  // Filter changed → jump back to page 1.
   useEffect(() => {
-    if (isFirstRun.current) {
-      isFirstRun.current = false;
-      if (isCacheValid) return; // Already restored synchronously
-      fetchJobs(false);
-      return;
-    }
-    
-    // On subsequent runs, ONLY fetch if the filter actually changed
-    // This prevents double-fetching when nuqs syncs URL params on mount
     if (prevFilterKey.current !== filterKey) {
       prevFilterKey.current = filterKey;
-      fetchJobs(false);
+      pendingReset.current = true;
+      setPage(1);
     }
-  }, [filterKey, fetchJobs, isCacheValid]);
+  }, [filterKey, setPage]);
 
-  const hasMore = lastFetchCount === PAGE_SIZE;
-
+  // Single fetch driver — runs on initial mount, filter change, and page change.
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasMore && !isLoading && !isFetchingMore.current && !scrollJustRestored) {
-          isFetchingMore.current = true;
-          setIsLoadMorePending(true);
-          fetchJobs(true);
-        }
-      },
-      // rootMargin starts the fetch before the user reaches the exact bottom.
-      { threshold: 0, rootMargin: "400px 0px" }
-    );
+    // While a filter-triggered page reset is in flight, skip the stale-page fetch.
+    if (pendingReset.current && page !== 1) return;
+    pendingReset.current = false;
+    const key = `${filterKey}__${page}`;
+    // Already holding this exact data (initial cache restore, or nuqs re-render
+    // churn that doesn't actually change the page/filters) — don't refetch.
+    if (loadedKey.current === key) return;
+    loadedKey.current = key;
+    fetchJobs(page);
+  }, [page, filterKey, fetchJobs]);
 
-    const currentLoader = loaderRef.current;
-    if (currentLoader) {
-      observer.observe(currentLoader);
-    }
-
-    return () => observer.disconnect();
-    // jobNodes and scrollJustRestored must be dependencies: IntersectionObserver only fires on
-    // visibility *crossings*, so if the loader is still in view when a page
-    // finishes loading or scroll restoration completes, it would never fire again.
-    // Recreating the observer after these events makes observe() re-report the current intersection.
-  }, [hasMore, isLoading, fetchJobs, jobNodes, scrollJustRestored]);
-
-  // Track scroll position and prevent programmatic scroll resets during fetches
+  // Track scroll position for the cache.
   useEffect(() => {
-    const onScroll = () => {
-      const y = window.scrollY;
-      
-      // If a programmatic reset to 0 happens while we have a saved scroll position,
-      // restore it immediately instead of waiting for the fetch to complete.
-      if (y < 50 && savedScrollRef.current !== null && savedScrollRef.current >= 150) {
-        window.scrollTo({ top: savedScrollRef.current, behavior: "instant" });
-        return;
-      }
-      
-      if (y > 0 || scrollYRef.current < 150) {
-        scrollYRef.current = y;
-      }
-    };
+    const onScroll = () => { scrollYRef.current = window.scrollY; };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Restore scroll position after load-more to fix mobile scroll-to-top.
-  // Next.js Server Actions can trigger a router cache refresh that resets
-  // window.scrollY on real mobile devices but not in desktop DevTools emulation.
+  // Restore scroll on back-navigation. Cached nodes render synchronously so the
+  // page height is available immediately; retry a few frames to beat Next.js's
+  // default scroll-to-top on navigation.
   useEffect(() => {
-    if (savedScrollRef.current === null) return;
-    const targetY = savedScrollRef.current;
-    savedScrollRef.current = null;
-    if (targetY < 150) return;
-
-    // Only correct a Next.js router-cache flush (scrollY resets to ~0).
-    // Don't interfere with intentional user scrolling (which moves away from
-    // targetY but does NOT go back to 0). Stop watching after the first fix
-    // so we never fight the user across multiple scroll events.
-    let tid: any;
-
+    const target = restoreTarget.current;
+    if (!cacheHit.current || target <= 0) return;
+    let raf = 0;
+    let tries = 0;
     const restore = () => {
-      if (window.scrollY < 50) {
-        window.scrollTo({ top: targetY, behavior: "instant" });
-        window.removeEventListener("scroll", restore);
-        clearTimeout(tid);
+      window.scrollTo(0, target);
+      tries++;
+      if (tries < 12 && Math.abs(window.scrollY - target) > 2) {
+        raf = requestAnimationFrame(restore);
       }
     };
-
     restore();
-    const rafId = requestAnimationFrame(restore);
-    window.addEventListener("scroll", restore, { passive: true });
-    tid = window.setTimeout(() => {
-      window.removeEventListener("scroll", restore);
-    }, 800);
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      clearTimeout(tid);
-      window.removeEventListener("scroll", restore);
-    };
-  }, [jobNodes]);
-
-  // Keep stateRef current after every render
-  useEffect(() => {
-    stateRef.current = { nodes: jobNodes, page: pageRef.current, scrollY: scrollYRef.current, filterKey, totalCount, lastFetchCount, seenIds: Array.from(seenJobIds.current) };
-  });
-
-  // Save to module cache on unmount (back-navigation will restore it)
-  useEffect(() => {
-    return () => {
-      // Only overwrite scrollY in the cache if the ref is non-zero,
-      // or if there was no previous cache. This prevents Strict Mode's
-      // double-effect mount/unmount from overwriting a valid cache scroll with 0.
-      const savedScroll = scrollYRef.current > 0 
-        ? scrollYRef.current 
-        : (feedCache ? feedCache.scrollY : 0);
-        
-      stateRef.current.scrollY = savedScroll;
-      feedCache = { ...stateRef.current };
-    };
+    return () => cancelAnimationFrame(raf);
   }, []);
+
+  // Keep stateRef current, then persist to the module cache on unmount.
+  useEffect(() => {
+    stateRef.current = { filterKey, page, scrollY: scrollYRef.current, nodes: jobNodes, pageCount };
+  });
+  useEffect(() => () => {
+    // Guard against StrictMode's throwaway unmount clobbering a good scrollY with 0.
+    const y = scrollYRef.current > 0 ? scrollYRef.current : (feedCache ? feedCache.scrollY : 0);
+    feedCache = { ...stateRef.current, scrollY: y };
+  }, []);
+
+  const goToPage = useCallback((target: number) => {
+    if (target < 1 || target === page) return;
+    sendGAEvent("event", "page_change", { page: target });
+    setPage(target);
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [page, setPage]);
+
+  const hasNext = pageCount === PAGE_SIZE;
+  const hasResults = jobNodes.length > 0;
+  const rangeStart = (page - 1) * PAGE_SIZE + 1;
+  const rangeEnd = rangeStart + pageCount - 1;
 
   const searchLabel = q
     ? `for '${q}'`
     : companyId
     ? `at ${STATIC_COMPANIES.find(c => c.id === parseInt(companyId))?.name ?? `company ${companyId}`}`
     : "";
+
+  // Compact windowed page numbers (no total count from backend, so we only
+  // show neighbours we know exist).
+  const windowPages: number[] = [];
+  for (let p = Math.max(1, page - 1); p <= page; p++) windowPages.push(p);
+  if (hasNext) windowPages.push(page + 1);
+  const showLeadingPage = windowPages[0] > 1;
 
   return (
     <div className="flex-1 space-y-4">
@@ -448,8 +224,7 @@ export function JobFeed() {
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap gap-2" suppressHydrationWarning>
             {CATEGORIES.map((cat) => {
-              // Prevent hydration mismatches by defaulting to 'All Jobs' on first render
-              const isActive = isMounted 
+              const isActive = isMounted
                 ? (cat === "All Jobs" ? !q || q === "All Jobs" : q?.toLowerCase() === cat.toLowerCase())
                 : (cat === "All Jobs");
               return (
@@ -482,20 +257,20 @@ export function JobFeed() {
           </div>
         </div>
 
-        {/* Results count label */}
-        {(q || companyId || remote || tags.length > 0 || sources.length > 0) && (
+        {/* Results range label */}
+        {hasResults && (
           <p className="text-sm">
             <span className="font-semibold text-emerald-400">
-              {isLoading ? "..." : totalCount}
+              {isLoading ? "..." : `${rangeStart}–${rangeEnd}`}
             </span>{" "}
             <span className="text-muted-foreground">
-              result{totalCount !== 1 ? "s" : ""} {searchLabel}
+              {searchLabel ? `result${rangeEnd - rangeStart !== 0 ? "s" : ""} ${searchLabel}` : "on this page"}
             </span>
           </p>
         )}
       </div>
 
-      {/* Loading Skeletons */}
+      {/* Loading Skeletons (full-page swap) */}
       {isLoading && jobNodes.length === 0 && (
         <div className="space-y-3">
           {Array.from({ length: 5 }).map((_, i) => (
@@ -528,19 +303,15 @@ export function JobFeed() {
         </div>
       )}
 
-      {/* Job List */}
-      {restoredCount.current > 0 && (
-        <style>{`
-          .job-feed-list > :nth-child(-n+${restoredCount.current}) {
-            animation: none !important;
-            opacity: 1 !important;
-            transform: none !important;
-          }
-        `}</style>
+      {/* Suppress the enter animation for cards restored from cache (back-nav) */}
+      {suppressEnter && (
+        <style>{`.job-feed-list > .job-card-enter { animation: none !important; opacity: 1 !important; transform: none !important; }`}</style>
       )}
-      <div 
+
+      {/* Job List */}
+      <div
         className={cn(
-          "space-y-3 transition-opacity duration-300 job-feed-list", 
+          "space-y-3 transition-opacity duration-300 job-feed-list",
           isLoading && jobNodes.length > 0 && "opacity-40 blur-[2px] pointer-events-none"
         )}
       >
@@ -552,44 +323,89 @@ export function JobFeed() {
               <SearchX className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
             </div>
             <p className="text-lg font-medium text-foreground">
-              No jobs match these filters
+              {page > 1 ? "Nothing on this page" : "No jobs match these filters"}
             </p>
             <p className="mt-1 max-w-xs text-sm text-muted-foreground/70">
-              Try a broader search term, or clear everything and start fresh.
+              {page > 1
+                ? "You may have gone past the last page."
+                : "Try a broader search term, or clear everything and start fresh."}
             </p>
             <button
-              onClick={() => router.push("/jobs")}
+              onClick={() => page > 1 ? goToPage(1) : router.push("/jobs")}
               className="mt-6 inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/8 px-5 py-2 text-sm font-medium text-emerald-400 transition-[transform,border-color,background-color] duration-150 hover:border-emerald-500/50 hover:bg-emerald-500/12 active:scale-[0.97]"
             >
-              Clear all filters
+              {page > 1 ? "Back to first page" : "Clear all filters"}
             </button>
           </div>
         )}
       </div>
 
-      {/* Infinite Scroll Loader */}
-      {hasMore && !isLoading && (
-        <div ref={loaderRef} className="space-y-3 py-2" aria-busy={isLoadMorePending}>
-          {isLoadMorePending &&
-            Array.from({ length: 2 }).map((_, i) => (
-              <div
-                key={i}
-                className="rounded-xl border border-border/50 bg-card/50 p-5"
-              >
-                <div className="flex items-start gap-4">
-                  <Skeleton className="h-11 w-11 rounded-lg bg-secondary/80" />
-                  <div className="min-w-0 flex-1">
-                    <Skeleton className="h-5 w-[40%] bg-secondary/80" />
-                    <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
-                      <Skeleton className="h-4 w-[20%] bg-secondary/80" />
-                      <Skeleton className="h-4 w-[25%] bg-secondary/80" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-        </div>
+      {/* Pagination */}
+      {(hasResults || page > 1) && (
+        <nav
+          className="flex items-center justify-center gap-1.5 pt-4"
+          aria-label="Pagination"
+        >
+          <button
+            onClick={() => goToPage(page - 1)}
+            disabled={page <= 1 || isLoading}
+            aria-label="Previous page"
+            className="inline-flex h-9 items-center gap-1 rounded-lg border border-border bg-secondary/40 px-3 text-sm font-medium text-foreground transition-[transform,border-color,background-color,opacity] duration-150 hover:border-border/80 hover:bg-secondary/70 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-secondary/40"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            <span className="hidden sm:inline">Prev</span>
+          </button>
+
+          {showLeadingPage && (
+            <>
+              <PagePill page={1} active={false} disabled={isLoading} onClick={goToPage} />
+              <span className="px-1 text-muted-foreground/60" aria-hidden="true">…</span>
+            </>
+          )}
+
+          {windowPages.map((p) => (
+            <PagePill key={p} page={p} active={p === page} disabled={isLoading} onClick={goToPage} />
+          ))}
+
+          <button
+            onClick={() => goToPage(page + 1)}
+            disabled={!hasNext || isLoading}
+            aria-label="Next page"
+            className="inline-flex h-9 items-center gap-1 rounded-lg border border-border bg-secondary/40 px-3 text-sm font-medium text-foreground transition-[transform,border-color,background-color,opacity] duration-150 hover:border-border/80 hover:bg-secondary/70 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-secondary/40"
+          >
+            <span className="hidden sm:inline">Next</span>
+            <ChevronRight className="h-4 w-4" />
+          </button>
+        </nav>
       )}
     </div>
+  );
+}
+
+function PagePill({
+  page,
+  active,
+  disabled,
+  onClick,
+}: {
+  page: number;
+  active: boolean;
+  disabled: boolean;
+  onClick: (p: number) => void;
+}) {
+  return (
+    <button
+      onClick={() => onClick(page)}
+      disabled={disabled || active}
+      aria-current={active ? "page" : undefined}
+      className={cn(
+        "inline-flex h-9 min-w-9 items-center justify-center rounded-lg border px-2 text-sm font-medium transition-[transform,border-color,background-color,color] duration-150 active:scale-[0.97] disabled:cursor-default",
+        active
+          ? "border-emerald-500/40 bg-emerald-500/12 text-emerald-400"
+          : "border-border bg-secondary/40 text-muted-foreground hover:border-border/80 hover:bg-secondary/70 hover:text-foreground disabled:opacity-40"
+      )}
+    >
+      {page}
+    </button>
   );
 }
