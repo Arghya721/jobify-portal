@@ -17,7 +17,7 @@ import {
 import { fetchJobById as _fetchJobById } from "@/lib/api-server";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { COMPANY_LOGOS as companyLogos } from "@/lib/companies-static";
+import { COMPANY_LOGOS as companyLogos, COMPANY_LOGOS_DARK as companyLogosDark } from "@/lib/companies-static";
 import { extractIdFromSlug, generateJobSlug } from "@/lib/utils";
 
 // Deduplicate gRPC calls between generateMetadata and the page component
@@ -125,6 +125,8 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
 
   const companyName = job.company?.name || "Company";
   const logoUrl = companyLogos[companyName];
+  const logoDarkUrl = companyLogosDark[companyName];
+  const hasDarkVariant = logoUrl !== logoDarkUrl;
   const details = job.details || {};
   const postedAt = details.job_posted_at || "";
   const experience = details.experience_raw || formatExperience(details.experience_min, details.experience_max);
@@ -182,7 +184,12 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
             <div className="relative flex flex-col gap-6 sm:flex-row sm:items-start">
               <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-secondary/80 text-muted-foreground shadow-sm ring-1 ring-border/50">
                 {logoUrl ? (
-                  <img src={logoUrl} alt={`${companyName} logo`} className="h-full w-full object-contain p-2" />
+                  <>
+                    <img src={logoUrl} alt={`${companyName} logo`} className={`h-full w-full object-contain p-2${hasDarkVariant ? " dark:hidden" : ""}`} />
+                    {hasDarkVariant && (
+                      <img src={logoDarkUrl} alt={`${companyName} logo`} className="h-full w-full object-contain p-2 hidden dark:block" />
+                    )}
+                  </>
                 ) : (
                   <Building2 className="h-8 w-8" />
                 )}

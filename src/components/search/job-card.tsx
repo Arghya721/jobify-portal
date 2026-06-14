@@ -1,6 +1,6 @@
 import { FileText, ExternalLink, MapPin, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { COMPANY_LOGOS as companyLogos } from "@/lib/companies-static";
+import { COMPANY_LOGOS as companyLogos, COMPANY_LOGOS_DARK as companyLogosDark } from "@/lib/companies-static";
 import { generateJobSlug } from "@/lib/utils";
 
 interface JobCardProps {
@@ -21,6 +21,8 @@ export function JobCard({ job, index }: JobCardProps) {
 
   const companyName = job.company?.name;
   const logoUrl = companyName ? companyLogos[companyName] : undefined;
+  const logoDarkUrl = companyName ? companyLogosDark[companyName] : undefined;
+  const hasDarkVariant = logoUrl !== logoDarkUrl;
 
   return (
     <div
@@ -37,13 +39,24 @@ export function JobCard({ job, index }: JobCardProps) {
         {/* Company Icon */}
         <div className="flex h-11 w-11 shrink-0 overflow-hidden items-center justify-center rounded-lg bg-secondary/80 text-muted-foreground relative">
           {logoUrl ? (
-            <img
-              src={logoUrl}
-              alt={`${companyName} logo`}
-              className="h-full w-full object-cover p-1"
-              loading="lazy"
-              decoding="async"
-            />
+            <>
+              <img
+                src={logoUrl}
+                alt={`${companyName} logo`}
+                className={`h-full w-full object-cover p-1${hasDarkVariant ? " dark:hidden" : ""}`}
+                loading="lazy"
+                decoding="async"
+              />
+              {hasDarkVariant && (
+                <img
+                  src={logoDarkUrl}
+                  alt={`${companyName} logo`}
+                  className="h-full w-full object-cover p-1 hidden dark:block"
+                  loading="lazy"
+                  decoding="async"
+                />
+              )}
+            </>
           ) : (
             <FileText className="h-5 w-5" />
           )}

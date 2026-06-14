@@ -2,7 +2,8 @@ export interface StaticCompany {
   id: number;
   name: string;
   source: string;
-  logo: string;
+  logo: string;       // light mode (or universal)
+  logoDark?: string;  // dark mode variant; falls back to logo if omitted
 }
 
 export const STATIC_COMPANIES: StaticCompany[] = [
@@ -69,7 +70,7 @@ export const STATIC_COMPANIES: StaticCompany[] = [
   { id: 62, name: "Gusto",                 source: "greenhouse", logo: "/logos/gusto.svg" },
   { id: 63, name: "Cockroach Labs",        source: "greenhouse", logo: "/logos/cockroach-labs.svg" },
   { id: 64, name: "Vercel",                source: "greenhouse", logo: "/logos/vercel.svg" },
-  { id: 65, name: "Anduril",               source: "greenhouse", logo: "/logos/anduril.svg" },
+  { id: 65, name: "Anduril",               source: "greenhouse", logo: "/logos/anduril-light.png", logoDark: "/logos/anduril.png" },
   { id: 66, name: "Mercury",               source: "greenhouse", logo: "/logos/mercury.png" },
   { id: 67, name: "Navan",                 source: "greenhouse", logo: "/logos/navan.png" },
   { id: 68, name: "Webflow",               source: "greenhouse", logo: "/logos/webflow.svg" },
@@ -113,7 +114,17 @@ export const STATIC_COMPANIES: StaticCompany[] = [
   { id: 106, name: "Agoda",              source: "greenhouse", logo: "/logos/agoda.jpg" },
 ];
 
-/** Keyed by company name — drop-in replacement for company-logos.json imports */
+/** Keyed by company name — light mode logos */
 export const COMPANY_LOGOS: Record<string, string> = Object.fromEntries(
   STATIC_COMPANIES.map((c) => [c.name, c.logo])
 );
+
+/** Keyed by company name — dark mode logos, falls back to light logo when no dark variant */
+export const COMPANY_LOGOS_DARK: Record<string, string> = Object.fromEntries(
+  STATIC_COMPANIES.map((c) => [c.name, c.logoDark ?? c.logo])
+);
+
+/** Returns the right logo for the current theme */
+export function getCompanyLogo(name: string, isDark: boolean): string | undefined {
+  return isDark ? COMPANY_LOGOS_DARK[name] : COMPANY_LOGOS[name];
+}

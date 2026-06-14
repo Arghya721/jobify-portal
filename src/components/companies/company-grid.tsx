@@ -57,8 +57,17 @@ function CompanyCard({ company, index }: { company: StaticCompany; index: number
               alt={company.name}
               width={32}
               height={32}
-              className="h-full w-full object-contain"
+              className={`h-full w-full object-contain${company.logoDark ? " dark:hidden" : ""}`}
             />
+            {company.logoDark && (
+              <Image
+                src={company.logoDark}
+                alt={company.name}
+                width={32}
+                height={32}
+                className="h-full w-full object-contain hidden dark:block"
+              />
+            )}
           </div>
         ) : (
           <div
