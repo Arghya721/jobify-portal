@@ -107,6 +107,10 @@ export const STATIC_COMPANIES: StaticCompany[] = [
   { id: 100, name: "Danaher",             source: "workday",    logo: "/logos/danaher.png" },
   { id: 101, name: "GE HealthCare",       source: "workday",    logo: "/logos/ge-healthcare.png" },
   { id: 102, name: "Augury",              source: "greenhouse", logo: "/logos/augury.svg" },
+  { id: 103, name: "Nike",               source: "workday",    logo: "/logos/nike.svg" },
+  { id: 104, name: "Arcesium",           source: "greenhouse", logo: "/logos/arcesium.svg" },
+  { id: 105, name: "Yokogawa",           source: "workday",    logo: "/logos/yokogawa.svg" },
+  { id: 106, name: "Agoda",              source: "greenhouse", logo: "/logos/agoda.jpg" },
 ];
 
 /** Keyed by company name — drop-in replacement for company-logos.json imports */
