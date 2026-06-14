@@ -131,6 +131,18 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
   const postedAt = details.job_posted_at || "";
   const experience = details.experience_raw || formatExperience(details.experience_min, details.experience_max);
   const locations = buildLocationLabels(job.locations || []);
+  const nonRemoteLocations = (job.locations || []).filter((l: JobLocation) => !l.is_remote);
+
+  // validThrough: active jobs get datePosted+6mo; inactive jobs get datePosted (already closed)
+  const validThrough = (() => {
+    if (!postedAt) return undefined;
+    if (!job.is_active) return postedAt;
+    const posted = new Date(postedAt.replace(/(\.\d{3})\d+/, "$1"));
+    if (isNaN(posted.getTime())) return undefined;
+    const expiry = new Date(posted);
+    expiry.setMonth(expiry.getMonth() + 6);
+    return expiry.toISOString();
+  })();
 
   const jobPostingSchema = {
     "@context": "https://schema.org",
@@ -138,6 +150,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
     "title": job.title,
     "description": details.raw_description || `${job.title} at ${companyName}`,
     "datePosted": postedAt || new Date().toISOString(),
+    ...(validThrough ? { "validThrough": validThrough } : {}),
     "hiringOrganization": {
       "@type": "Organization",
       "name": companyName,
@@ -148,6 +161,18 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
           "jobLocationType": "TELECOMMUTE",
           "applicantLocationRequirements": { "@type": "Country", "name": "Worldwide" },
         }
+      : nonRemoteLocations.length > 0
+      ? {
+          "jobLocation": nonRemoteLocations.map((l: JobLocation) => ({
+            "@type": "Place",
+            "address": {
+              "@type": "PostalAddress",
+              ...(l.city?.name ? { "addressLocality": l.city.name } : {}),
+              ...(l.region?.name || l.region?.code ? { "addressRegion": l.region?.name || l.region?.code } : {}),
+              ...(l.country?.iso2 ? { "addressCountry": l.country.iso2 } : {}),
+            },
+          })),
+        }
       : job.location_name
       ? {
           "jobLocation": {
@@ -156,7 +181,6 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
           },
         }
       : {}),
-    ...(!job.is_active ? { "validThrough": postedAt || new Date().toISOString() } : {}),
     ...(details.experience_min != null
       ? { "experienceRequirements": { "@type": "OccupationalExperienceRequirements", "monthsOfExperience": details.experience_min * 12 } }
       : {}),
