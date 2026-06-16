@@ -112,6 +112,7 @@ export const STATIC_COMPANIES: StaticCompany[] = [
   { id: 104, name: "Arcesium",           source: "greenhouse", logo: "/logos/arcesium.svg" },
   { id: 105, name: "Yokogawa",           source: "workday",    logo: "/logos/yokogawa.svg" },
   { id: 106, name: "Agoda",              source: "greenhouse", logo: "/logos/agoda.jpg" },
+  { id: 107, name: "Thoughtworks",       source: "greenhouse", logo: "/logos/thoughtworks.svg" },
 ];
 
 /** Keyed by company name — light mode logos */
