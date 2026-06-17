@@ -107,7 +107,7 @@ export const STATIC_COMPANIES: StaticCompany[] = [
   { id: 99, name: "Baker Hughes",         source: "workday",    logo: "/logos/baker-hughes.svg" },
   { id: 100, name: "Danaher",             source: "workday",    logo: "/logos/danaher.png" },
   { id: 101, name: "GE HealthCare",       source: "workday",    logo: "/logos/ge-healthcare.png" },
-  { id: 102, name: "Augury",              source: "greenhouse", logo: "/logos/augury.svg" },
+  { id: 102, name: "Augury",              source: "greenhouse", logo: "/logos/augury-light.png" , logoDark: "/logos/augury-dark.png" },
   { id: 103, name: "Nike",               source: "workday",    logo: "/logos/nike.svg" },
   { id: 104, name: "Arcesium",           source: "greenhouse", logo: "/logos/arcesium.svg" },
   { id: 105, name: "Yokogawa",           source: "workday",    logo: "/logos/yokogawa.svg" },
