@@ -1,14 +1,13 @@
+import "server-only";
 import { getJobsGrpc, getJobByIdGrpc } from "@/lib/grpc-client";
 
-// This is a pure server-side function (NOT an action) that can be safely
-// called from Server Components like the Landing Jobs Feed during build/render.
+// Pure server-side — safe to call from Server Components during build/render.
 export async function fetchJobs(params: any = {}) {
   try {
     const response = await getJobsGrpc(params);
-    
     return {
       data: response.data || [],
-      pagination: response.pagination || { page: 1, limit: 10 }
+      pagination: response.pagination || { page: 1, limit: 10 },
     };
   } catch (error) {
     console.error("Error fetching jobs via gRPC:", error);
@@ -22,6 +21,83 @@ export async function fetchJobById(id: number | string) {
     return job;
   } catch (error) {
     console.error(`Error fetching job ${id} via gRPC:`, error);
+    return null;
+  }
+}
+
+// ─── Stats types ─────────────────────────────────────────────────────────────
+
+export interface CoOccurringSkill {
+  tag: string;
+  mentions: number;
+  pct: number;
+}
+
+export interface ExperienceDistribution {
+  band: string;
+  count: number;
+}
+
+export interface PostingVelocity {
+  thisWeek: number;
+  lastWeek: number;
+  changePercent: number;
+}
+
+export interface TopCompany {
+  name: string;
+  openRoles: number;
+}
+
+export interface RemoteBreakdown {
+  remote: number;
+  onsite: number;
+  total: number;
+}
+
+export interface AtsBreakdown {
+  source: string;
+  count: number;
+}
+
+export interface StackStats {
+  tag: string;
+  totalJobs: number;
+  coOccurringSkills: CoOccurringSkill[];
+  experienceDistribution: ExperienceDistribution[];
+  postingVelocity: PostingVelocity;
+  topCompanies: TopCompany[];
+  remoteBreakdown: RemoteBreakdown;
+  atsBreakdown: AtsBreakdown[];
+}
+
+/**
+ * Fetches stack stats from the public REST endpoint /api/v1/stats/stack.
+ * Server-only (BACKEND_API_URL is never exposed to the client).
+ * Next.js fetch cache revalidates every 24h to match Redis TTL.
+ */
+export async function fetchStackStats(tag: string): Promise<StackStats | null> {
+  const baseUrl = process.env.BACKEND_API_URL;
+
+  if (!baseUrl) {
+    console.error("BACKEND_API_URL not configured");
+    return null;
+  }
+
+  try {
+    const url = `${baseUrl}/api/v1/stats/stack?tag=${encodeURIComponent(tag)}`;
+    const res = await fetch(url, {
+      next: { revalidate: 86400 },
+    });
+
+    if (!res.ok) {
+      console.error(`Stats fetch failed for "${tag}": ${res.status}`);
+      return null;
+    }
+
+    return res.json() as Promise<StackStats>;
+  } catch (error) {
+    console.error(`Error fetching stack stats for "${tag}":`, error);
     return null;
   }
 }

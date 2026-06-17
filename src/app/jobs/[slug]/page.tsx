@@ -19,6 +19,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { COMPANY_LOGOS as companyLogos, COMPANY_LOGOS_DARK as companyLogosDark } from "@/lib/companies-static";
 import { extractIdFromSlug, generateJobSlug } from "@/lib/utils";
+import { SEO_PAGES_BY_SLUG, ALL_SEO_SLUGS } from "@/config/seo-pages";
+import { SEOLandingPage } from "@/components/seo-landing/seo-landing-page";
 
 // Deduplicate gRPC calls between generateMetadata and the page component
 const fetchJobById = cache(_fetchJobById);
@@ -36,8 +38,30 @@ type JobDetailPageProps = {
   params: Promise<{ slug: string }>;
 };
 
+export async function generateStaticParams() {
+  // Pre-render all pSEO slugs at build time
+  return ALL_SEO_SLUGS.map((slug) => ({ slug }));
+}
+
 export async function generateMetadata({ params }: JobDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
+
+  // pSEO landing page — use page-specific metadata
+  const seoPage = SEO_PAGES_BY_SLUG[slug];
+  if (seoPage) {
+    return {
+      title: seoPage.title,
+      description: seoPage.description,
+      alternates: { canonical: `${process.env.AUTH_URL || "https://jobify.run"}/jobs/${slug}` },
+      openGraph: {
+        type: "website",
+        title: seoPage.title,
+        description: seoPage.description,
+        siteName: "Jobify",
+      },
+    };
+  }
+
   const numericId = extractIdFromSlug(slug);
 
   if (!numericId) {
@@ -105,6 +129,13 @@ export async function generateMetadata({ params }: JobDetailPageProps): Promise<
 
 export default async function JobDetailPage({ params }: JobDetailPageProps) {
   const { slug } = await params;
+
+  // pSEO landing page — render before any job-ID logic
+  const seoPage = SEO_PAGES_BY_SLUG[slug];
+  if (seoPage) {
+    return <SEOLandingPage page={seoPage} />;
+  }
+
   const numericId = extractIdFromSlug(slug);
 
   if (!numericId) notFound();
