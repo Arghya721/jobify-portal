@@ -75,7 +75,7 @@ export function JobTicker() {
   return (
     <section className="relative py-5">
       <div
-        className="overflow-hidden"
+        className="-my-3 overflow-hidden py-3"
         style={{ maskImage: "linear-gradient(to right, transparent, black 96px, black calc(100% - 96px), transparent)" }}
         onMouseEnter={() => (isPausedRef.current = true)}
         onMouseLeave={() => (isPausedRef.current = false)}

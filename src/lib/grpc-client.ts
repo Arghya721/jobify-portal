@@ -38,9 +38,11 @@ const credentials = isSecure
   : grpc.credentials.createInsecure();
 
 const grpcOptions = {
-  'grpc.keepalive_time_ms': 30000,
+  'grpc.keepalive_time_ms': 60000,           // ping every 60s (was 30s)
   'grpc.keepalive_timeout_ms': 10000,
-  'grpc.keepalive_permit_without_calls': 1,
+  'grpc.keepalive_permit_without_calls': 0,  // only ping when there are active calls
+  'grpc.http2.min_time_between_pings_ms': 60000,
+  'grpc.http2.min_ping_interval_without_data_ms': 60000,
 };
 
 // Create clients for exported services

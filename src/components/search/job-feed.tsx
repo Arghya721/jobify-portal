@@ -41,7 +41,7 @@ const CATEGORIES = [
   "Mobile",
 ];
 
-export function JobFeed() {
+export function JobFeed({ hideHeader = false }: { hideHeader?: boolean }) {
   const router = useRouter();
   const [q, setQ] = useQueryState("q", parseAsString.withDefault(""));
   const [companyId] = useQueryState("company_id", parseAsString.withDefault(""));
@@ -74,6 +74,7 @@ export function JobFeed() {
   const [jobNodes, setJobNodes] = useState<any[]>(() => cacheHit.current ? feedCache!.nodes : []);
   const [pageCount, setPageCount] = useState(() => cacheHit.current ? feedCache!.pageCount : 0);
   const [isLoading, setIsLoading] = useState(!cacheHit.current);
+  const [fetchFailed, setFetchFailed] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   // Cards restored from cache (back-nav) must NOT replay the enter animation,
   // otherwise they appear to fade out/in. Cleared on the first real fetch.
@@ -122,11 +123,13 @@ export function JobFeed() {
       if (expMin != null) params.experience_min = expMin;
       if (expMax != null) params.experience_max = expMax;
 
+      setFetchFailed(false);
       const response = await fetchJobsAction(params);
       setJobNodes(response.ui);
       setPageCount(response.count);
     } catch (err) {
       console.error("Error fetching jobs:", err);
+      setFetchFailed(true);
       setJobNodes([]);
       setPageCount(0);
     } finally {
@@ -220,6 +223,7 @@ export function JobFeed() {
   return (
     <div className="flex-1 space-y-4">
       {/* Header with Categories and Sort */}
+      {!hideHeader && (
       <div className="flex flex-col gap-5 pb-2">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap gap-2" suppressHydrationWarning>
@@ -269,6 +273,7 @@ export function JobFeed() {
           </p>
         )}
       </div>
+      )}
 
       {/* Loading Skeletons (full-page swap) */}
       {isLoading && jobNodes.length === 0 && (
@@ -323,10 +328,12 @@ export function JobFeed() {
               <SearchX className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
             </div>
             <p className="text-lg font-medium text-foreground">
-              {page > 1 ? "Nothing on this page" : "No jobs match these filters"}
+              {fetchFailed ? "Failed to load jobs" : page > 1 ? "Nothing on this page" : "No jobs match these filters"}
             </p>
             <p className="mt-1 max-w-xs text-sm text-muted-foreground/70">
-              {page > 1
+              {fetchFailed
+                ? "The job server is temporarily unavailable. Please try again in a moment."
+                : page > 1
                 ? "You may have gone past the last page."
                 : "Try a broader search term, or clear everything and start fresh."}
             </p>

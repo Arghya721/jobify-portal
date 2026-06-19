@@ -1,14 +1,11 @@
 import { Suspense } from "react";
-import { JobFeed } from "@/components/search/job-feed";
-import { FilterSidebar } from "@/components/search/filter-sidebar";
-import { SearchOmnibar } from "@/components/search/search-omnibar";
-import { MobileFilterSheet } from "@/components/search/mobile-filter-sheet";
 import { CoOccurringSkills } from "@/components/seo-landing/stats/co-occurring-skills";
 import { ExperienceDistributionChart } from "@/components/seo-landing/stats/experience-distribution";
 import { PostingVelocityBlock } from "@/components/seo-landing/stats/posting-velocity";
 import { TopCompanies } from "@/components/seo-landing/stats/top-companies";
 import { RemoteBreakdownBlock } from "@/components/seo-landing/stats/remote-breakdown";
 import { AtsBreakdownBlock } from "@/components/seo-landing/stats/ats-breakdown";
+import { PseoJobFeed } from "@/components/seo-landing/pseo-job-feed";
 import { fetchStackStats } from "@/lib/api-server";
 import type { SEOPage } from "@/config/seo-pages";
 
@@ -64,20 +61,9 @@ export async function SEOLandingPage({ page }: Props) {
           </div>
         )}
 
-        {/* Job feed */}
+        {/* Job feed — pre-filtered by page tag, no sidebar */}
         <Suspense>
-          <div className="flex gap-6">
-            <aside className="hidden lg:block w-72 shrink-0">
-              <FilterSidebar savedFilters={[]} maxFilters={3} />
-            </aside>
-            <div className="flex-1 min-w-0 space-y-4">
-              <div className="flex items-center justify-between gap-3">
-                <SearchOmnibar />
-                <MobileFilterSheet savedFilters={[]} maxFilters={3} />
-              </div>
-              <JobFeed />
-            </div>
-          </div>
+          <PseoJobFeed tag={page.tag} />
         </Suspense>
 
         {/* FAQ section */}

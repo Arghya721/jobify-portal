@@ -11,7 +11,7 @@ export async function fetchJobs(params: any = {}) {
     };
   } catch (error) {
     console.error("Error fetching jobs via gRPC:", error);
-    return { data: [], pagination: { page: 1, limit: 10 } };
+    throw error;   // propagate so callers can show an error state, not empty results
   }
 }
 
@@ -88,6 +88,7 @@ export async function fetchStackStats(tag: string): Promise<StackStats | null> {
     const url = `${baseUrl}/api/v1/stats/stack?tag=${encodeURIComponent(tag)}`;
     const res = await fetch(url, {
       next: { revalidate: 86400 },
+      signal: AbortSignal.timeout(3000), // fail fast if backend is down
     });
 
     if (!res.ok) {

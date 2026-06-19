@@ -62,7 +62,7 @@ export const SEO_STACK_PAGES: SEOPage[] = [
   },
   {
     slug: "golang-jobs",
-    tag: "Go",
+    tag: "golang",
     title: "Go (Golang) Developer Jobs — Direct from Company ATS",
     description:
       "Find Go / Golang engineering roles sourced directly from company career pages. Infrastructure, cloud, and backend positions updated daily.",
