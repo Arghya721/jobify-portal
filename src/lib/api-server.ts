@@ -74,7 +74,8 @@ export interface StackStats {
 /**
  * Fetches stack stats from the public REST endpoint /api/v1/stats/stack.
  * Server-only (BACKEND_API_URL is never exposed to the client).
- * Next.js fetch cache revalidates every 24h to match Redis TTL.
+ * No Next.js fetch caching — every call hits the backend, which serves from
+ * its own Redis cache (24h TTL). Avoids stale .next/cache copies.
  */
 export async function fetchStackStats(
   tag: string,
@@ -93,7 +94,7 @@ export async function fetchStackStats(
       url += `&coOccurring=${encodeURIComponent(coOccurringTags.join(","))}`;
     }
     const res = await fetch(url, {
-      next: { revalidate: 86400 },
+      cache: "no-store", // always hit backend; Redis handles caching there
       signal: AbortSignal.timeout(3000), // fail fast if backend is down
     });
 

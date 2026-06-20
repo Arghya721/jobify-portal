@@ -15,7 +15,8 @@ interface Props {
 
 /**
  * Server component — renders the complete pSEO landing page for a given
- * SEOPage config entry. Stats are fetched at build time (revalidate: 86400).
+ * SEOPage config entry. Stats are fetched fresh per request (no Next cache);
+ * the backend serves them from its own Redis cache.
  */
 export async function SEOLandingPage({ page }: Props) {
   const stats = await fetchStackStats(
