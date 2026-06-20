@@ -47,7 +47,7 @@ export interface SEOPage {
 export const DEFAULT_CO_OCCURRING_TAGS: string[] = [
   "AWS", "Docker", "Kubernetes", "PostgreSQL", "Redis",
   "FastAPI", "Django", "TypeScript", "React", "Terraform",
-  "Spark", "Airflow", "GraphQL", "Go", "Rust", "Node.js",
+  "Spark", "Airflow", "GraphQL", "Golang", "Rust", "Node.js",
   "Next.js", "MongoDB", "Elasticsearch", "Kafka",
 ];
 
