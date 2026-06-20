@@ -1,4 +1,4 @@
-import { ExperienceDistribution } from "@/lib/api-server";
+import type { ExperienceDistribution } from "@/lib/stats-types";
 
 interface Props {
   distribution: ExperienceDistribution[];
@@ -17,18 +17,18 @@ export function ExperienceDistributionChart({ distribution }: Props) {
   };
 
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-sm">
+    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-sm transition-colors duration-200 hover:border-emerald-500/30 hover:bg-white/[0.05]">
       <h3 className="text-sm font-semibold uppercase tracking-widest text-emerald-400 mb-4">
         Experience breakdown
       </h3>
 
       {/* Stacked bar */}
       <div className="flex h-3 w-full rounded-full overflow-hidden gap-px mb-5">
-        {distribution.map((d) => (
+        {distribution.map((d, i) => (
           <div
             key={d.band}
-            className={`${colours[d.band] ?? "bg-white/30"} transition-all`}
-            style={{ width: `${(d.count / total) * 100}%` }}
+            className={`bar-fill ${colours[d.band] ?? "bg-white/30"}`}
+            style={{ width: `${(d.count / total) * 100}%`, ["--bar-delay" as string]: `${i * 70}ms` }}
           />
         ))}
       </div>

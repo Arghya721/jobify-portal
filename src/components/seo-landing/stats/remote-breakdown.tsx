@@ -1,4 +1,4 @@
-import { RemoteBreakdown } from "@/lib/api-server";
+import type { RemoteBreakdown } from "@/lib/stats-types";
 import { Wifi, Building } from "lucide-react";
 
 interface Props {
@@ -13,18 +13,18 @@ export function RemoteBreakdownBlock({ breakdown }: Props) {
   const onsitePct = 100 - remotePct;
 
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-sm">
+    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-sm transition-colors duration-200 hover:border-emerald-500/30 hover:bg-white/[0.05]">
       <h3 className="text-sm font-semibold uppercase tracking-widest text-emerald-400 mb-4">
         Remote vs onsite
       </h3>
       <div className="flex h-2 w-full rounded-full overflow-hidden mb-5">
         <div
-          className="bg-emerald-500/70 h-full transition-all"
+          className="bar-fill bg-emerald-500/70 h-full"
           style={{ width: `${remotePct}%` }}
         />
         <div
-          className="bg-white/20 h-full transition-all"
-          style={{ width: `${onsitePct}%` }}
+          className="bar-fill bg-white/20 h-full"
+          style={{ width: `${onsitePct}%`, ["--bar-delay" as string]: "120ms" }}
         />
       </div>
       <div className="grid grid-cols-2 gap-4">

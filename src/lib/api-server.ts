@@ -1,5 +1,6 @@
 import "server-only";
 import { getJobsGrpc, getJobByIdGrpc } from "@/lib/grpc-client";
+import type { StackStats } from "@/lib/stats-types";
 
 // Pure server-side — safe to call from Server Components during build/render.
 export async function fetchJobs(params: any = {}) {
@@ -26,50 +27,17 @@ export async function fetchJobById(id: number | string) {
 }
 
 // ─── Stats types ─────────────────────────────────────────────────────────────
-
-export interface CoOccurringSkill {
-  tag: string;
-  mentions: number;
-  pct: number;
-}
-
-export interface ExperienceDistribution {
-  band: string;
-  count: number;
-}
-
-export interface PostingVelocity {
-  thisWeek: number;
-  lastWeek: number;
-  changePercent: number;
-}
-
-export interface TopCompany {
-  name: string;
-  openRoles: number;
-}
-
-export interface RemoteBreakdown {
-  remote: number;
-  onsite: number;
-  total: number;
-}
-
-export interface AtsBreakdown {
-  source: string;
-  count: number;
-}
-
-export interface StackStats {
-  tag: string;
-  totalJobs: number;
-  coOccurringSkills: CoOccurringSkill[];
-  experienceDistribution: ExperienceDistribution[];
-  postingVelocity: PostingVelocity;
-  topCompanies: TopCompany[];
-  remoteBreakdown: RemoteBreakdown;
-  atsBreakdown: AtsBreakdown[];
-}
+// Defined in stats-types.ts (no `server-only`) so client components can import
+// them too. Re-exported here for back-compat with existing server imports.
+export type {
+  CoOccurringSkill,
+  ExperienceDistribution,
+  PostingVelocity,
+  TopCompany,
+  RemoteBreakdown,
+  AtsBreakdown,
+  StackStats,
+} from "@/lib/stats-types";
 
 /**
  * Fetches stack stats from the public REST endpoint /api/v1/stats/stack.
@@ -84,7 +52,7 @@ export async function fetchStackStats(
   const baseUrl = process.env.BACKEND_API_URL;
 
   if (!baseUrl) {
-    console.error("BACKEND_API_URL not configured");
+    console.warn("BACKEND_API_URL not configured — skipping stats");
     return null;
   }
 
@@ -95,17 +63,23 @@ export async function fetchStackStats(
     }
     const res = await fetch(url, {
       cache: "no-store", // always hit backend; Redis handles caching there
-      signal: AbortSignal.timeout(3000), // fail fast if backend is down
+      // Generous: a cold stats aggregation (many co-occurring tags) can take a
+      // few seconds before the backend's Redis cache is warm. Stats are
+      // non-critical, so we'd rather wait than blank the section.
+      signal: AbortSignal.timeout(10_000),
     });
 
     if (!res.ok) {
-      console.error(`Stats fetch failed for "${tag}": ${res.status}`);
+      // Expected-failure path — warn (not error) so it doesn't trip the Next
+      // dev error overlay; the page renders fine without stats.
+      console.warn(`Stats fetch failed for "${tag}": ${res.status}`);
       return null;
     }
 
     return res.json() as Promise<StackStats>;
   } catch (error) {
-    console.error(`Error fetching stack stats for "${tag}":`, error);
+    const reason = error instanceof Error ? error.message : String(error);
+    console.warn(`Stats unavailable for "${tag}": ${reason}`);
     return null;
   }
 }

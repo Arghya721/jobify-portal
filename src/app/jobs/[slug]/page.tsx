@@ -19,8 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { COMPANY_LOGOS as companyLogos, COMPANY_LOGOS_DARK as companyLogosDark } from "@/lib/companies-static";
 import { extractIdFromSlug, generateJobSlug } from "@/lib/utils";
-import { SEO_PAGES_BY_SLUG, ALL_SEO_SLUGS } from "@/config/seo-pages";
-import { SEOLandingPage } from "@/components/seo-landing/seo-landing-page";
+import { SEO_PAGES_BY_SLUG, seoPagePath } from "@/config/seo-pages";
 
 // Deduplicate gRPC calls between generateMetadata and the page component
 const fetchJobById = cache(_fetchJobById);
@@ -38,27 +37,16 @@ type JobDetailPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export async function generateStaticParams() {
-  // Pre-render all pSEO slugs at build time
-  return ALL_SEO_SLUGS.map((slug) => ({ slug }));
-}
-
 export async function generateMetadata({ params }: JobDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
 
-  // pSEO landing page — use page-specific metadata
+  // pSEO slugs have moved off /jobs/* — this route 308-redirects them.
+  // Point the canonical at the new location and keep the old URL out of the index.
   const seoPage = SEO_PAGES_BY_SLUG[slug];
   if (seoPage) {
     return {
-      title: seoPage.title,
-      description: seoPage.description,
-      alternates: { canonical: `${process.env.AUTH_URL || "https://jobify.run"}/jobs/${slug}` },
-      openGraph: {
-        type: "website",
-        title: seoPage.title,
-        description: seoPage.description,
-        siteName: "Jobify",
-      },
+      robots: { index: false, follow: true },
+      alternates: { canonical: `${SITE_URL}${seoPagePath(seoPage)}` },
     };
   }
 
@@ -130,10 +118,10 @@ export async function generateMetadata({ params }: JobDetailPageProps): Promise<
 export default async function JobDetailPage({ params }: JobDetailPageProps) {
   const { slug } = await params;
 
-  // pSEO landing page — render before any job-ID logic
+  // pSEO slugs moved off /jobs/* — 308 redirect old /jobs/* URLs to /<category>/*.
   const seoPage = SEO_PAGES_BY_SLUG[slug];
   if (seoPage) {
-    return <SEOLandingPage page={seoPage} />;
+    permanentRedirect(seoPagePath(seoPage));
   }
 
   const numericId = extractIdFromSlug(slug);

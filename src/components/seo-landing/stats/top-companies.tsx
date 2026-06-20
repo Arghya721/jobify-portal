@@ -1,4 +1,4 @@
-import { TopCompany } from "@/lib/api-server";
+import type { TopCompany } from "@/lib/stats-types";
 import { Building2 } from "lucide-react";
 
 interface Props {
@@ -10,7 +10,7 @@ export function TopCompanies({ tag, companies }: Props) {
   if (!companies.length) return null;
 
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-sm">
+    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-sm transition-colors duration-200 hover:border-emerald-500/30 hover:bg-white/[0.05]">
       <h3 className="text-sm font-semibold uppercase tracking-widest text-emerald-400 mb-4">
         Top hiring companies
       </h3>
@@ -18,7 +18,7 @@ export function TopCompanies({ tag, companies }: Props) {
         {companies.map((c, i) => (
           <li
             key={c.name}
-            className="flex items-center justify-between text-sm"
+            className="-mx-2 flex items-center justify-between rounded-md px-2 py-0.5 text-sm transition-colors hover:bg-white/[0.04]"
           >
             <span className="flex items-center gap-2 text-white/80">
               <span className="w-4 text-right text-white/30 font-mono text-xs">

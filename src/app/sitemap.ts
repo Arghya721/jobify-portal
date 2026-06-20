@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 import { fetchJobs } from "@/lib/api-server";
 import { generateJobSlug } from "@/lib/utils";
-import { ALL_SEO_SLUGS } from "@/config/seo-pages";
+import { SEO_STACK_PAGES, seoPagePath } from "@/config/seo-pages";
 
 export const dynamic = "force-dynamic";
 
@@ -46,8 +46,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/cookies`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.3 },
   ];
 
-  const seoPages = ALL_SEO_SLUGS.map((slug) => ({
-    url: `${BASE_URL}/jobs/${slug}`,
+  const seoPages = SEO_STACK_PAGES.map((page) => ({
+    url: `${BASE_URL}${seoPagePath(page)}`,
     lastModified: new Date(),
     changeFrequency: "weekly" as const,
     priority: 0.85,

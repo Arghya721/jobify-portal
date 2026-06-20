@@ -11,9 +11,22 @@
  * Pages are pre-rendered at build time via generateStaticParams().
  */
 
+/**
+ * Default base-path segment for pSEO landing pages. Deliberately NOT "jobs" so
+ * these pages escape the /jobs/* caching rules. Any SEOPage may override it with
+ * its own `basePath`. The dynamic route src/app/[category]/[slug] serves every
+ * configured base path, so changing this (or a page's basePath) needs no route
+ * folder rename — just edit the config below.
+ */
+export const SEO_BASE_PATH = "tech";
+
 export interface SEOPage {
   /** URL slug — must not collide with a numeric job ID (no pure-number suffix). */
   slug: string;
+  /** First URL segment for this page. Defaults to SEO_BASE_PATH ("tech"). */
+  basePath?: string;
+  /** Short label for nav/footer links. Falls back to `tag` when omitted. */
+  navLabel?: string;
   /** Primary tag used to filter jobs and fetch stats. */
   tag: string;
   /** H1 / <title> text. */
@@ -54,6 +67,8 @@ export const DEFAULT_CO_OCCURRING_TAGS: string[] = [
 export const SEO_STACK_PAGES: SEOPage[] = [
   {
     slug: "python-developer-jobs",
+    basePath: "tech",
+    navLabel: "Python",
     tag: "Python",
     title: "Python Developer Jobs — Live Openings from Company ATS",
     description:
@@ -80,6 +95,8 @@ export const SEO_STACK_PAGES: SEOPage[] = [
   },
   {
     slug: "golang-jobs",
+    basePath: "tech",
+    navLabel: "Go",
     tag: "golang",
     title: "Go (Golang) Developer Jobs — Direct from Company ATS",
     description:
@@ -101,6 +118,8 @@ export const SEO_STACK_PAGES: SEOPage[] = [
   },
   {
     slug: "rust-developer-jobs",
+    basePath: "tech",
+    navLabel: "Rust",
     tag: "Rust",
     title: "Rust Developer Jobs — Systems & WebAssembly Roles",
     description:
@@ -122,6 +141,8 @@ export const SEO_STACK_PAGES: SEOPage[] = [
   },
   {
     slug: "typescript-developer-jobs",
+    basePath: "tech",
+    navLabel: "TypeScript",
     tag: "TypeScript",
     title: "TypeScript Developer Jobs — Frontend, Backend & Fullstack",
     description:
@@ -143,6 +164,8 @@ export const SEO_STACK_PAGES: SEOPage[] = [
   },
   {
     slug: "kubernetes-jobs",
+    basePath: "tech",
+    navLabel: "Kubernetes",
     tag: "Kubernetes",
     title: "Kubernetes & Cloud-Native Engineering Jobs",
     description:
@@ -164,6 +187,8 @@ export const SEO_STACK_PAGES: SEOPage[] = [
   },
   {
     slug: "remote-python-jobs",
+    basePath: "tech",
+    navLabel: "Remote Python",
     tag: "Python",
     title: "Remote Python Developer Jobs — Work From Anywhere",
     description:
@@ -186,5 +211,33 @@ export const SEO_PAGES_BY_SLUG: Record<string, SEOPage> = Object.fromEntries(
   SEO_STACK_PAGES.map((p) => [p.slug, p])
 );
 
-/** All slugs — used in generateStaticParams(). */
+/** All slugs — used by the old /jobs/* redirect lookup. */
 export const ALL_SEO_SLUGS = SEO_STACK_PAGES.map((p) => p.slug);
+
+/** Effective first URL segment for a page (its override, else the default). */
+export function pageBasePath(page: SEOPage): string {
+  return page.basePath ?? SEO_BASE_PATH;
+}
+
+/** Canonical relative path for a page, e.g. "/tech/python-developer-jobs". */
+export function seoPagePath(page: SEOPage): string {
+  return `/${pageBasePath(page)}/${page.slug}`;
+}
+
+/** Resolve a /<category>/<slug> pair to its SEOPage, or undefined. */
+export function findSeoPage(category: string, slug: string): SEOPage | undefined {
+  const page = SEO_PAGES_BY_SLUG[slug];
+  return page && pageBasePath(page) === category ? page : undefined;
+}
+
+/** {category, slug} pairs for generateStaticParams() on the [category] route. */
+export const ALL_SEO_PARAMS = SEO_STACK_PAGES.map((p) => ({
+  category: pageBasePath(p),
+  slug: p.slug,
+}));
+
+/** Ready-to-render nav/footer links for every pSEO page. */
+export const SEO_NAV_LINKS = SEO_STACK_PAGES.map((p) => ({
+  href: seoPagePath(p),
+  label: p.navLabel ?? p.tag,
+}));

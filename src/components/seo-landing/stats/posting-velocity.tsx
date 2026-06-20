@@ -1,4 +1,4 @@
-import { PostingVelocity } from "@/lib/api-server";
+import type { PostingVelocity } from "@/lib/stats-types";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 
 interface Props {
@@ -23,7 +23,7 @@ export function PostingVelocityBlock({ tag, velocity }: Props) {
       : "text-white/50";
 
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-sm">
+    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-sm transition-colors duration-200 hover:border-emerald-500/30 hover:bg-white/[0.05]">
       <h3 className="text-sm font-semibold uppercase tracking-widest text-emerald-400 mb-4">
         Hiring velocity
       </h3>
