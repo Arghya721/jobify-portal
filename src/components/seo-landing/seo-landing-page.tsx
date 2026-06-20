@@ -7,7 +7,7 @@ import { RemoteBreakdownBlock } from "@/components/seo-landing/stats/remote-brea
 import { AtsBreakdownBlock } from "@/components/seo-landing/stats/ats-breakdown";
 import { PseoJobFeed } from "@/components/seo-landing/pseo-job-feed";
 import { fetchStackStats } from "@/lib/api-server";
-import type { SEOPage } from "@/config/seo-pages";
+import { DEFAULT_CO_OCCURRING_TAGS, type SEOPage } from "@/config/seo-pages";
 
 interface Props {
   page: SEOPage;
@@ -18,7 +18,10 @@ interface Props {
  * SEOPage config entry. Stats are fetched at build time (revalidate: 86400).
  */
 export async function SEOLandingPage({ page }: Props) {
-  const stats = await fetchStackStats(page.tag);
+  const stats = await fetchStackStats(
+    page.tag,
+    page.coOccurringTags ?? DEFAULT_CO_OCCURRING_TAGS
+  );
 
   const faqJsonLd = {
     "@context": "https://schema.org",

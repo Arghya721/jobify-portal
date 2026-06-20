@@ -31,7 +31,25 @@ export interface SEOPage {
     experienceMax?: number;
     country?: string;
   };
+  /**
+   * Candidate skills the "Co-occurring Skills" stat is computed against.
+   * Sent to the stats API; the backend ranks how often each appears alongside
+   * `tag`. Falls back to DEFAULT_CO_OCCURRING_TAGS when omitted.
+   */
+  coOccurringTags?: string[];
 }
+
+/**
+ * Default candidate pool for co-occurring-skill stats. Used by any SEOPage
+ * that doesn't define its own `coOccurringTags`. Must match canonical tag names
+ * produced by the job-processor skill extractor dictionary.
+ */
+export const DEFAULT_CO_OCCURRING_TAGS: string[] = [
+  "AWS", "Docker", "Kubernetes", "PostgreSQL", "Redis",
+  "FastAPI", "Django", "TypeScript", "React", "Terraform",
+  "Spark", "Airflow", "GraphQL", "Go", "Rust", "Node.js",
+  "Next.js", "MongoDB", "Elasticsearch", "Kafka",
+];
 
 export const SEO_STACK_PAGES: SEOPage[] = [
   {

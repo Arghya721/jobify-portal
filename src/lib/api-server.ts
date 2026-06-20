@@ -76,7 +76,10 @@ export interface StackStats {
  * Server-only (BACKEND_API_URL is never exposed to the client).
  * Next.js fetch cache revalidates every 24h to match Redis TTL.
  */
-export async function fetchStackStats(tag: string): Promise<StackStats | null> {
+export async function fetchStackStats(
+  tag: string,
+  coOccurringTags?: string[]
+): Promise<StackStats | null> {
   const baseUrl = process.env.BACKEND_API_URL;
 
   if (!baseUrl) {
@@ -85,7 +88,10 @@ export async function fetchStackStats(tag: string): Promise<StackStats | null> {
   }
 
   try {
-    const url = `${baseUrl}/api/v1/stats/stack?tag=${encodeURIComponent(tag)}`;
+    let url = `${baseUrl}/api/v1/stats/stack?tag=${encodeURIComponent(tag)}`;
+    if (coOccurringTags && coOccurringTags.length > 0) {
+      url += `&coOccurring=${encodeURIComponent(coOccurringTags.join(","))}`;
+    }
     const res = await fetch(url, {
       next: { revalidate: 86400 },
       signal: AbortSignal.timeout(3000), // fail fast if backend is down
