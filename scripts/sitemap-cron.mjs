@@ -180,7 +180,13 @@ async function notifyGoogleIndexing(jobs) {
           signal: AbortSignal.timeout(15_000),
         });
         if (res.ok) { notified++; }
-        else { console.warn(`  FAIL [${res.status}] ${url}`); failed++; }
+        else {
+          const body = await res.text().catch(() => '');
+          // Print body only once (first failure) to avoid log spam
+          if (failed === 0) console.warn(`  First failure body: ${body}`);
+          console.warn(`  FAIL [${res.status}] ${url}`);
+          failed++;
+        }
       } catch (e) {
         console.warn(`  ERROR ${url}: ${e.message}`); failed++;
       }
