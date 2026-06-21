@@ -194,6 +194,44 @@ export const SEO_STACK_PAGES: SEOPage[] = [
     ],
   },
   {
+    slug: "java-developer-jobs",
+    basePath: "tech",
+    navLabel: "Java",
+    tag: "Java",
+    title: "Java Developer Jobs — Backend, Cloud & Enterprise Roles",
+    description:
+      "Java developer jobs sourced directly from Greenhouse, Lever, and Workday. Spring Boot, microservices, and cloud roles updated daily.",
+    heroCopy:
+      "Java powers enterprise backends, cloud-native microservices, and high-throughput data pipelines. Every listing is pulled directly from company ATS systems — no aggregator delays, no duplicate postings.",
+    coOccurringTags: [
+      "Spring", "Kafka", "AWS", "Docker", "Kubernetes",
+      "PostgreSQL", "Redis", "Hibernate", "Maven", "Gradle",
+      "Microservices", "Angular", "React", "Terraform", "Elasticsearch",
+    ],
+    faqs: [
+      {
+        question: "What frameworks appear most often in Java job listings?",
+        answer:
+          "Spring Boot dominates backend roles by a wide margin. Hibernate and JPA are common for persistence layers, while Kafka appears frequently in data-intensive and event-driven positions.",
+      },
+      {
+        question: "What experience level do most Java jobs require?",
+        answer:
+          "Java roles span all levels. Junior positions (0–2 years) typically focus on Spring fundamentals and REST APIs. Senior roles (5+ years) usually require distributed systems experience, microservices architecture, and cloud deployment on AWS or GCP.",
+      },
+      {
+        question: "Are there remote Java developer jobs?",
+        answer:
+          "Yes. Use the Remote filter in the sidebar to narrow results to fully remote positions. Enterprise and fintech companies in particular have expanded remote hiring for Java engineers.",
+      },
+      {
+        question: "What cloud platforms are most common in Java job descriptions?",
+        answer:
+          "AWS is the most frequently mentioned, followed by GCP and Azure. Docker and Kubernetes appear in the majority of mid-to-senior Java listings, reflecting the shift to containerised microservices.",
+      },
+    ],
+  },
+  {
     slug: "remote-python-jobs",
     basePath: "tech",
     navLabel: "Remote Python",

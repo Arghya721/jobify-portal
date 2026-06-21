@@ -73,23 +73,28 @@ export async function SEOLandingPage({ page }: Props) {
           </ol>
         </nav>
 
-        {/* Hero */}
-        <Reveal className="mb-10 max-w-3xl">
-          <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-emerald-400">
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/70" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
+        {/* Hero — staggered reveals so each element cascades in */}
+        <div className="mb-10 max-w-3xl">
+          <Reveal>
+            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-emerald-400">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/70" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
+              </span>
+              Live · sourced from company ATS
             </span>
-            Live · sourced from company ATS
-          </span>
-
-          <h1 className="mt-5 text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl">
-            {page.title}
-          </h1>
-          <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/60 sm:text-lg">
-            {page.heroCopy}
-          </p>
-        </Reveal>
+          </Reveal>
+          <Reveal delay={80}>
+            <h1 className="mt-5 text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl">
+              {page.title}
+            </h1>
+          </Reveal>
+          <Reveal delay={160}>
+            <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/60 sm:text-lg">
+              {page.heroCopy}
+            </p>
+          </Reveal>
+        </div>
 
         {/* Live stats — streamed; page never waits on the backend */}
         <Suspense fallback={<StatsSectionSkeleton />}>
@@ -115,9 +120,13 @@ export async function SEOLandingPage({ page }: Props) {
                       {faq.question}
                       <ChevronDown className="seo-faq-chevron h-4 w-4 shrink-0 text-white/40" />
                     </summary>
-                    <p className="seo-faq-body pb-4 text-sm leading-relaxed text-white/55">
-                      {faq.answer}
-                    </p>
+                    <div className="seo-faq-body-wrap">
+                      <div className="seo-faq-body-inner">
+                        <p className="pb-4 text-sm leading-relaxed text-white/55">
+                          {faq.answer}
+                        </p>
+                      </div>
+                    </div>
                   </details>
                 ))}
               </div>
@@ -137,7 +146,7 @@ export async function SEOLandingPage({ page }: Props) {
                   <Link
                     key={href}
                     href={href}
-                    className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5 text-sm text-white/70 transition-colors duration-150 hover:border-emerald-500/40 hover:text-emerald-400"
+                    className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5 text-sm text-white/70 transition-[transform,border-color,color] duration-150 ease-[var(--ease-out)] hover:border-emerald-500/40 hover:text-emerald-400 active:scale-[0.97]"
                   >
                     {label}
                   </Link>

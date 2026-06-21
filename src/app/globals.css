@@ -449,7 +449,7 @@
   animation-delay: var(--reveal-delay, 0ms);
 }
 
-/* Data bars grow from left on first paint (GPU transform, no layout) */
+/* Data bars grow from left — triggered only when ancestor Reveal becomes visible */
 @keyframes bar-grow {
   from { transform: scaleX(0); }
   to   { transform: scaleX(1); }
@@ -457,6 +457,10 @@
 
 .bar-fill {
   transform-origin: left center;
+  transform: scaleX(0);
+}
+
+.reveal[data-shown="true"] .bar-fill {
   animation: bar-grow 0.9s var(--ease-out) both;
   animation-delay: var(--bar-delay, 0ms);
 }
@@ -486,14 +490,41 @@
   transition: transform 0.25s var(--ease-out);
 }
 
-.seo-faq[open] .seo-faq-body {
-  animation: seo-reveal 0.35s var(--ease-out) both;
+/* FAQ smooth height via CSS grid-template-rows trick (no JS, GPU-friendly) */
+.seo-faq-body-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s var(--ease-out);
+}
+
+.seo-faq[open] .seo-faq-body-wrap {
+  grid-template-rows: 1fr;
+}
+
+.seo-faq-body-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Stat cards — lift on hover, explicit properties (no layout-triggering props) */
+.stat-card {
+  transition-property: transform, border-color, background-color;
+  transition-duration: 200ms;
+  transition-timing-function: var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .stat-card:hover {
+    transform: translateY(-2px);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; animation: none; }
   .reveal[data-shown="true"] { animation: none; }
-  .bar-fill { animation: none; }
+  .bar-fill { animation: none; transform: scaleX(1); }
+  .reveal[data-shown="true"] .bar-fill { animation: none; transform: scaleX(1); }
   .seo-orb { animation: none; }
-  .seo-faq[open] .seo-faq-body { animation: none; }
+  .seo-faq-body-wrap { transition: none; grid-template-rows: 1fr; }
+  .stat-card { transition: none; }
 }

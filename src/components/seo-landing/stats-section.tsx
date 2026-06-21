@@ -56,7 +56,7 @@ export async function StatsSection({ page }: { page: SEOPage }) {
             {highlights.map((h) => (
               <div
                 key={h.label}
-                className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 backdrop-blur-sm transition-colors duration-200 hover:border-emerald-500/40 hover:bg-emerald-500/[0.06]"
+                className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 backdrop-blur-sm transition-[transform,border-color,background-color] duration-200 ease-[var(--ease-out)] hover:border-emerald-500/40 hover:bg-emerald-500/[0.06] active:scale-[0.98]"
               >
                 <h.icon className="h-4 w-4 text-emerald-400" />
                 <span className="text-lg font-bold tabular-nums text-white">{h.value}</span>

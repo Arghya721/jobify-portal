@@ -10,7 +10,7 @@ export function TopCompanies({ tag, companies }: Props) {
   if (!companies.length) return null;
 
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-sm transition-colors duration-200 hover:border-emerald-500/30 hover:bg-white/[0.05]">
+    <div className="stat-card rounded-xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-sm hover:border-emerald-500/30 hover:bg-white/[0.05]">
       <h3 className="text-sm font-semibold uppercase tracking-widest text-emerald-400 mb-4">
         Top hiring companies
       </h3>
