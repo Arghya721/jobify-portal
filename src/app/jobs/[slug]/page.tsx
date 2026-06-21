@@ -109,7 +109,10 @@ export async function generateMetadata({ params }: JobDetailPageProps): Promise<
       images: [`${SITE_URL}/jobify-mark-dark.png`],
     },
     robots: {
-      index: true,
+      // Noindex closed jobs — they hurt CTR and waste crawl budget.
+      // The page still renders (users can navigate back to it); Google just
+      // won't show it in results once it re-crawls and sees this directive.
+      index: job.is_active !== false,
       follow: true,
     },
   };
@@ -166,6 +169,12 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
   const jobPostingSchema = {
     "@context": "https://schema.org",
     "@type": "JobPosting",
+    // identifier lets Google deduplicate this posting against the same job on other boards
+    "identifier": {
+      "@type": "PropertyValue",
+      "name": "Jobify",
+      "value": String(job.id),
+    },
     "title": job.title,
     "description": details.raw_description || `${job.title} at ${companyName}`,
     "datePosted": postedAt || new Date().toISOString(),
@@ -178,7 +187,21 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
     ...(hasRemoteLocation(job.locations || [])
       ? {
           "jobLocationType": "TELECOMMUTE",
-          "applicantLocationRequirements": { "@type": "Country", "name": "Worldwide" },
+          // If the job has non-remote locations, use their country ISO2 codes as the
+          // applicant location requirement (e.g. a "Remote – India" role will have
+          // an office location with country.iso2 = "IN"). If there are no non-remote
+          // locations the job is globally open, so we omit the field entirely —
+          // Google treats its absence as "any country".
+          ...(nonRemoteLocations.length > 0
+            ? {
+                "applicantLocationRequirements": nonRemoteLocations
+                  .filter((l: JobLocation) => l.country?.iso2 || l.country?.name)
+                  .map((l: JobLocation) => ({
+                    "@type": "Country",
+                    "name": l.country?.iso2 ?? l.country?.name,
+                  })),
+              }
+            : {}),
         }
       : nonRemoteLocations.length > 0
       ? {
