@@ -16,7 +16,7 @@ import { DEFAULT_CO_OCCURRING_TAGS, type SEOPage } from "@/config/seo-pages";
  */
 export async function StatsSection({ page }: { page: SEOPage }) {
   const stats = await fetchStackStats(
-    page.tag,
+    page.statsTag ?? page.tag,
     page.coOccurringTags ?? DEFAULT_CO_OCCURRING_TAGS
   );
 

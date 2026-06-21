@@ -27,8 +27,15 @@ export interface SEOPage {
   basePath?: string;
   /** Short label for nav/footer links. Falls back to `tag` when omitted. */
   navLabel?: string;
-  /** Primary tag used to filter jobs and fetch stats. */
+  /** Primary tag used to filter jobs (description text search). */
   tag: string;
+  /**
+   * Canonical tag name as stored in job_details.tags by the skill extractor.
+   * Only needed when the canonical name differs from the description search term
+   * (e.g. tag: "golang" for text search, statsTag: "Go" for array match).
+   * Falls back to `tag` when omitted.
+   */
+  statsTag?: string;
   /** H1 / <title> text. */
   title: string;
   /** Meta description (≤160 chars). */
@@ -60,7 +67,7 @@ export interface SEOPage {
 export const DEFAULT_CO_OCCURRING_TAGS: string[] = [
   "AWS", "Docker", "Kubernetes", "PostgreSQL", "Redis",
   "FastAPI", "Django", "TypeScript", "React", "Terraform",
-  "Spark", "Airflow", "GraphQL", "Golang", "Rust", "Node.js",
+  "Spark", "Airflow", "GraphQL", "Go", "Rust", "Node.js",
   "Next.js", "MongoDB", "Elasticsearch", "Kafka",
 ];
 
@@ -98,6 +105,7 @@ export const SEO_STACK_PAGES: SEOPage[] = [
     basePath: "tech",
     navLabel: "Go",
     tag: "golang",
+    statsTag: "Go",
     title: "Go (Golang) Developer Jobs — Direct from Company ATS",
     description:
       "Find Go / Golang engineering roles sourced directly from company career pages. Infrastructure, cloud, and backend positions updated daily.",
