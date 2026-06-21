@@ -1,6 +1,3 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import { Radio, Zap } from "lucide-react";
 import { CoOccurringSkills } from "@/components/seo-landing/stats/co-occurring-skills";
 import { ExperienceDistributionChart } from "@/components/seo-landing/stats/experience-distribution";
@@ -9,51 +6,21 @@ import { TopCompanies } from "@/components/seo-landing/stats/top-companies";
 import { RemoteBreakdownBlock } from "@/components/seo-landing/stats/remote-breakdown";
 import { AtsBreakdownBlock } from "@/components/seo-landing/stats/ats-breakdown";
 import { Reveal } from "@/components/seo-landing/reveal";
-import type { StackStats } from "@/lib/stats-types";
+import { fetchStackStats } from "@/lib/api-server";
 import { DEFAULT_CO_OCCURRING_TAGS, type SEOPage } from "@/config/seo-pages";
 
-const RETRY_DELAY_MS = 3_000;
+/**
+ * Async stats block — rendered inside a <Suspense> boundary so the page shell
+ * (hero, job feed, FAQ) streams immediately and never blocks on the backend
+ * stats call. Resolves to chips + grid + live summary once data arrives.
+ */
+export async function StatsSection({ page }: { page: SEOPage }) {
+  const stats = await fetchStackStats(
+    page.tag,
+    page.coOccurringTags ?? DEFAULT_CO_OCCURRING_TAGS
+  );
 
-async function fetchStats(tag: string, coOccurringTags: string[]): Promise<StackStats | null> {
-  try {
-    const coOccurring = coOccurringTags.join(",");
-    const res = await fetch(
-      `/api/stats/stack?tag=${encodeURIComponent(tag)}&coOccurring=${encodeURIComponent(coOccurring)}`,
-      { cache: "no-store" }
-    );
-    if (!res.ok) return null;
-    return res.json();
-  } catch {
-    return null;
-  }
-}
-
-export function StatsSection({ page }: { page: SEOPage }) {
-  const [stats, setStats] = useState<StackStats | null>(null);
-
-  useEffect(() => {
-    const coOccurringTags = page.coOccurringTags ?? DEFAULT_CO_OCCURRING_TAGS;
-    let cancelled = false;
-    let timer: ReturnType<typeof setTimeout>;
-
-    async function attempt() {
-      const data = await fetchStats(page.tag, coOccurringTags);
-      if (cancelled) return;
-      if (data) {
-        setStats(data);
-      } else {
-        timer = setTimeout(attempt, RETRY_DELAY_MS);
-      }
-    }
-
-    attempt();
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
-  }, [page.tag, page.coOccurringTags]);
-
-  if (!stats) return <StatsSectionSkeleton />;
+  if (!stats) return null;
 
   const remotePct =
     stats.remoteBreakdown.total > 0
@@ -82,6 +49,7 @@ export function StatsSection({ page }: { page: SEOPage }) {
 
   return (
     <>
+      {/* Highlight chips */}
       {highlights.length > 0 && (
         <Reveal className="mb-10">
           <div className="flex flex-wrap gap-3">
@@ -99,6 +67,7 @@ export function StatsSection({ page }: { page: SEOPage }) {
         </Reveal>
       )}
 
+      {/* Stats grid */}
       <div className="mb-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {blocks.map((block, i) => (
           <Reveal key={i} delay={i * 70} className="h-full [&>*]:h-full">
@@ -107,6 +76,7 @@ export function StatsSection({ page }: { page: SEOPage }) {
         ))}
       </div>
 
+      {/* Live SEO summary */}
       {(topCompanyNames.length > 0 || topSkills.length > 0) && (
         <Reveal className="mb-12 max-w-3xl">
           <section>
@@ -155,6 +125,7 @@ export function StatsSection({ page }: { page: SEOPage }) {
   );
 }
 
+/** Skeleton shown while StatsSection streams in. */
 export function StatsSectionSkeleton() {
   return (
     <>
@@ -172,6 +143,7 @@ export function StatsSectionSkeleton() {
   );
 }
 
+/** "A, B and C" — small prose joiner for SEO copy. */
 function listToProse(items: string[]): string {
   if (items.length === 0) return "";
   if (items.length === 1) return items[0];
