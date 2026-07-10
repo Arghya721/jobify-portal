@@ -176,7 +176,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
       "value": String(job.id),
     },
     "title": job.title,
-    "description": details.raw_description || `${job.title} at ${companyName}`,
+    "description": details.description_html || details.raw_description || `${job.title} at ${companyName}`,
     "datePosted": postedAt || new Date().toISOString(),
     ...(validThrough ? { "validThrough": validThrough } : {}),
     "hiringOrganization": {
@@ -302,10 +302,11 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
               <FileTextIcon className="h-5 w-5 text-primary/80" />
               Job Description
             </h2>
-            {details.raw_description ? (
-              <div className="prose prose-sm md:prose-base prose-neutral dark:prose-invert max-w-none whitespace-pre-wrap break-words leading-relaxed text-muted-foreground/90 font-medium">
-                {details.raw_description}
-              </div>
+            {details.description_html || details.raw_description ? (
+              <div
+                className="prose prose-sm md:prose-base prose-neutral dark:prose-invert max-w-none break-words leading-relaxed text-muted-foreground/90 font-medium"
+                dangerouslySetInnerHTML={{ __html: details.description_html || details.raw_description }}
+              />
             ) : (
               <div className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground bg-secondary/20 rounded-xl border border-dashed border-border/50">
                 <FileTextIcon className="h-8 w-8 mb-3 opacity-50" />
@@ -315,6 +316,27 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
               </div>
             )}
           </section>
+
+          {/* Skills Section */}
+          {details.tags && details.tags.length > 0 && (
+            <section className="rounded-2xl border border-border/40 bg-card/60 p-6 md:p-8 transition-all duration-300 hover:shadow-md hover:border-border/60">
+              <h2 className="text-xl font-bold tracking-tight text-foreground mb-6 flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-primary/80" />
+                Skills
+              </h2>
+              <div className="flex flex-wrap gap-2">
+                {details.tags.map((tag: string) => (
+                  <Badge
+                    key={tag}
+                    variant="secondary"
+                    className="rounded-md px-3 py-1 text-sm font-medium"
+                  >
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+            </section>
+          )}
         </main>
 
         <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
