@@ -24,7 +24,7 @@ import { auth } from "@/auth";
 import { SkillTagLinks } from "@/components/job-detail/skill-tag-links";
 import { AlertsHookCard } from "@/components/job-detail/alerts-hook-card";
 import { ResumeMatchHook, HookCardSkeleton } from "@/components/job-detail/resume-match-hook";
-import { SimilarJobs, SimilarJobsSkeleton } from "@/components/job-detail/similar-jobs";
+import { SimilarJobsLink } from "@/components/job-detail/similar-jobs-link";
 
 // Deduplicate gRPC calls between generateMetadata and the page component
 const fetchJobById = cache(_fetchJobById);
@@ -336,14 +336,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
             </section>
           )}
 
-          <Suspense fallback={<SimilarJobsSkeleton />}>
-            <SimilarJobs
-              currentJobId={job.id}
-              tags={details.tags || []}
-              companyId={job.company?.id}
-              companyName={companyName}
-            />
-          </Suspense>
+          <SimilarJobsLink tags={details.tags || []} companyId={job.company?.id} companyName={companyName} />
         </main>
 
         <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">

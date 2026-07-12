@@ -3,8 +3,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 // Route-level loading UI — Next.js shows this the instant navigation starts,
 // before any data fetching begins, decoupling the perceived click response
 // from how long the page's own data takes. Once the page's synchronous
-// content is ready it replaces this; SimilarJobs/ResumeMatchHook still stream
-// in behind their own nested skeletons after that.
+// content is ready it replaces this; ResumeMatchHook still streams in behind
+// its own nested skeleton after that.
 export default function JobDetailLoading() {
   return (
     <div className="mx-auto max-w-screen-xl px-4 py-8 md:px-6">
