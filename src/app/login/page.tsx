@@ -27,10 +27,18 @@ const FEATURES = [
   },
 ] as const;
 
-export default async function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string }>;
+}) {
+  const { next } = await searchParams;
+  // Internal paths only — reject absolute URLs and protocol-relative ("//") redirects
+  const redirectTo = next && next.startsWith("/") && !next.startsWith("//") ? next : "/jobs";
+
   const session = await auth();
   if (session?.user) {
-    redirect("/jobs");
+    redirect(redirectTo);
   }
 
   return (
@@ -127,7 +135,7 @@ export default async function LoginPage() {
             <form
               action={async () => {
                 "use server";
-                await signIn("google", { redirectTo: "/jobs" });
+                await signIn("google", { redirectTo });
               }}
             >
               <button

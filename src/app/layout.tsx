@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Navbar } from "@/components/navbar";
@@ -67,20 +68,25 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-export default async function RootLayout({
+// Streamed behind Suspense so the resume-uploads REST call never blocks the
+// initial HTML of any page — it previously added a full backend roundtrip to
+// every server render for logged-in users.
+async function ResumeWatcherGate() {
+  const session = await auth();
+  if (!session?.user) return null;
+  const { uploads } = await getResumeUploadsAction();
+  const activeUploads = uploads.filter(
+    (u) => u.status === "pending" || u.status === "processing"
+  );
+  if (activeUploads.length === 0) return null;
+  return <ResumeNotificationWatcher initialUploads={activeUploads} />;
+}
+
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth();
-  let activeUploads: any[] = [];
-  if (session?.user) {
-    const { uploads } = await getResumeUploadsAction();
-    activeUploads = uploads.filter(
-      (u) => u.status === "pending" || u.status === "processing"
-    );
-  }
-
   return (
     <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
       <body
@@ -107,9 +113,9 @@ export default async function RootLayout({
             {/* Film grain over everything — texture without weight */}
             <div aria-hidden="true" className="noise-overlay" />
             <NavbarScrollWrapper><Navbar /></NavbarScrollWrapper>
-            {session?.user && activeUploads.length > 0 && (
-              <ResumeNotificationWatcher initialUploads={activeUploads} />
-            )}
+            <Suspense fallback={null}>
+              <ResumeWatcherGate />
+            </Suspense>
             <main className="relative z-[1]">{children}</main>
           </NuqsAdapter>
         </ThemeProvider>

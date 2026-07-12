@@ -151,7 +151,7 @@ export function SaveFilterButton({
   return (
     <div className="rounded-lg border border-border/40 bg-secondary/10 p-2.5 space-y-2" suppressHydrationWarning>
       {/* Title row */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between" suppressHydrationWarning>
         <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60">
           Filter Presets
         </span>

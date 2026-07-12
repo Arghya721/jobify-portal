@@ -1,4 +1,5 @@
 import "server-only";
+import { unstable_cache } from "next/cache";
 import { getJobsGrpc, getJobByIdGrpc } from "@/lib/grpc-client";
 import type { StackStats } from "@/lib/stats-types";
 
@@ -11,17 +12,33 @@ export async function fetchJobs(params: any = {}) {
       pagination: response.pagination || { page: 1, limit: 10 },
     };
   } catch (error) {
-    console.error("Error fetching jobs via gRPC:", error);
+    // console.warn, not console.error: some callers (e.g. SimilarJobs) treat
+    // this as an expected, already-handled fallback path (backend timeout →
+    // section quietly hides). console.error here would still trip Next's dev
+    // error overlay for those callers even though nothing is actually broken.
+    console.warn("Jobs fetch failed via gRPC:", error);
     throw error;   // propagate so callers can show an error state, not empty results
   }
 }
 
+// Job postings rarely change once published — cache the gRPC result across
+// requests for 5 minutes so repeat visits (and hover prefetches) skip the
+// backend roundtrip entirely. Errors are not cached: a rejection propagates
+// past unstable_cache and is caught below.
+const getJobByIdCached = unstable_cache(
+  async (id: number | string) => getJobByIdGrpc(id),
+  ["job-by-id"],
+  { revalidate: 300 }
+);
+
 export async function fetchJobById(id: number | string) {
   try {
-    const job = await getJobByIdGrpc(id);
+    const job = await getJobByIdCached(id);
     return job;
   } catch (error) {
-    console.error(`Error fetching job ${id} via gRPC:`, error);
+    // Handled fallback (page calls notFound() when this returns null) — warn
+    // so it doesn't trip Next's dev error overlay for an already-graceful path.
+    console.warn(`Job fetch failed for id ${id} via gRPC:`, error);
     return null;
   }
 }

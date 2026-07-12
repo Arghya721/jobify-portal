@@ -20,10 +20,11 @@ export default async function JobsPage() {
   // Fetch saved filters server-side so the access token never leaves the server.
   // Gracefully falls back to empty array for unauthenticated users.
   // We pass `false` so a revoked session (401) fails silently rather than redirecting to logout.
-  const { filters: savedFilters } = await getSavedFiltersAction(false);
-
-  // Latest completed resume query — null if none or not logged in
-  const { uploads } = await getResumeUploadsAction();
+  // Both calls are independent backend roundtrips — run them in parallel.
+  const [{ filters: savedFilters }, { uploads }] = await Promise.all([
+    getSavedFiltersAction(false),
+    getResumeUploadsAction(),
+  ]);
   const resumeJobsQuery: JobsQuery | null =
     uploads.find((u) => u.status === "completed")?.jobs_query ?? null;
 

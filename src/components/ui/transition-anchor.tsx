@@ -60,6 +60,43 @@ export function ViewTransitionHandler() {
     };
   }, []);
 
+  // Prefetch on hover/touch for any internal link. Deliberately uses the
+  // default prefetch kind (AUTO), NOT "full": a full prefetch resolves every
+  // Suspense boundary on the target route — including slow backend-dependent
+  // ones like SimilarJobs — into one atomic cache entry before it's usable.
+  // A real navigation that lands on an in-flight full-prefetch reuses that
+  // same all-or-nothing promise instead of streaming, so the page shows
+  // nothing at all until the slowest boundary resolves (observed: 40s+ block,
+  // skeleton never appears). Default/AUTO prefetch can't do that — it never
+  // eagerly resolves nested Suspense — so a plain click always gets a genuine
+  // streamed navigation: fast shell first, skeletons fill in as they resolve.
+  useEffect(() => {
+    const prefetched = new Set<string>();
+    const handlePrefetch = (e: Event) => {
+      const target = e.target as HTMLElement;
+      if (!target?.closest) return;
+      const anchor = target.closest<HTMLAnchorElement>("a[href]");
+      if (!anchor || anchor.target === "_blank" || anchor.hasAttribute("download")) return;
+      const href = anchor.getAttribute("href");
+      if (
+        !href ||
+        !href.startsWith("/") ||
+        href.startsWith("//") ||
+        href.startsWith("/api/") ||
+        prefetched.has(href)
+      )
+        return;
+      prefetched.add(href);
+      router.prefetch(href);
+    };
+    document.addEventListener("mouseover", handlePrefetch, { passive: true });
+    document.addEventListener("touchstart", handlePrefetch, { passive: true });
+    return () => {
+      document.removeEventListener("mouseover", handlePrefetch);
+      document.removeEventListener("touchstart", handlePrefetch);
+    };
+  }, [router]);
+
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       // Ignore modified clicks

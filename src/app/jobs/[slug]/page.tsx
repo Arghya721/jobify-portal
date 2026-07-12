@@ -1,5 +1,5 @@
 import { notFound, redirect, permanentRedirect } from "next/navigation";
-import { cache } from "react";
+import { cache, Suspense } from "react";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { BackButton } from "@/components/ui/back-button";
@@ -20,6 +20,11 @@ import { Button } from "@/components/ui/button";
 import { COMPANY_LOGOS as companyLogos, COMPANY_LOGOS_DARK as companyLogosDark } from "@/lib/companies-static";
 import { extractIdFromSlug, generateJobSlug } from "@/lib/utils";
 import { SEO_PAGES_BY_SLUG, seoPagePath } from "@/config/seo-pages";
+import { auth } from "@/auth";
+import { SkillTagLinks } from "@/components/job-detail/skill-tag-links";
+import { AlertsHookCard } from "@/components/job-detail/alerts-hook-card";
+import { ResumeMatchHook, HookCardSkeleton } from "@/components/job-detail/resume-match-hook";
+import { SimilarJobs, SimilarJobsSkeleton } from "@/components/job-detail/similar-jobs";
 
 // Deduplicate gRPC calls between generateMetadata and the page component
 const fetchJobById = cache(_fetchJobById);
@@ -144,6 +149,9 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
   // Slug mismatch → 307 redirect to canonical (prevents duplicate content)
   const canonical = generateJobSlug(job);
   if (slug !== canonical) redirect(`/jobs/${canonical}`);
+
+  const session = await auth();
+  const isAuthed = !!session?.user;
 
   const companyName = job.company?.name || "Company";
   const logoUrl = companyLogos[companyName];
@@ -324,19 +332,18 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
                 <Sparkles className="h-5 w-5 text-primary/80" />
                 Skills
               </h2>
-              <div className="flex flex-wrap gap-2">
-                {details.tags.map((tag: string) => (
-                  <Badge
-                    key={tag}
-                    variant="secondary"
-                    className="rounded-md px-3 py-1 text-sm font-medium"
-                  >
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
+              <SkillTagLinks tags={details.tags} />
             </section>
           )}
+
+          <Suspense fallback={<SimilarJobsSkeleton />}>
+            <SimilarJobs
+              currentJobId={job.id}
+              tags={details.tags || []}
+              companyId={job.company?.id}
+              companyName={companyName}
+            />
+          </Suspense>
         </main>
 
         <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
@@ -364,6 +371,12 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
               <DetailRow icon={<Globe2 className="h-4 w-4 text-indigo-400" />} label="Source Platform" value={job.company?.source || "Direct"} />
             </div>
           </section>
+
+          <AlertsHookCard tags={details.tags || []} isAuthed={isAuthed} />
+
+          <Suspense fallback={<HookCardSkeleton />}>
+            <ResumeMatchHook isAuthed={isAuthed} />
+          </Suspense>
 
           <section className="rounded-2xl border border-border/40 bg-card/60 p-6 shadow-sm transition-all duration-300 hover:shadow-md hover:border-border/60">
             <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-4">Locations</h2>

@@ -56,7 +56,7 @@ export function QuickToggles({ resumeJobsQuery }: QuickTogglesProps) {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className="flex flex-wrap items-center gap-3" suppressHydrationWarning>
       {/* AI Resume Filter Toggle */}
       <button
         onClick={handleAiToggle}
