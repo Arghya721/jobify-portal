@@ -60,15 +60,9 @@ const getAuthMetadata = () => {
 };
 
 // Generic helper to promisify gRPC calls
-// Deadline is mandatory: without one, a slow/hung query on the backend blocks
-// the calling page indefinitely (observed: a single query taking 40+s and
-// freezing navigation). Callers already handle rejection (fetchJobs throws,
-// fetchJobById/SimilarJobs catch and fall back to null), so a fast, loud
-// failure here is strictly safer than an unbounded wait.
-const promisifyGrpcCall = (client: any, method: string, request: any = {}, timeoutMs = 8000) => {
+const promisifyGrpcCall = (client: any, method: string, request: any = {}) => {
   return new Promise<any>((resolve, reject) => {
-    const deadline = Date.now() + timeoutMs;
-    client[method](request, getAuthMetadata(), { deadline }, (err: any, response: any) => {
+    client[method](request, getAuthMetadata(), (err: any, response: any) => {
       if (err) reject(err);
       else resolve(response);
     });
