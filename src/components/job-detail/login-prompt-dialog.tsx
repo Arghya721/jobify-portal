@@ -81,7 +81,16 @@ export function LoginPromptDialog() {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-md rounded-2xl border-border/60 bg-card/95 backdrop-blur-sm p-7">
+      <DialogContent
+        // Radix focuses the first control on open, which trips :focus-visible and
+        // paints a ring on "Maybe later". Focus the dialog itself instead — still
+        // trapped and Esc-dismissable, just no ring on a control the user never chose.
+        onOpenAutoFocus={(e) => {
+          e.preventDefault();
+          (e.currentTarget as HTMLElement | null)?.focus();
+        }}
+        className="sm:max-w-md rounded-2xl border-border/60 bg-card/95 backdrop-blur-sm p-7"
+      >
         <DialogHeader>
           <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-500">
             Free account

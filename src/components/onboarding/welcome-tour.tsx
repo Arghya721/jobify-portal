@@ -121,6 +121,11 @@ export function WelcomeTour({ autoStart = true }: WelcomeTourProps) {
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         showCloseButton={false}
+        // Same reason as the login prompt: avoid an unwanted focus ring on Skip.
+        onOpenAutoFocus={(e) => {
+          e.preventDefault();
+          (e.currentTarget as HTMLElement | null)?.focus();
+        }}
         className="sm:max-w-md rounded-2xl border-border/60 bg-card/95 backdrop-blur-sm p-7"
       >
         <DialogHeader>
