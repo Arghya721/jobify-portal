@@ -65,6 +65,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           // Save the custom backend JWT into NextAuth's encrypted cookie
           token.accessToken = backendData.accessToken;
           token.refreshToken = backendData.refreshToken; // If your backend issues one
+          // Server-side flag — decides whether the first-login feature tour shows.
+          // Riding along in the JWT avoids an extra backend call on every render.
+          token.onboardingCompleted = !!backendData.onboardingCompleted;
         } catch (error) {
           console.error("Backend login exchange error", error);
           // Return null or undefined to reject the login if backend fails
@@ -100,6 +103,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 if (refreshData.refreshToken) {
                   token.refreshToken = refreshData.refreshToken;
                 }
+                // Refresh is what eventually reconciles a tour completed in this
+                // browser back into the cookie; until then the client keeps it hidden.
+                token.onboardingCompleted = !!refreshData.onboardingCompleted;
               } else {
                 console.error(`Backend refresh failed with ${refreshRes.status}: ${refreshRes.statusText}`);
                 token.error = "RefreshAccessTokenError"; 
@@ -124,6 +130,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (token.error) {
         (session as any).error = token.error;
       }
+      (session as any).onboardingCompleted = !!token.onboardingCompleted;
       return session;
     },
   },

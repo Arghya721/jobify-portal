@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Bell } from "lucide-react";
+import { Bell, Compass } from "lucide-react";
 import { sendGAEvent } from "@next/third-parties/google";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { openWelcomeTour } from "@/components/onboarding/welcome-tour";
 
 interface UserMenuProps {
   user: {
@@ -65,6 +66,14 @@ export function UserMenu({ user }: UserMenuProps) {
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => { sendGAEvent("event", "nav_click", { destination: "active_sessions" }); router.push("/settings/sessions"); }} className="cursor-pointer">
           Active Sessions
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          onClick={() => { sendGAEvent("event", "onboarding_tour_replay_click"); openWelcomeTour(); }}
+          className="cursor-pointer"
+        >
+          <Compass className="mr-2 h-3.5 w-3.5" />
+          Feature tour
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem

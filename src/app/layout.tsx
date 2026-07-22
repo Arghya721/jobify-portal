@@ -11,6 +11,7 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import { auth } from "@/auth";
 import { getResumeUploadsAction } from "@/app/actions/resume";
 import { ResumeNotificationWatcher } from "@/components/resume/resume-notification-watcher";
+import { WelcomeTour } from "@/components/onboarding/welcome-tour";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -82,6 +83,14 @@ async function ResumeWatcherGate() {
   return <ResumeNotificationWatcher initialUploads={activeUploads} />;
 }
 
+// Mounted for every logged-in user so the "Feature tour" item in the user menu can
+// replay it; it only opens on its own for users who haven't finished it yet.
+async function WelcomeTourGate() {
+  const session = await auth();
+  if (!session?.user) return null;
+  return <WelcomeTour autoStart={!(session as any).onboardingCompleted} />;
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -115,6 +124,9 @@ export default function RootLayout({
             <NavbarScrollWrapper><Navbar /></NavbarScrollWrapper>
             <Suspense fallback={null}>
               <ResumeWatcherGate />
+            </Suspense>
+            <Suspense fallback={null}>
+              <WelcomeTourGate />
             </Suspense>
             <main className="relative z-[1]">{children}</main>
           </NuqsAdapter>
