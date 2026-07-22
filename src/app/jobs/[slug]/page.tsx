@@ -25,6 +25,7 @@ import { SkillTagLinks } from "@/components/job-detail/skill-tag-links";
 import { AlertsHookCard } from "@/components/job-detail/alerts-hook-card";
 import { ResumeMatchHook, HookCardSkeleton } from "@/components/job-detail/resume-match-hook";
 import { SimilarJobsLink } from "@/components/job-detail/similar-jobs-link";
+import { LoginPromptDialog } from "@/components/job-detail/login-prompt-dialog";
 
 // Deduplicate gRPC calls between generateMetadata and the page component
 const fetchJobById = cache(_fetchJobById);
@@ -243,6 +244,8 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jobPostingSchema) }}
       />
       <BackButton />
+
+      {!isAuthed && <LoginPromptDialog />}
 
       {/* viewTransitionName links this container to the job card in the feed */}
       <div
