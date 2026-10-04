@@ -92,4 +92,5 @@ jobs:
             --region ${{ env.REGION }} \
             --port 3000 \
             --allow-unauthenticated \
+            --min-instances=0 \
             --env-vars-file=env.yaml
