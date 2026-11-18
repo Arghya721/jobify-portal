@@ -1,19 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://jobify.run/jobs/staff-software-engineer-ge-healthcare-441333</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://jobify.run/jobs/tech-lead-testing-qa-4c-genpact-436654</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/custom-software-engineer-accenture-436688</loc>
+    <loc>https://jobify.run/jobs/senior-software-engineer-java-clarivate-436748</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/staff-customer-success-engineer-palo-alto-436693</loc>
+    <loc>https://jobify.run/jobs/senior-software-engineer-clarivate-436764</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/principal-business-process-consultant-clarivate-436775</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -31,6 +43,24 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://jobify.run/jobs/lead-software-engineer-clarivate-436971</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/manager-software-engineering-clarivate-436977</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/senior-software-engineer-clarivate-436979</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://jobify.run/jobs/principal-software-engineer-cloud-ngfw-palo-alto-436983</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
@@ -43,85 +73,55 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/software-engineer-barclays-437043</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/mobile-ba4-software-engineer-barclays-437061</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://jobify.run/jobs/software-engineer-cisco-437071</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/domain-consultant-canada-palo-alto-437185</loc>
+    <loc>https://jobify.run/jobs/software-engineer-cisco-437202</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/sr-software-engineer-barclays-437263</loc>
+    <loc>https://jobify.run/jobs/senior-forward-deployed-engineer-cisco-437210</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/mobile-ba4-software-engineer-barclays-437272</loc>
+    <loc>https://jobify.run/jobs/software-engineer-full-stack-cisco-437238</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/full-stack-software-engineer-cisco-437318</loc>
+    <loc>https://jobify.run/jobs/software-engineer-java-react-wireless-cisco-437278</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/2027-technology-part-time-developer-programme-prague-barclays-437321</loc>
+    <loc>https://jobify.run/jobs/software-engineer-cisco-437292</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/software-engineer-intersight-software-and-product-security-cisco-437325</loc>
+    <loc>https://jobify.run/jobs/incident-response-analysis-manager-cisco-437308</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/machine-learning-engineer-cisco-437331</loc>
+    <loc>https://jobify.run/jobs/implementation-engineer-thousandeyes-cisco-437354</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/consulting-engineering-technical-leader-cisco-437427</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/platform-software-engineer-golang-kubernetes-4-8-yrs-cisco-437432</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/software-engineer-distributed-system-fullstack-pythongo-java-ai-4-years-cisco-437437</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/agile-product-owner-senior-manager-hih-evernorth-cigna-group-441299</loc>
+    <loc>https://jobify.run/jobs/ai-scientist-ai-molecular-design-danaher-441373</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -133,49 +133,43 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/senior-software-engineer-java-clarivate-436748</loc>
+    <loc>https://jobify.run/jobs/senior-staff-site-reliability-engineer-cloud-deployment-palo-alto-436785</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/senior-customer-success-engineer-cortex-cloud-palo-alto-436756</loc>
+    <loc>https://jobify.run/jobs/asic-development-technical-leader-cisco-436792</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/experienced-site-reliability-engineer-cortex-palo-alto-436777</loc>
+    <loc>https://jobify.run/jobs/senior-customer-engineer-palo-alto-436797</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/cloud-security-engineer-devsecops-cme-group-436813</loc>
+    <loc>https://jobify.run/jobs/solutions-engineer-ai-native-managed-services-agentic-operations-cisco-436836</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/asic-engineering-technical-leader-cisco-436815</loc>
+    <loc>https://jobify.run/jobs/cloud-engineer-ii-full-time-united-states-cisco-436856</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/software-engineer-cisco-436817</loc>
+    <loc>https://jobify.run/jobs/software-engineer-cisco-436861</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/software-engineer-platform-services-cisco-436823</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/splunk-platform-solutions-architect-mfd-cisco-436829</loc>
+    <loc>https://jobify.run/jobs/new-college-grad-product-development-engineer-media-health-micron-436876</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -187,61 +181,61 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/embedded-audio-engineer-hp-436927</loc>
+    <loc>https://jobify.run/jobs/ye-engineer-micron-436937</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/custom-software-engineer-accenture-436930</loc>
+    <loc>https://jobify.run/jobs/custom-software-engineer-accenture-436942</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/data-scientist-ii-advertising-analytics-expedia-group-436962</loc>
+    <loc>https://jobify.run/jobs/senior-software-engineer-ai-compute-scheduling-nvidia-436943</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/senior-ai-software-engineer-palo-alto-437020</loc>
+    <loc>https://jobify.run/jobs/machine-learning-scientist-iii-agentic-experiences-expedia-group-436947</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/principal-software-engineer-prisma-access-palo-alto-437026</loc>
+    <loc>https://jobify.run/jobs/principal-data-and-platform-engineer-dgx-cloud-nvidia-436955</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/domain-consultant-cortex-palo-alto-437031</loc>
+    <loc>https://jobify.run/jobs/stage-conception-et-deploiement-dun-assistant-ia-dingenierie-ge-healthcare-436987</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/software-engineer-compiler-i-full-time-united-states-cisco-437037</loc>
+    <loc>https://jobify.run/jobs/manager-ai-software-engineering-cora-ai-palo-alto-437000</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/engineer-ai-platform-barclays-437040</loc>
+    <loc>https://jobify.run/jobs/field-service-application-specialist-dfm-danaher-441392</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/manufacturing-project-leader-life-sciences-bioreactors-npi-mfg-transfer-danaher-441364</loc>
+    <loc>https://jobify.run/jobs/associate-stem-content-analyst-chemistry-clarivate-436674</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/senior-software-engineer-clarivate-436764</loc>
+    <loc>https://jobify.run/jobs/experienced-site-reliability-engineer-cortex-palo-alto-436777</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -277,7 +271,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/machine-learning-scientist-iii-agentic-experiences-expedia-group-436947</loc>
+    <loc>https://jobify.run/jobs/senior-ai-software-engineer-palo-alto-437020</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -290,24 +284,6 @@
   </url>
   <url>
     <loc>https://jobify.run/jobs/senior-executive-assistant-salesforce-437226</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/software-engineer-full-stack-cisco-437238</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/software-engineer-java-react-wireless-cisco-437278</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/software-engineer-cisco-437292</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -326,18 +302,6 @@
   </url>
   <url>
     <loc>https://jobify.run/jobs/enterprise-architect-adobe-437513</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/front-end-engineer-ii-remote-crowdstrike-437709</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/custom-software-engineer-accenture-437729</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -379,91 +343,43 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/senior-software-engineer-itc-nike-441207</loc>
+    <loc>https://jobify.run/jobs/custom-software-engineer-accenture-436671</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/forward-deployed-engineer-specialists-fde-midsenior-level-salesforce-441193</loc>
+    <loc>https://jobify.run/jobs/sr-staff-engineer-software-idira-iga-palo-alto-437198</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/lead-ai-forward-deployed-engineer-salesforce-441167</loc>
+    <loc>https://jobify.run/jobs/software-engineer-distributed-system-fullstack-pythongo-java-ai-4-years-cisco-437437</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/seniorlead-software-engineer-agentexchange-buyer-experience-salesforce-441076</loc>
+    <loc>https://jobify.run/jobs/software-engineering-technical-leader-enterprise-ai-platforms-infrastructure-automation-cisco-437444</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/senior-full-stack-software-developer-danaher-440945</loc>
+    <loc>https://jobify.run/jobs/front-end-engineer-ii-remote-crowdstrike-437709</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/solutions-builder-salesforce-440718</loc>
+    <loc>https://jobify.run/jobs/engineer-iii-cloud-sdet-endpoint-hybrid-sunnyvale-crowdstrike-438074</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/custom-software-engineer-accenture-439909</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/custom-software-engineer-accenture-439883</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/custom-software-engineer-accenture-439633</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/custom-software-engineer-accenture-439598</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/ai-operations-intern-ai-clouds-summer-2027-nvidia-439064</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/enterprise-product-engineer-fullstack-nvidia-439016</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/staff-full-stack-engineer-micron-439014</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/senior-software-engineer-ai-thomson-reuters-438613</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/ai-solution-engineering-senior-manager-software-platforms-accenture-438563</loc>
+    <loc>https://jobify.run/jobs/sr-software-engineer-full-stack-react-nodejs-java-paypal-438178</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -475,37 +391,55 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/senior-software-engineer-ai-thomson-reuters-438390</loc>
+    <loc>https://jobify.run/jobs/ai-solution-engineering-senior-manager-software-platforms-accenture-438563</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/product-manager-4c-genpact-438113</loc>
+    <loc>https://jobify.run/jobs/senior-software-engineer-ai-thomson-reuters-438613</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/principal-software-engineer-f5-438673</loc>
+    <loc>https://jobify.run/jobs/senior-ai-engineer-palantir-foundry-and-aip-forward-deployed-engineer-nvidia-438998</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/sr-software-engineer-f5-438662</loc>
+    <loc>https://jobify.run/jobs/staff-full-stack-engineer-micron-439014</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/software-engineer-iii-f5-438659</loc>
+    <loc>https://jobify.run/jobs/enterprise-product-engineer-fullstack-nvidia-439016</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/software-engineer-paypal-438370</loc>
+    <loc>https://jobify.run/jobs/ai-operations-intern-ai-clouds-summer-2027-nvidia-439064</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/ai-engineer-micron-439265</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/digitalisation-software-engineer-baker-hughes-439439</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/sr-manager-software-engineering-expedia-group-439499</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -517,7 +451,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/sr-engineer-dev-experience-sensor-crowdstrike-438052</loc>
+    <loc>https://jobify.run/jobs/software-engineer-paypal-438370</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -529,13 +463,25 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/staff-engineer-applied-ai-project-authur-barclays-437409</loc>
+    <loc>https://jobify.run/jobs/senior-software-engineer-splunk-framework-runtime-services-cisco-437255</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/software-engineer-python-go-ansible-8-12-yrs-cisco-437378</loc>
+    <loc>https://jobify.run/jobs/principal-software-engineer-f5-438673</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/software-engineer-platform-services-cisco-436823</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/principal-software-engineer-wildfire-palo-alto-437171</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -547,13 +493,31 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/senior-software-engineer-splunk-framework-runtime-services-cisco-437255</loc>
+    <loc>https://jobify.run/jobs/software-engineer-python-go-ansible-8-12-yrs-cisco-437378</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/principal-software-engineer-wildfire-palo-alto-437171</loc>
+    <loc>https://jobify.run/jobs/staff-engineer-applied-ai-project-authur-barclays-437409</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/sr-engineer-dev-experience-sensor-crowdstrike-438052</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/software-engineer-iii-f5-438659</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/sr-software-engineer-f5-438662</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -583,31 +547,37 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://jobify.run/jobs/software-engineering-architect-cisco-437394</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/software-developer-cisco-437348</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/site-reliability-engineer-cisco-437359</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://jobify.run/jobs/principal-senior-product-manager-machines-and-secrets-idira-palo-alto-437163</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/platform-engineer-ii-india-cme-group-437214</loc>
+    <loc>https://jobify.run/jobs/domain-consultant-canada-palo-alto-437185</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/senior-forward-deployed-engineer-cisco-437210</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/sr-stasenior-software-engineer-identity-security-itdrff-engineer-software-palo-alto-437149</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/senior-software-engineer-ai-compute-scheduling-nvidia-436943</loc>
+    <loc>https://jobify.run/jobs/senior-solutions-engineer-splunk-public-sector-sydney-cisco-437338</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -625,7 +595,43 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://jobify.run/jobs/principal-software-engineer-prisma-access-palo-alto-437026</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/engineer-ai-platform-barclays-437040</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://jobify.run/jobs/manager-site-reliability-engineering-palo-alto-437147</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/sr-stasenior-software-engineer-identity-security-itdrff-engineer-software-palo-alto-437149</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/aadc-industry-functions-ai-data-fs-insurance-manager-2-accenture-437395</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/2027-technology-part-time-developer-programme-prague-barclays-437321</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/platform-engineer-ii-india-cme-group-437214</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -637,19 +643,31 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://jobify.run/jobs/cloud-security-engineer-devsecops-cme-group-436813</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://jobify.run/jobs/aadc-industry-functions-ai-data-fs-insurance-senior-manager-2-accenture-437188</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/software-engineer-cisco-436861</loc>
+    <loc>https://jobify.run/jobs/software-engineer-barclays-437043</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/production-associate-o1-dpm-3rd-shift-sun-thurs-10-630am-danaher-441383</loc>
+    <loc>https://jobify.run/jobs/senior-customer-success-engineer-cortex-cloud-palo-alto-436756</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/software-engineer-intersight-software-and-product-security-cisco-437325</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -667,19 +685,25 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/associate-stem-content-analyst-chemistry-clarivate-436674</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://jobify.run/jobs/customer-success-consultant-clarivate-436675</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://jobify.run/jobs/staff-customer-success-engineer-palo-alto-436693</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://jobify.run/jobs/director-of-business-development-aws-palo-alto-436694</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/sr-domain-consultant-ai-security-palo-alto-436801</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -698,12 +722,6 @@
   </url>
   <url>
     <loc>https://jobify.run/jobs/software-engineer-cisco-436852</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/new-college-grad-product-development-engineer-media-health-micron-436876</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -733,67 +751,127 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/lead-software-engineer-clarivate-436971</loc>
+    <loc>https://jobify.run/jobs/data-scientist-ii-advertising-analytics-expedia-group-436962</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/senior-product-sales-manager-academia-south-territory-clarivate-436973</loc>
+    <loc>https://jobify.run/jobs/partner-account-director-accenture-edge-salesforce-441295</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/manager-software-engineering-clarivate-436977</loc>
+    <loc>https://jobify.run/jobs/software-engineering-lmts-salesforce-441290</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/manager-ai-software-engineering-cora-ai-palo-alto-437000</loc>
+    <loc>https://jobify.run/jobs/principal-technical-product-manager-nike-441269</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/senior-customer-engineer-palo-alto-437008</loc>
+    <loc>https://jobify.run/jobs/sr-software-engineer-dns-and-cloud-infrastructure-salesforce-441259</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/lead-ai-engineer-mastercard-437119</loc>
+    <loc>https://jobify.run/jobs/lead-software-engineer-ai-workflow-generation-agentforce-operations-salesforce-441113</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/senior-principal-principal-data-scientist-data-scientist-cloud-team-aiml-cortex-palo-alto-437136</loc>
+    <loc>https://jobify.run/jobs/distinguishedprincipal-platform-solution-engineer-data-foundations-salesforce-441077</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/technical-architect-slack-exp-mandatory-salesforce-437231</loc>
+    <loc>https://jobify.run/jobs/senior-manager-solution-engineering-specialisation-emea-smb-salesforce-440666</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/solutions-engineer-cisco-437271</loc>
+    <loc>https://jobify.run/jobs/director-capacity-planning-salesforce-440622</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/director-product-management-cisco-437345</loc>
+    <loc>https://jobify.run/jobs/technical-architect-slack-exp-mandatory-salesforce-440558</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/leader-business-product-management-cisco-437362</loc>
+    <loc>https://jobify.run/jobs/coordinador-de-equipo-de-operaciones-accenture-440278</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/custom-software-engineer-accenture-440268</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/cybersecurity-fde-consultant-accenture-440165</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/data-engineer-accenture-440052</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/devsecops-engineer-accenture-439925</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/aadc-industry-functions-ai-data-fs-insurance-manager-4-accenture-439905</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/aadc-industry-functions-ai-data-fs-insurance-manager-8-accenture-439900</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/aadc-industry-functions-ai-data-fs-insurance-manager-3-accenture-439898</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/ai-llm-analyst-accenture-439575</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/custom-software-engineer-accenture-439566</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/custom-software-engineer-accenture-439559</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -805,43 +883,19 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/cloud-engineer-ii-full-time-united-states-cisco-436856</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://jobify.run/jobs/custom-software-engineering-lead-accenture-436915</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/solutions-engineer-ai-native-managed-services-agentic-operations-cisco-436836</loc>
+    <loc>https://jobify.run/jobs/asic-engineering-technical-leader-cisco-436815</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/principal-business-process-consultant-clarivate-436775</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/senior-customer-engineer-palo-alto-436797</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/sr-domain-consultant-ai-security-palo-alto-436801</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/senior-staff-site-reliability-engineer-cloud-deployment-palo-alto-436785</loc>
+    <loc>https://jobify.run/jobs/splunk-platform-solutions-architect-mfd-cisco-436829</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -853,121 +907,73 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/global-relationship-manager-3-genpact-438115</loc>
+    <loc>https://jobify.run/jobs/sr-technical-enablement-consultant-cortex-xcor-palo-alto-437029</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/scrum-master-technology-delivery-4c-genpact-438125</loc>
+    <loc>https://jobify.run/jobs/principal-technical-marketing-engineer-palo-alto-437142</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/api-integration-tech-lead-4c-genpact-438126</loc>
+    <loc>https://jobify.run/jobs/consulting-engineering-technical-leader-cisco-437276</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/sr-developer-salesforce-4b-genpact-438133</loc>
+    <loc>https://jobify.run/jobs/customer-journey-labs-business-analyst-avp-barclays-437299</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/sr-engineer-testing-qa-4b-genpact-438135</loc>
+    <loc>https://jobify.run/jobs/cloud-engineer-cisco-437311</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/sr-tech-lead-application-development-n-4d-genpact-438146</loc>
+    <loc>https://jobify.run/jobs/gen-ai-senior-software-engineer-cisco-437312</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/sr-tech-lead-application-support-4d-genpact-438150</loc>
+    <loc>https://jobify.run/jobs/customer-journey-labs-business-analyst-avp-barclays-437507</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/senior-developer-tools-evangelist-hp-438562</loc>
+    <loc>https://jobify.run/jobs/senior-software-engineer-webex-cisco-437518</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/senior-solutions-engineer-us-federal-dod-f5-438619</loc>
+    <loc>https://jobify.run/jobs/senior-software-engineer-maersk-437629</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/technical-delivery-lead-scotland-accenture-438621</loc>
+    <loc>https://jobify.run/jobs/sr-security-engineer-iii-remote-crowdstrike-437701</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/associate-sales-director-enterprise-hong-kong-f5-438643</loc>
+    <loc>https://jobify.run/jobs/backend-tech-lead-4c-genpact-437967</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/it-operations-service-delivery-hp-438629</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/principal-devops-engineer-f5-438642</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/devops-engineer-6597000-accenture-438796</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/snowflake-advanced-ai-engineer-accenture-438799</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/custom-software-engineer-accenture-438802</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/custom-software-engineer-accenture-438809</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/accenture-life-insurance-and-annuity-industry-alip-integration-architect-lead-accenture-438722</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/software-development-engineer-frontend-hp-438745</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/site-reliability-engineer-cisco-437359</loc>
+    <loc>https://jobify.run/jobs/junior-ai-engineer-accenture-438004</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -985,7 +991,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/consulting-engineering-technical-leader-cisco-437276</loc>
+    <loc>https://jobify.run/jobs/senior-customer-engineer-palo-alto-437008</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -997,31 +1003,19 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/application-development-senior-analyst-hih-evernorth-cigna-group-441250</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://jobify.run/jobs/intern-business-development-associate-expedia-group-436941</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/custom-software-engineer-accenture-437812</loc>
+    <loc>https://jobify.run/jobs/api-integration-tech-lead-4c-genpact-438126</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/tech-lead-application-development-4c-genpact-437902</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/backend-tech-lead-4c-genpact-437967</loc>
+    <loc>https://jobify.run/jobs/sr-tech-lead-application-development-n-4d-genpact-438146</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -1039,25 +1033,61 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/full-stack-engineer-accenture-438793</loc>
+    <loc>https://jobify.run/jobs/software-engineer-paypal-438322</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/full-stack-engineer-accenture-438798</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/performance-engineering-co-op-hp-438807</loc>
+    <loc>https://jobify.run/jobs/accenture-life-insurance-and-annuity-industry-alip-integration-architect-lead-accenture-438722</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://jobify.run/jobs/printhead-mechanical-designer-hp-438723</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/senior-software-engineer-mastercard-438891</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/custom-software-engineer-accenture-439598</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/cloud-platform-architect-accenture-439611</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/custom-software-engineer-accenture-439633</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/custom-software-engineering-analyst-6532851-accenture-439937</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/full-stack-engineer-accenture-439946</loc>
+    <lastmod>2026-11-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jobify.run/jobs/full-stack-engineer-accenture-439948</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -1075,7 +1105,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/senior-software-engineer-clarivate-436979</loc>
+    <loc>https://jobify.run/jobs/full-stack-software-engineer-cisco-437318</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -1087,25 +1117,19 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/sr-staff-engineer-software-idira-iga-palo-alto-437198</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://jobify.run/jobs/developpeur-java-fh-accenture-438188</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/adobe-experience-manager-aem-developer-accenture-438822</loc>
+    <loc>https://jobify.run/jobs/senior-software-engineer-ai-thomson-reuters-438390</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/incident-response-analysis-manager-cisco-437308</loc>
+    <loc>https://jobify.run/jobs/adobe-experience-manager-aem-developer-accenture-438822</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -1153,49 +1177,25 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/operations-support-agent-associate-fedex-436938</loc>
+    <loc>https://jobify.run/jobs/sales-development-representative-taiwan-market-salesforce-440637</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/ops-suppt-agt-fedex-436946</loc>
+    <loc>https://jobify.run/jobs/senior-software-engineer-backup-recover-salesforce-440388</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/operations-team-leader-training-and-quality-fedex-436950</loc>
+    <loc>https://jobify.run/jobs/supply-chain-process-transformation-consultant-accenture-440259</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://jobify.run/jobs/principal-data-and-platform-engineer-dgx-cloud-nvidia-436955</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/system-design-engineer-nvidia-436957</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/data-architect-data-engineering-4d-genpact-437914</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/sr-data-engineer-4b-genpact-437930</loc>
-    <lastmod>2026-11-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://jobify.run/jobs/sr-data-engineer-4b-genpact-438221</loc>
+    <loc>https://jobify.run/jobs/data-engineer-accenture-440170</loc>
     <lastmod>2026-11-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
